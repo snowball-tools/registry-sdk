@@ -19,7 +19,7 @@ Follow these steps to run the tests:
 - Export the private key using:
 
   ```bash
-  chibaclonkd keys export mykey --unarmored-hex --unsafe
+  laconicd keys export mykey --unarmored-hex --unsafe
   ```
 
 - Copy the private key and assign it to variable `PRIVATE_KEY` in the `.env` file.
@@ -41,7 +41,7 @@ Follow these steps to run the tests:
   - Export the private key and change it in `.env` file again using:
 
     ```bash
-    chibaclonkd keys export mykey --unarmored-hex --unsafe
+    laconicd keys export mykey --unarmored-hex --unsafe
     ```
 
   - Run tests:
@@ -61,7 +61,7 @@ Follow these steps to run the tests:
   - Export the private key and change it in `.env` file again using:
 
     ```bash
-    chibaclonkd keys export mykey --unarmored-hex --unsafe
+    laconicd keys export mykey --unarmored-hex --unsafe
     ```
 
   - Run tests:
