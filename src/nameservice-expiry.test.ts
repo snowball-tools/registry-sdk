@@ -50,7 +50,7 @@ const nameserviceExpiryTests = () => {
   })
 
   test('Reserve authority and set bond', async () => {
-    authorityName = `chiba-clonk-${Date.now()}`;
+    authorityName = `laconic-${Date.now()}`;
     await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
     await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
     const [authority] = await registry.lookupAuthorities([authorityName]);
@@ -102,7 +102,7 @@ if (!process.env.TEST_NAMESERVICE_EXPIRY) {
   test('skipping nameservice expiry tests', () => {});
 } else {
   /**
-    Running these tests requires timers to be set. In chiba-clonk repo run:
+    Running these tests requires timers to be set. In laconicd repo run:
 
     TEST_NAMESERVICE_EXPIRY=true ./init.sh
 

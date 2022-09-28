@@ -30,7 +30,7 @@ const auctionTests = (numBidders = 3) => {
   });
 
   test('Reserve authority.', async () => {
-    authorityName = `chiba-clonk-${Date.now()}`;
+    authorityName = `laconic-${Date.now()}`;
     await registry.reserveAuthority({ name: authorityName }, accounts[0].privateKey, fee);
   });
 
@@ -115,7 +115,7 @@ if (!process.env.TEST_AUCTIONS_ENABLED) {
   test('skipping auction tests', () => {});
 } else {
   /**
-    Running these tests requires name auctions enabled. In chiba-clonk repo run:
+    Running these tests requires name auctions enabled. In laconicd repo run:
 
     TEST_AUCTION_ENABLED=true ./init.sh
 

@@ -1,4 +1,4 @@
-# chiba-clonk-client
+# laconic-client
 
 ## Tests
 
@@ -12,7 +12,7 @@ Follow these steps to run the tests:
 
 - Copy [.env.example](./.env.example) file and create a `.env` file.
 
-- Clone the [chiba-clonk repo](https://github.com/vulcanize/chiba-clonk) and change to repo directory.
+- Clone the [laconicd repo](https://github.com/cerc-io/laconicd) and change to repo directory.
 
 - Run the chain using `./init.sh`.
 
@@ -24,7 +24,7 @@ Follow these steps to run the tests:
 
 - Copy the private key and assign it to variable `PRIVATE_KEY` in the `.env` file.
 
-- Run the tests in chiba-clonk-client repo:
+- Run the tests in laconic-client repo:
 
   ```bash
   yarn test
@@ -32,7 +32,7 @@ Follow these steps to run the tests:
 
 - Run the tests with auctions enabled
 
-  - In chiba-clonk repo run:
+  - In laconicd repo run:
 
     ```bash
     TEST_AUCTION_ENABLED=true ./init.sh
@@ -52,7 +52,7 @@ Follow these steps to run the tests:
 
 - Run the tests for record and authority expiry
 
-  - In chiba-clonk repo run:
+  - In laconicd repo run:
 
     ```bash
     TEST_NAMESERVICE_EXPIRY=true ./init.sh
@@ -81,7 +81,7 @@ Follow these steps to run the tests:
   failed to execute message; message index: 0: Invalid signature.: unauthorized
   ```
 
-- When sending `setRecord` message, an integer value passed in watcher attributes is parsed as float type in chiba-clonk while [unmarshalling json](https://pkg.go.dev/encoding/json#Unmarshal).
+- When sending `setRecord` message, an integer value passed in watcher attributes is parsed as float type in laconicd while [unmarshalling json](https://pkg.go.dev/encoding/json#Unmarshal).
 
 - `setRecord` message throws error when fileds in [Record](./src/types.ts) message are not assigned.
   ```

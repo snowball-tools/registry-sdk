@@ -53,7 +53,7 @@ import {
   MessageMsgRevealBid
 } from './messages/auction';
 
-const DEFAULT_WRITE_ERROR = 'Unable to write to chiba-clonk.';
+const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
 // Parse Tx response from cosmos-sdk.
 export const parseTxResponse = (result: any, parseResponse?: (data: string) => any) => {
