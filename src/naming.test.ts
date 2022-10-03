@@ -47,7 +47,7 @@ const namingTests = () => {
   });
 
   test('Reserve authority.', async () => {
-    authorityName = `chiba-clonk-${Date.now()}`;
+    authorityName = `laconic-${Date.now()}`;
     await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
   });
 

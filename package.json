@@ -1,9 +1,9 @@
 {
-  "name": "chiba-clonk-client",
+  "name": "laconic-client",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "git@github.com:vulcanize/chiba-clonk-client.git",
+  "repository": "git@github.com:cerc-io/laconic-client.git",
   "author": "",
   "license": "UNLICENSED",
   "devDependencies": {
