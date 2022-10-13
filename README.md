@@ -1,4 +1,4 @@
-# laconic-client
+# laconic-sdk
 
 ## Tests
 
@@ -24,7 +24,7 @@ Follow these steps to run the tests:
 
 - Copy the private key and assign it to variable `PRIVATE_KEY` in the `.env` file.
 
-- Run the tests in laconic-client repo:
+- Run the tests in laconic-sdk repo:
 
   ```bash
   yarn test
