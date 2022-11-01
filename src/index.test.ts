@@ -32,14 +32,14 @@ const registryTests = () => {
   test('Get account balance.', async() => {
     const mnenonic1 = Account.generateMnemonic();
     const otherAccount = await Account.generateFromMnemonic(mnenonic1);
-    await registry.sendCoins({ denom: 'aphoton', amount: '10000000000000000000000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, fee);
+    await registry.sendCoins({ denom: 'aphoton', amount: '100000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, fee);
 
     const [accountObj] = await registry.getAccounts([otherAccount.formattedCosmosAddress]);
     expect(accountObj).toBeDefined();
     expect(accountObj.address).toBe(otherAccount.formattedCosmosAddress);
     const [{ type, quantity }] = accountObj.balance
     expect(type).toBe('aphoton');
-    expect(quantity).toBe('10000000000000000000000000');
+    expect(quantity).toBe('100000000');
   })
 }
 
