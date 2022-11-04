@@ -37,7 +37,7 @@ export const getConfig = () => {
   assert(process.env.PRIVATE_KEY);
 
   return {
-    chainId: process.env.COSMOS_CHAIN_ID || 'ethermint_9000-1',
+    chainId: process.env.COSMOS_CHAIN_ID || 'laconic_9000-1',
     privateKey: process.env.PRIVATE_KEY,
     restEndpoint: process.env.LACONICD_REST_ENDPOINT || 'http://localhost:1317',
     gqlEndpoint: process.env.LACONICD_GQL_ENDPOINT || 'http://localhost:9473/api',
