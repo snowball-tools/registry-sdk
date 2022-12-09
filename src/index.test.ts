@@ -10,7 +10,7 @@ const registryTests = () => {
   let registry: Registry;
 
   beforeAll(async () => {
-    registry = new Registry(restEndpoint, gqlEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
 
   });
 

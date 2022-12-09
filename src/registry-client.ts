@@ -122,15 +122,14 @@ export class RegistryClient {
   /**
    * New Client.
    */
-  constructor(restEndpoint: string, gqlEndpoint: string) {
-    assert(restEndpoint);
-
-    this._restEndpoint = restEndpoint;
-
+  constructor(gqlEndpoint: string, restEndpoint: string) {
+    assert(gqlEndpoint);
     this._graph = graphqlClient(gqlEndpoint, {
       method: 'POST',
       asJSON: true
     });
+
+    this._restEndpoint = restEndpoint;
   }
 
   /**

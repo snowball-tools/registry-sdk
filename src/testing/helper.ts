@@ -3,7 +3,7 @@ import yaml from 'node-yaml';
 import semver from 'semver';
 import { Fee } from '@tharsis/transactions';
 
-import { Registry } from '../index';
+import { DEFAULT_CHAIN_ID, Registry } from '../index';
 
 export const ensureUpdatedConfig = async (path: string) => {
   const conf = await yaml.read(path);
@@ -37,7 +37,7 @@ export const getConfig = () => {
   assert(process.env.PRIVATE_KEY);
 
   return {
-    chainId: process.env.COSMOS_CHAIN_ID || 'laconic_9000-1',
+    chainId: process.env.COSMOS_CHAIN_ID || DEFAULT_CHAIN_ID,
     privateKey: process.env.PRIVATE_KEY,
     restEndpoint: process.env.LACONICD_REST_ENDPOINT || 'http://localhost:1317',
     gqlEndpoint: process.env.LACONICD_GQL_ENDPOINT || 'http://localhost:9473/api',

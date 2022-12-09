@@ -15,7 +15,7 @@ describe('Querying', () => {
   let bondId: string;
 
   beforeAll(async () => {
-    registry = new Registry(restEndpoint, gqlEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
     bondId = await provisionBondId(registry, privateKey, fee);
 
     const publishNewWatcherVersion = async () => {

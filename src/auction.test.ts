@@ -16,7 +16,7 @@ const auctionTests = (numBidders = 3) => {
   beforeAll(async () => {
     console.log('Running auction tests with num bidders', numBidders);
 
-    registry = new Registry(restEndpoint, gqlEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
   });
 
   test('Setup bidder accounts', async () => {

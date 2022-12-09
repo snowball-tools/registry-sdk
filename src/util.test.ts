@@ -18,7 +18,7 @@ const utilTests = () => {
   let watcherId: string;
 
   beforeAll(async () => {
-    registry = new Registry(restEndpoint, gqlEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);
