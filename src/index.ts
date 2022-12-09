@@ -53,6 +53,8 @@ import {
   MessageMsgRevealBid
 } from './messages/auction';
 
+export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
+
 const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
 // Parse Tx response from cosmos-sdk.
@@ -119,13 +121,13 @@ export class Registry {
     return errorMessage || DEFAULT_WRITE_ERROR;
   }
 
-  constructor(restUrl: string, gqlUrl: string, chainId: string) {
-    if (!isUrl(restUrl)) {
-      throw new Error('Path to a REST endpoint should be provided.');
-    }
-
+  constructor(gqlUrl: string, restUrl: string = "", chainId: string = DEFAULT_CHAIN_ID) {
     if (!isUrl(gqlUrl)) {
       throw new Error('Path to a GQL endpoint should be provided.');
+    }
+
+    if (restUrl && !isUrl(restUrl)) {
+      throw new Error('REST endpoint is not a URL string.');
     }
 
     this._endpoints = {
@@ -133,7 +135,7 @@ export class Registry {
       gql: gqlUrl
     };
 
-    this._client = new RegistryClient(restUrl, gqlUrl);
+    this._client = new RegistryClient(gqlUrl, restUrl);
     this._chainID = chainId;
 
     this._chain = {
