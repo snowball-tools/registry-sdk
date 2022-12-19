@@ -3,8 +3,9 @@ package vulcanize.nameservice.v1beta1;
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
-import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/tharsis/ethermint/x/nameservice/types";
 
@@ -78,7 +79,7 @@ message Record {
   repeated string owners = 6 [
     (gogoproto.moretags) = "json:\"owners\" yaml:\"owners\""
   ];
-  string attributes = 7 [
+  google.protobuf.Any attributes = 7 [
     (gogoproto.moretags) = "json:\"attributes\" yaml:\"attributes\""
   ];
   repeated string names = 8 [
