@@ -45,7 +45,7 @@ import {
   MessageMsgSetRecord,
   NAMESERVICE_ERRORS,
   parseMsgSetRecordResponse
-} from './messages/nameservice';
+} from './messages/registry';
 import {
   createTxMsgCommitBid,
   createTxMsgRevealBid,

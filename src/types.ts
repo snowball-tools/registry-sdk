@@ -3,7 +3,7 @@ import { Validator } from 'jsonschema';
 
 import RecordSchema from './schema/record.json';
 import { Util } from './util';
-import * as attributes from './proto/vulcanize/nameservice/v1beta1/attributes';
+import * as attributes from './proto/vulcanize/registry/v1beta1/attributes';
 import * as any from './proto/google/protobuf/any';
 
 /**
@@ -33,9 +33,9 @@ export class Record {
     var a = new any.google.protobuf.Any()
 
     if (this._record.type=="WebsiteRegistrationRecord"){
-      var attr= new attributes.vulcanize.nameservice.v1beta1.WebsiteRegistrationRecord(this._record)
+      var attr= new attributes.vulcanize.registry.v1beta1.WebsiteRegistrationRecord(this._record)
       a= new any.google.protobuf.Any({
-        type_url: "/vulcanize.nameservice.v1beta1.WebsiteRegistrationRecord",
+        type_url: "/vulcanize.registry.v1beta1.WebsiteRegistrationRecord",
         value: attr.serialize()
       })
     }

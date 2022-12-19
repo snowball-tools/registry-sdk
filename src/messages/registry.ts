@@ -7,8 +7,8 @@ import {
   Fee,
 } from '@tharsis/transactions'
 
-import * as nameserviceTx from '../proto/vulcanize/nameservice/v1beta1/tx'
-import * as nameservice from '../proto/vulcanize/nameservice/v1beta1/nameservice'
+import * as registryTx from '../proto/vulcanize/registry/v1beta1/tx'
+import * as registry from '../proto/vulcanize/registry/v1beta1/registry'
 import { createTx } from './util'
 import { Payload } from '../types'
 
@@ -235,7 +235,7 @@ function createMsgReserveAuthority(
   owner: string
 ) {
   return {
-    type: 'nameservice/ReserveAuthority',
+    type: 'registry/ReserveAuthority',
     value: {
       name,
       signer,
@@ -249,7 +249,7 @@ const protoCreateMsgReserveAuthority = (
   signer: string,
   owner: string,
 ) => {
-  const reserveAuthorityMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgReserveAuthority({
+  const reserveAuthorityMessage = new registryTx.vulcanize.registry.v1beta1.MsgReserveAuthority({
     name,
     signer,
     owner
@@ -257,7 +257,7 @@ const protoCreateMsgReserveAuthority = (
 
   return {
     message: reserveAuthorityMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgReserveAuthority',
+    path: 'vulcanize.registry.v1beta1.MsgReserveAuthority',
   }
 }
 
@@ -267,7 +267,7 @@ function createMsgSetName(
   signer: string
 ) {
   return {
-    type: 'nameservice/SetName',
+    type: 'registry/SetName',
     value: {
       crn,
       cid,
@@ -281,7 +281,7 @@ const protoCreateMsgSetName = (
   cid: string,
   signer: string
 ) => {
-  const setNameMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgSetName({
+  const setNameMessage = new registryTx.vulcanize.registry.v1beta1.MsgSetName({
     crn,
     cid,
     signer,
@@ -289,7 +289,7 @@ const protoCreateMsgSetName = (
 
   return {
     message: setNameMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgSetName',
+    path: 'vulcanize.registry.v1beta1.MsgSetName',
   }
 }
 
@@ -299,7 +299,7 @@ function createMsgSetRecord(
   signer: string
 ) {
   return {
-    type: 'nameservice/SetRecord',
+    type: 'registry/SetRecord',
     value: {
       bond_id: bondId,
       signer,
@@ -313,20 +313,20 @@ const protoCreateMsgSetRecord = (
   payloadData: Payload,
   signer: string
 ) => {
-  const record = new nameservice.vulcanize.nameservice.v1beta1.Record(payloadData.record.serialize())
+  const record = new registry.vulcanize.registry.v1beta1.Record(payloadData.record.serialize())
 
   const signatures = payloadData.signatures.map(
-    signature => new nameservice.vulcanize.nameservice.v1beta1.Signature(
+    signature => new registry.vulcanize.registry.v1beta1.Signature(
       signature.serialize()
     )
   )
 
-  const payload = new nameserviceTx.vulcanize.nameservice.v1beta1.Payload({
+  const payload = new registryTx.vulcanize.registry.v1beta1.Payload({
     record,
     signatures
   })
 
-  const setNameMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgSetRecord({
+  const setNameMessage = new registryTx.vulcanize.registry.v1beta1.MsgSetRecord({
     bond_id: bondId,
     signer,
     payload
@@ -334,7 +334,7 @@ const protoCreateMsgSetRecord = (
 
   return {
     message: setNameMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgSetRecord',
+    path: 'vulcanize.registry.v1beta1.MsgSetRecord',
   }
 }
 
@@ -344,7 +344,7 @@ function createMsgSetAuthorityBond(
   signer: string
 ) {
   return {
-    type: 'nameservice/SetAuthorityBond',
+    type: 'registry/SetAuthorityBond',
     value: {
       name,
       bond_id: bondId,
@@ -358,7 +358,7 @@ const protoCreateMsgSetAuthorityBond = (
   bondId: string,
   signer: string
 ) => {
-  const setAuthorityBondMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgSetAuthorityBond({
+  const setAuthorityBondMessage = new registryTx.vulcanize.registry.v1beta1.MsgSetAuthorityBond({
     name,
     bond_id: bondId,
     signer,
@@ -366,7 +366,7 @@ const protoCreateMsgSetAuthorityBond = (
 
   return {
     message: setAuthorityBondMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgSetAuthorityBond',
+    path: 'vulcanize.registry.v1beta1.MsgSetAuthorityBond',
   }
 }
 
@@ -375,7 +375,7 @@ function createMsgDeleteName(
   signer: string
 ) {
   return {
-    type: 'nameservice/DeleteAuthority',
+    type: 'registry/DeleteAuthority',
     value: {
       crn,
       signer
@@ -387,13 +387,13 @@ const protoCreateMsgDeleteName = (
   crn: string,
   signer: string
 ) => {
-  const deleteNameAutorityMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgDeleteNameAuthority({
+  const deleteNameAutorityMessage = new registryTx.vulcanize.registry.v1beta1.MsgDeleteNameAuthority({
     crn,
     signer,
   })
 
   return {
     message: deleteNameAutorityMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgDeleteNameAuthority',
+    path: 'vulcanize.registry.v1beta1.MsgDeleteNameAuthority',
   }
 }

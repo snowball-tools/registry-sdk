@@ -1,9 +1,9 @@
 syntax = "proto3";
-package vulcanize.nameservice.v1beta1;
+package vulcanize.registry.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cerc-io/laconicd/x/nameservice/types";
+option go_package = "github.com/cerc-io/laconicd/x/registry/types";
 
 message ServiceProviderRegistration {
   string bond_id    = 1 [(gogoproto.moretags) = "json:\"bondId\" yaml:\"bondId\""];

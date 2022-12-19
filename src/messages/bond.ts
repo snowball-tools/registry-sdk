@@ -8,7 +8,7 @@ import {
 } from '@tharsis/transactions'
 
 import * as bondTx from '../proto/vulcanize/bond/v1beta1/tx'
-import * as nameserviceTx from '../proto/vulcanize/nameservice/v1beta1/tx'
+import * as registryTx from '../proto/vulcanize/registry/v1beta1/tx'
 import * as coin from '../proto/cosmos/base/v1beta1/coin'
 import { createTx } from './util'
 
@@ -475,7 +475,7 @@ function createMsgAssociateBond(
   signer: string
 ) {
   return {
-    type: 'nameservice/AssociateBond',
+    type: 'registry/AssociateBond',
     value: {
       record_id: recordId,
       bond_id: bondId,
@@ -489,7 +489,7 @@ const protoCreateMsgAssociateBond = (
   bondId: string,
   signer: string
 ) => {
-  const associateBondMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgAssociateBond({
+  const associateBondMessage = new registryTx.vulcanize.registry.v1beta1.MsgAssociateBond({
     record_id: recordId,
     bond_id: bondId,
     signer
@@ -497,7 +497,7 @@ const protoCreateMsgAssociateBond = (
 
   return {
     message: associateBondMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgAssociateBond',
+    path: 'vulcanize.registry.v1beta1.MsgAssociateBond',
   }
 }
 
@@ -506,7 +506,7 @@ function createMsgDissociateBond(
   signer: string
 ) {
   return {
-    type: 'nameservice/DissociateBond',
+    type: 'registry/DissociateBond',
     value: {
       record_id: recordId,
       signer
@@ -518,14 +518,14 @@ const protoCreateMsgDissociateBond = (
   recordId: string,
   signer: string
 ) => {
-  const dissociateBondMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgDissociateBond({
+  const dissociateBondMessage = new registryTx.vulcanize.registry.v1beta1.MsgDissociateBond({
     record_id: recordId,
     signer
   })
 
   return {
     message: dissociateBondMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgDissociateBond',
+    path: 'vulcanize.registry.v1beta1.MsgDissociateBond',
   }
 }
 
@@ -534,7 +534,7 @@ function createMsgDissociateRecords(
   signer: string
 ) {
   return {
-    type: 'nameservice/DissociateRecords',
+    type: 'registry/DissociateRecords',
     value: {
       bond_id: bondId,
       signer
@@ -546,14 +546,14 @@ const protoCreateMsgDissociateRecords = (
   bondId: string,
   signer: string
 ) => {
-  const dissociateRecordsMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgDissociateRecords({
+  const dissociateRecordsMessage = new registryTx.vulcanize.registry.v1beta1.MsgDissociateRecords({
     bond_id: bondId,
     signer
   })
 
   return {
     message: dissociateRecordsMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgDissociateRecords',
+    path: 'vulcanize.registry.v1beta1.MsgDissociateRecords',
   }
 }
 
@@ -563,7 +563,7 @@ function createMsgReAssociateRecords(
   signer: string
 ) {
   return {
-    type: 'nameservice/ReassociateRecords',
+    type: 'registry/ReassociateRecords',
     value: {
       new_bond_id: newBondId,
       old_bond_id: oldBondId,
@@ -577,7 +577,7 @@ const protoCreateMsgReAssociateRecords = (
   oldBondId: string,
   signer: string
 ) => {
-  const reAssociateRecordsMessage = new nameserviceTx.vulcanize.nameservice.v1beta1.MsgReAssociateRecords({
+  const reAssociateRecordsMessage = new registryTx.vulcanize.registry.v1beta1.MsgReAssociateRecords({
     new_bond_id: newBondId,
     old_bond_id: oldBondId,
     signer
@@ -585,6 +585,6 @@ const protoCreateMsgReAssociateRecords = (
 
   return {
     message: reAssociateRecordsMessage,
-    path: 'vulcanize.nameservice.v1beta1.MsgReAssociateRecords',
+    path: 'vulcanize.registry.v1beta1.MsgReAssociateRecords',
   }
 }
