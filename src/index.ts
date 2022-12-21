@@ -1,4 +1,3 @@
-import isUrl from 'is-url';
 import { sha256 } from 'js-sha256';
 import { generatePostBodyBroadcast, BroadcastMode } from '@tharsis/provider';
 import {
@@ -122,13 +121,6 @@ export class Registry {
   }
 
   constructor(gqlUrl: string, restUrl: string = "", chainId: string = DEFAULT_CHAIN_ID) {
-    if (!isUrl(gqlUrl)) {
-      throw new Error('Path to a GQL endpoint should be provided.');
-    }
-
-    if (restUrl && !isUrl(restUrl)) {
-      throw new Error('REST endpoint is not a URL string.');
-    }
 
     this._endpoints = {
       rest: restUrl,
