@@ -46,6 +46,13 @@ const MSG_SET_RECORD_TYPES = {
     { name: 'deleted', type: 'bool' },
     { name: 'attributes', type: 'string' },
   ],
+  TypePayloadRecordAttributes: [
+    { name: 'url', type: 'string' },
+    { name: 'repo_registration_record_cid', type: 'string' },
+    { name: 'build_artifact_cid', type: 'string' },
+    { name: 'tls_cert_cid', type: 'string' },
+    { name: 'type', type: 'string' },
+  ],
   TypePayloadSignatures: [
     { name: 'sig', type: 'string' },
     { name: 'pub_key', type: 'string' }
