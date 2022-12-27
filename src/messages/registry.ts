@@ -44,14 +44,11 @@ const MSG_SET_RECORD_TYPES = {
     { name: 'create_time', type: 'string' },
     { name: 'expiry_time', type: 'string' },
     { name: 'deleted', type: 'bool' },
-    { name: 'attributes', type: 'string' },
+    { name: 'attributes', type: 'TypePayloadRecordAttributes' },
   ],
   TypePayloadRecordAttributes: [
-    { name: 'url', type: 'string' },
-    { name: 'repo_registration_record_cid', type: 'string' },
-    { name: 'build_artifact_cid', type: 'string' },
-    { name: 'tls_cert_cid', type: 'string' },
-    { name: 'type', type: 'string' },
+    { name: 'type_url', type: 'string' },
+    { name: 'value', type: 'uint8[]' },
   ],
   TypePayloadSignatures: [
     { name: 'sig', type: 'string' },
