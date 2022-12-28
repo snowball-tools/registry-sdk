@@ -7,15 +7,15 @@ import { DEFAULT_CHAIN_ID, Registry } from '../index';
 
 export const ensureUpdatedConfig = async (path: string) => {
   const conf = await yaml.read(path);
-  conf.record.version = semver.inc(conf.record.version, 'patch');
-  await yaml.write(path, conf);
+  // conf.record.version = semver.inc(conf.record.version, 'patch');
+  // await yaml.write(path, conf);
 
   return conf;
 };
 
 export const getBaseConfig = async (path: string) => {
   const conf = await yaml.read(path);
-  conf.record.version = '0.0.1';
+  // conf.record.version = '0.0.1';
 
   return conf;
 };
