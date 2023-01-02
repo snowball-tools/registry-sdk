@@ -15,6 +15,7 @@ export namespace vulcanize.registry.v1beta1 {
             laconic_id?: string;
             x500?: X500;
             type?: string;
+            version?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -30,6 +31,9 @@ export namespace vulcanize.registry.v1beta1 {
                 }
                 if ("type" in data && data.type != undefined) {
                     this.type = data.type;
+                }
+                if ("version" in data && data.version != undefined) {
+                    this.version = data.version;
                 }
             }
         }
@@ -60,11 +64,18 @@ export namespace vulcanize.registry.v1beta1 {
         set type(value: string) {
             pb_1.Message.setField(this, 4, value);
         }
+        get version() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+        }
+        set version(value: string) {
+            pb_1.Message.setField(this, 6, value);
+        }
         static fromObject(data: {
             bond_id?: string;
             laconic_id?: string;
             x500?: ReturnType<typeof X500.prototype.toObject>;
             type?: string;
+            version?: string;
         }): ServiceProviderRegistration {
             const message = new ServiceProviderRegistration({});
             if (data.bond_id != null) {
@@ -79,6 +90,9 @@ export namespace vulcanize.registry.v1beta1 {
             if (data.type != null) {
                 message.type = data.type;
             }
+            if (data.version != null) {
+                message.version = data.version;
+            }
             return message;
         }
         toObject() {
@@ -87,6 +101,7 @@ export namespace vulcanize.registry.v1beta1 {
                 laconic_id?: string;
                 x500?: ReturnType<typeof X500.prototype.toObject>;
                 type?: string;
+                version?: string;
             } = {};
             if (this.bond_id != null) {
                 data.bond_id = this.bond_id;
@@ -99,6 +114,9 @@ export namespace vulcanize.registry.v1beta1 {
             }
             if (this.type != null) {
                 data.type = this.type;
+            }
+            if (this.version != null) {
+                data.version = this.version;
             }
             return data;
         }
@@ -114,6 +132,8 @@ export namespace vulcanize.registry.v1beta1 {
                 writer.writeMessage(3, this.x500, () => this.x500.serialize(writer));
             if (this.type.length)
                 writer.writeString(4, this.type);
+            if (this.version.length)
+                writer.writeString(6, this.version);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -134,6 +154,9 @@ export namespace vulcanize.registry.v1beta1 {
                         break;
                     case 4:
                         message.type = reader.readString();
+                        break;
+                    case 6:
+                        message.version = reader.readString();
                         break;
                     default: reader.skipField();
                 }
@@ -337,6 +360,7 @@ export namespace vulcanize.registry.v1beta1 {
             build_artifact_cid?: string;
             tls_cert_cid?: string;
             type?: string;
+            version?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -355,6 +379,9 @@ export namespace vulcanize.registry.v1beta1 {
                 }
                 if ("type" in data && data.type != undefined) {
                     this.type = data.type;
+                }
+                if ("version" in data && data.version != undefined) {
+                    this.version = data.version;
                 }
             }
         }
@@ -388,12 +415,19 @@ export namespace vulcanize.registry.v1beta1 {
         set type(value: string) {
             pb_1.Message.setField(this, 5, value);
         }
+        get version() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+        }
+        set version(value: string) {
+            pb_1.Message.setField(this, 6, value);
+        }
         static fromObject(data: {
             url?: string;
             repo_registration_record_cid?: string;
             build_artifact_cid?: string;
             tls_cert_cid?: string;
             type?: string;
+            version?: string;
         }): WebsiteRegistrationRecord {
             const message = new WebsiteRegistrationRecord({});
             if (data.url != null) {
@@ -411,6 +445,9 @@ export namespace vulcanize.registry.v1beta1 {
             if (data.type != null) {
                 message.type = data.type;
             }
+            if (data.version != null) {
+                message.version = data.version;
+            }
             return message;
         }
         toObject() {
@@ -420,6 +457,7 @@ export namespace vulcanize.registry.v1beta1 {
                 build_artifact_cid?: string;
                 tls_cert_cid?: string;
                 type?: string;
+                version?: string;
             } = {};
             if (this.url != null) {
                 data.url = this.url;
@@ -435,6 +473,9 @@ export namespace vulcanize.registry.v1beta1 {
             }
             if (this.type != null) {
                 data.type = this.type;
+            }
+            if (this.version != null) {
+                data.version = this.version;
             }
             return data;
         }
@@ -452,6 +493,8 @@ export namespace vulcanize.registry.v1beta1 {
                 writer.writeString(4, this.tls_cert_cid);
             if (this.type.length)
                 writer.writeString(5, this.type);
+            if (this.version.length)
+                writer.writeString(6, this.version);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -475,6 +518,9 @@ export namespace vulcanize.registry.v1beta1 {
                         break;
                     case 5:
                         message.type = reader.readString();
+                        break;
+                    case 6:
+                        message.version = reader.readString();
                         break;
                     default: reader.skipField();
                 }
