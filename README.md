@@ -1,5 +1,7 @@
 # laconic-sdk
 
+Client library used by TS/JS applications to communicate with laconicd.
+
 ## Tests
 
 Follow these steps to run the tests:
