@@ -42,9 +42,9 @@ export const getConfig = () => {
     restEndpoint: process.env.LACONICD_REST_ENDPOINT || 'http://localhost:1317',
     gqlEndpoint: process.env.LACONICD_GQL_ENDPOINT || 'http://localhost:9473/api',
     fee: {
-      amount: '30',
+      amount: '40',
       denom: 'aphoton',
-      gas: '300000',
+      gas: '400000',
     }
   }
 };
