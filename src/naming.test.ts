@@ -244,7 +244,6 @@ const namingTests = () => {
 
     const records = await registry.lookupNames([crn], true);
     expect(records).toBeDefined();
-    expect(records).toBeDefined();
     expect(records).toHaveLength(1);
 
     const [{ latest }] = records;
