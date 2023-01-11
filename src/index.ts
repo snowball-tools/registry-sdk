@@ -52,7 +52,7 @@ import {
   MessageMsgRevealBid
 } from './messages/auction';
 
-export const DEFAULT_CHAIN_ID = 'ethermint_9000-1';
+export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
 const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
