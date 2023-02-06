@@ -57,7 +57,7 @@ Follow these steps to run the tests:
   - In laconicd repo run:
 
     ```bash
-    TEST_NAMESERVICE_EXPIRY=true ./init.sh
+    TEST_REGISTRY_EXPIRY=true ./init.sh
     ```
 
   - Export the private key and change it in `.env` file again using:
