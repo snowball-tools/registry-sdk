@@ -29,7 +29,7 @@ const namingTests = () => {
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);
-    await registry.createBond({ denom: 'aphoton', amount: '1000000000' }, privateKey, fee);
+    await registry.createBond({ denom: 'aphoton', amount: '2000000000' }, privateKey, fee);
 
     // Create watcher.
     watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
