@@ -5,7 +5,7 @@ import { Account } from './account';
 import { Registry } from './index';
 import { ensureUpdatedConfig, getConfig } from './testing/helper';
 
-const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
+const WATCHER_YML_PATH = path.join(__dirname, './testing/examples/git_repo_example.yml');
 
 jest.setTimeout(120 * 1000);
 
@@ -119,7 +119,7 @@ const namingTests = () => {
     await registry.setName({ crn, cid: watcherId }, privateKey, fee);
 
     // Query records should return it (some CRN points to it).
-    const records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
+    const records = await registry.queryRecords({ "type---": watcher.record.type, "version---": watcher.record.version });
     expect(records).toBeDefined();
     expect(records).toHaveLength(1);
   });
@@ -229,12 +229,12 @@ const namingTests = () => {
     expect(latest.height).toBeDefined();
 
     // Query records should NOT return it (no CRN points to it).
-    records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
+    records = await registry.queryRecords({ "type---":  watcher.record.type, "version---": watcher.record.version });
     expect(records).toBeDefined();
     expect(records).toHaveLength(0);
 
     // Query all records should return it (all: true).
-    records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
+    records = await registry.queryRecords({ "type---":  watcher.record.type, "version---": watcher.record.version }, true);
     expect(records).toBeDefined();
     expect(records).toHaveLength(1);
   });
