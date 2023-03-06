@@ -24,13 +24,18 @@ export const getBaseConfig = async (path: string) => {
  * Provision a bond for record registration.
  */
 export const provisionBondId = async (registry: Registry, privateKey: string, fee: Fee) => {
-  let bonds = await registry.queryBonds();
-  if (!bonds.length) {
-    await registry.createBond({ denom: 'aphoton', amount: '1000000000' }, privateKey, fee);
-    bonds = await registry.queryBonds();
-  }
-
-  return bonds[0].id;
+  // let bonds = await registry.queryBonds();
+  // console.log("found bonds: " + bonds.length)
+  // if (!bonds.length) {
+  //   await registry.createBond({ denom: 'aphoton', amount: '1000000000' }, privateKey, fee);
+  //   bonds = await registry.queryBonds();
+  //   console.log("created bond and got back: " + bonds.length)
+  // }
+  let bondId: string;
+  bondId = await registry.getNextBondId(privateKey);
+  await registry.createBond({ denom: 'aphoton', amount: '1000000000' }, privateKey, fee);
+  return bondId
+  //return bonds[0].id;
 };
 
 export const getConfig = () => {
