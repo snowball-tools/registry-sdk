@@ -8,79 +8,12 @@
 import * as dependency_1 from "./../../../gogoproto/gogo";
 import * as pb_1 from "google-protobuf";
 export namespace vulcanize.registry.v1beta1 {
-    export class HashReference extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            ref?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("ref" in data && data.ref != undefined) {
-                    this.ref = data.ref;
-                }
-            }
-        }
-        get ref() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-        }
-        set ref(value: string) {
-            pb_1.Message.setField(this, 1, value);
-        }
-        static fromObject(data: {
-            ref?: string;
-        }): HashReference {
-            const message = new HashReference({});
-            if (data.ref != null) {
-                message.ref = data.ref;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                ref?: string;
-            } = {};
-            if (this.ref != null) {
-                data.ref = this.ref;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.ref.length)
-                writer.writeString(1, this.ref);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): HashReference {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new HashReference();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        message.ref = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): HashReference {
-            return HashReference.deserialize(bytes);
-        }
-    }
-    export class ServiceProviderRecord extends pb_1.Message {
+    export class ServiceProviderRegistration extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             bond_id?: string;
             laconic_id?: string;
-            x500?: ServiceProviderRecord.X500;
+            x500?: X500;
             type?: string;
             version?: string;
         }) {
@@ -117,9 +50,9 @@ export namespace vulcanize.registry.v1beta1 {
             pb_1.Message.setField(this, 2, value);
         }
         get x500() {
-            return pb_1.Message.getWrapperField(this, ServiceProviderRecord.X500, 3) as ServiceProviderRecord.X500;
+            return pb_1.Message.getWrapperField(this, X500, 3) as X500;
         }
-        set x500(value: ServiceProviderRecord.X500) {
+        set x500(value: X500) {
             pb_1.Message.setWrapperField(this, 3, value);
         }
         get has_x500() {
@@ -140,11 +73,11 @@ export namespace vulcanize.registry.v1beta1 {
         static fromObject(data: {
             bond_id?: string;
             laconic_id?: string;
-            x500?: ReturnType<typeof ServiceProviderRecord.X500.prototype.toObject>;
+            x500?: ReturnType<typeof X500.prototype.toObject>;
             type?: string;
             version?: string;
-        }): ServiceProviderRecord {
-            const message = new ServiceProviderRecord({});
+        }): ServiceProviderRegistration {
+            const message = new ServiceProviderRegistration({});
             if (data.bond_id != null) {
                 message.bond_id = data.bond_id;
             }
@@ -152,7 +85,7 @@ export namespace vulcanize.registry.v1beta1 {
                 message.laconic_id = data.laconic_id;
             }
             if (data.x500 != null) {
-                message.x500 = ServiceProviderRecord.X500.fromObject(data.x500);
+                message.x500 = X500.fromObject(data.x500);
             }
             if (data.type != null) {
                 message.type = data.type;
@@ -166,7 +99,7 @@ export namespace vulcanize.registry.v1beta1 {
             const data: {
                 bond_id?: string;
                 laconic_id?: string;
-                x500?: ReturnType<typeof ServiceProviderRecord.X500.prototype.toObject>;
+                x500?: ReturnType<typeof X500.prototype.toObject>;
                 type?: string;
                 version?: string;
             } = {};
@@ -204,8 +137,8 @@ export namespace vulcanize.registry.v1beta1 {
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ServiceProviderRecord {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ServiceProviderRecord();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ServiceProviderRegistration {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ServiceProviderRegistration();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
@@ -217,7 +150,7 @@ export namespace vulcanize.registry.v1beta1 {
                         message.laconic_id = reader.readString();
                         break;
                     case 3:
-                        reader.readMessage(message.x500, () => message.x500 = ServiceProviderRecord.X500.deserialize(reader));
+                        reader.readMessage(message.x500, () => message.x500 = X500.deserialize(reader));
                         break;
                     case 4:
                         message.type = reader.readString();
@@ -233,201 +166,199 @@ export namespace vulcanize.registry.v1beta1 {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): ServiceProviderRecord {
-            return ServiceProviderRecord.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): ServiceProviderRegistration {
+            return ServiceProviderRegistration.deserialize(bytes);
         }
     }
-    export namespace ServiceProviderRecord {
-        export class X500 extends pb_1.Message {
-            #one_of_decls: number[][] = [];
-            constructor(data?: any[] | {
+    export class X500 extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            common_name?: string;
+            organization_unit?: string;
+            organization_name?: string;
+            locality_name?: string;
+            state_name?: string;
+            country?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("common_name" in data && data.common_name != undefined) {
+                    this.common_name = data.common_name;
+                }
+                if ("organization_unit" in data && data.organization_unit != undefined) {
+                    this.organization_unit = data.organization_unit;
+                }
+                if ("organization_name" in data && data.organization_name != undefined) {
+                    this.organization_name = data.organization_name;
+                }
+                if ("locality_name" in data && data.locality_name != undefined) {
+                    this.locality_name = data.locality_name;
+                }
+                if ("state_name" in data && data.state_name != undefined) {
+                    this.state_name = data.state_name;
+                }
+                if ("country" in data && data.country != undefined) {
+                    this.country = data.country;
+                }
+            }
+        }
+        get common_name() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set common_name(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get organization_unit() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set organization_unit(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get organization_name() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set organization_name(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get locality_name() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set locality_name(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get state_name() {
+            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
+        }
+        set state_name(value: string) {
+            pb_1.Message.setField(this, 5, value);
+        }
+        get country() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+        }
+        set country(value: string) {
+            pb_1.Message.setField(this, 6, value);
+        }
+        static fromObject(data: {
+            common_name?: string;
+            organization_unit?: string;
+            organization_name?: string;
+            locality_name?: string;
+            state_name?: string;
+            country?: string;
+        }): X500 {
+            const message = new X500({});
+            if (data.common_name != null) {
+                message.common_name = data.common_name;
+            }
+            if (data.organization_unit != null) {
+                message.organization_unit = data.organization_unit;
+            }
+            if (data.organization_name != null) {
+                message.organization_name = data.organization_name;
+            }
+            if (data.locality_name != null) {
+                message.locality_name = data.locality_name;
+            }
+            if (data.state_name != null) {
+                message.state_name = data.state_name;
+            }
+            if (data.country != null) {
+                message.country = data.country;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
                 common_name?: string;
                 organization_unit?: string;
                 organization_name?: string;
                 locality_name?: string;
                 state_name?: string;
                 country?: string;
-            }) {
-                super();
-                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-                if (!Array.isArray(data) && typeof data == "object") {
-                    if ("common_name" in data && data.common_name != undefined) {
-                        this.common_name = data.common_name;
-                    }
-                    if ("organization_unit" in data && data.organization_unit != undefined) {
-                        this.organization_unit = data.organization_unit;
-                    }
-                    if ("organization_name" in data && data.organization_name != undefined) {
-                        this.organization_name = data.organization_name;
-                    }
-                    if ("locality_name" in data && data.locality_name != undefined) {
-                        this.locality_name = data.locality_name;
-                    }
-                    if ("state_name" in data && data.state_name != undefined) {
-                        this.state_name = data.state_name;
-                    }
-                    if ("country" in data && data.country != undefined) {
-                        this.country = data.country;
-                    }
-                }
+            } = {};
+            if (this.common_name != null) {
+                data.common_name = this.common_name;
             }
-            get common_name() {
-                return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+            if (this.organization_unit != null) {
+                data.organization_unit = this.organization_unit;
             }
-            set common_name(value: string) {
-                pb_1.Message.setField(this, 1, value);
+            if (this.organization_name != null) {
+                data.organization_name = this.organization_name;
             }
-            get organization_unit() {
-                return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+            if (this.locality_name != null) {
+                data.locality_name = this.locality_name;
             }
-            set organization_unit(value: string) {
-                pb_1.Message.setField(this, 2, value);
+            if (this.state_name != null) {
+                data.state_name = this.state_name;
             }
-            get organization_name() {
-                return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+            if (this.country != null) {
+                data.country = this.country;
             }
-            set organization_name(value: string) {
-                pb_1.Message.setField(this, 3, value);
-            }
-            get locality_name() {
-                return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-            }
-            set locality_name(value: string) {
-                pb_1.Message.setField(this, 4, value);
-            }
-            get state_name() {
-                return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-            }
-            set state_name(value: string) {
-                pb_1.Message.setField(this, 5, value);
-            }
-            get country() {
-                return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
-            }
-            set country(value: string) {
-                pb_1.Message.setField(this, 6, value);
-            }
-            static fromObject(data: {
-                common_name?: string;
-                organization_unit?: string;
-                organization_name?: string;
-                locality_name?: string;
-                state_name?: string;
-                country?: string;
-            }): X500 {
-                const message = new X500({});
-                if (data.common_name != null) {
-                    message.common_name = data.common_name;
-                }
-                if (data.organization_unit != null) {
-                    message.organization_unit = data.organization_unit;
-                }
-                if (data.organization_name != null) {
-                    message.organization_name = data.organization_name;
-                }
-                if (data.locality_name != null) {
-                    message.locality_name = data.locality_name;
-                }
-                if (data.state_name != null) {
-                    message.state_name = data.state_name;
-                }
-                if (data.country != null) {
-                    message.country = data.country;
-                }
-                return message;
-            }
-            toObject() {
-                const data: {
-                    common_name?: string;
-                    organization_unit?: string;
-                    organization_name?: string;
-                    locality_name?: string;
-                    state_name?: string;
-                    country?: string;
-                } = {};
-                if (this.common_name != null) {
-                    data.common_name = this.common_name;
-                }
-                if (this.organization_unit != null) {
-                    data.organization_unit = this.organization_unit;
-                }
-                if (this.organization_name != null) {
-                    data.organization_name = this.organization_name;
-                }
-                if (this.locality_name != null) {
-                    data.locality_name = this.locality_name;
-                }
-                if (this.state_name != null) {
-                    data.state_name = this.state_name;
-                }
-                if (this.country != null) {
-                    data.country = this.country;
-                }
-                return data;
-            }
-            serialize(): Uint8Array;
-            serialize(w: pb_1.BinaryWriter): void;
-            serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-                const writer = w || new pb_1.BinaryWriter();
-                if (this.common_name.length)
-                    writer.writeString(1, this.common_name);
-                if (this.organization_unit.length)
-                    writer.writeString(2, this.organization_unit);
-                if (this.organization_name.length)
-                    writer.writeString(3, this.organization_name);
-                if (this.locality_name.length)
-                    writer.writeString(4, this.locality_name);
-                if (this.state_name.length)
-                    writer.writeString(5, this.state_name);
-                if (this.country.length)
-                    writer.writeString(6, this.country);
-                if (!w)
-                    return writer.getResultBuffer();
-            }
-            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): X500 {
-                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new X500();
-                while (reader.nextField()) {
-                    if (reader.isEndGroup())
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.common_name.length)
+                writer.writeString(1, this.common_name);
+            if (this.organization_unit.length)
+                writer.writeString(2, this.organization_unit);
+            if (this.organization_name.length)
+                writer.writeString(3, this.organization_name);
+            if (this.locality_name.length)
+                writer.writeString(4, this.locality_name);
+            if (this.state_name.length)
+                writer.writeString(5, this.state_name);
+            if (this.country.length)
+                writer.writeString(6, this.country);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): X500 {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new X500();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.common_name = reader.readString();
                         break;
-                    switch (reader.getFieldNumber()) {
-                        case 1:
-                            message.common_name = reader.readString();
-                            break;
-                        case 2:
-                            message.organization_unit = reader.readString();
-                            break;
-                        case 3:
-                            message.organization_name = reader.readString();
-                            break;
-                        case 4:
-                            message.locality_name = reader.readString();
-                            break;
-                        case 5:
-                            message.state_name = reader.readString();
-                            break;
-                        case 6:
-                            message.country = reader.readString();
-                            break;
-                        default: reader.skipField();
-                    }
+                    case 2:
+                        message.organization_unit = reader.readString();
+                        break;
+                    case 3:
+                        message.organization_name = reader.readString();
+                        break;
+                    case 4:
+                        message.locality_name = reader.readString();
+                        break;
+                    case 5:
+                        message.state_name = reader.readString();
+                        break;
+                    case 6:
+                        message.country = reader.readString();
+                        break;
+                    default: reader.skipField();
                 }
-                return message;
             }
-            serializeBinary(): Uint8Array {
-                return this.serialize();
-            }
-            static deserializeBinary(bytes: Uint8Array): X500 {
-                return X500.deserialize(bytes);
-            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): X500 {
+            return X500.deserialize(bytes);
         }
     }
     export class WebsiteRegistrationRecord extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             url?: string;
-            repo_reference?: HashReference;
-            build_artifact_ref?: HashReference;
-            tls_cert_ref?: HashReference;
+            repo_registration_record_cid?: string;
+            build_artifact_cid?: string;
+            tls_cert_cid?: string;
             type?: string;
             version?: string;
         }) {
@@ -437,14 +368,14 @@ export namespace vulcanize.registry.v1beta1 {
                 if ("url" in data && data.url != undefined) {
                     this.url = data.url;
                 }
-                if ("repo_reference" in data && data.repo_reference != undefined) {
-                    this.repo_reference = data.repo_reference;
+                if ("repo_registration_record_cid" in data && data.repo_registration_record_cid != undefined) {
+                    this.repo_registration_record_cid = data.repo_registration_record_cid;
                 }
-                if ("build_artifact_ref" in data && data.build_artifact_ref != undefined) {
-                    this.build_artifact_ref = data.build_artifact_ref;
+                if ("build_artifact_cid" in data && data.build_artifact_cid != undefined) {
+                    this.build_artifact_cid = data.build_artifact_cid;
                 }
-                if ("tls_cert_ref" in data && data.tls_cert_ref != undefined) {
-                    this.tls_cert_ref = data.tls_cert_ref;
+                if ("tls_cert_cid" in data && data.tls_cert_cid != undefined) {
+                    this.tls_cert_cid = data.tls_cert_cid;
                 }
                 if ("type" in data && data.type != undefined) {
                     this.type = data.type;
@@ -460,32 +391,23 @@ export namespace vulcanize.registry.v1beta1 {
         set url(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
-        get repo_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 2) as HashReference;
+        get repo_registration_record_cid() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
         }
-        set repo_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 2, value);
+        set repo_registration_record_cid(value: string) {
+            pb_1.Message.setField(this, 2, value);
         }
-        get has_repo_reference() {
-            return pb_1.Message.getField(this, 2) != null;
+        get build_artifact_cid() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
         }
-        get build_artifact_ref() {
-            return pb_1.Message.getWrapperField(this, HashReference, 3) as HashReference;
+        set build_artifact_cid(value: string) {
+            pb_1.Message.setField(this, 3, value);
         }
-        set build_artifact_ref(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 3, value);
+        get tls_cert_cid() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
         }
-        get has_build_artifact_ref() {
-            return pb_1.Message.getField(this, 3) != null;
-        }
-        get tls_cert_ref() {
-            return pb_1.Message.getWrapperField(this, HashReference, 4) as HashReference;
-        }
-        set tls_cert_ref(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 4, value);
-        }
-        get has_tls_cert_ref() {
-            return pb_1.Message.getField(this, 4) != null;
+        set tls_cert_cid(value: string) {
+            pb_1.Message.setField(this, 4, value);
         }
         get type() {
             return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
@@ -501,9 +423,9 @@ export namespace vulcanize.registry.v1beta1 {
         }
         static fromObject(data: {
             url?: string;
-            repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            build_artifact_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-            tls_cert_ref?: ReturnType<typeof HashReference.prototype.toObject>;
+            repo_registration_record_cid?: string;
+            build_artifact_cid?: string;
+            tls_cert_cid?: string;
             type?: string;
             version?: string;
         }): WebsiteRegistrationRecord {
@@ -511,14 +433,14 @@ export namespace vulcanize.registry.v1beta1 {
             if (data.url != null) {
                 message.url = data.url;
             }
-            if (data.repo_reference != null) {
-                message.repo_reference = HashReference.fromObject(data.repo_reference);
+            if (data.repo_registration_record_cid != null) {
+                message.repo_registration_record_cid = data.repo_registration_record_cid;
             }
-            if (data.build_artifact_ref != null) {
-                message.build_artifact_ref = HashReference.fromObject(data.build_artifact_ref);
+            if (data.build_artifact_cid != null) {
+                message.build_artifact_cid = data.build_artifact_cid;
             }
-            if (data.tls_cert_ref != null) {
-                message.tls_cert_ref = HashReference.fromObject(data.tls_cert_ref);
+            if (data.tls_cert_cid != null) {
+                message.tls_cert_cid = data.tls_cert_cid;
             }
             if (data.type != null) {
                 message.type = data.type;
@@ -531,23 +453,23 @@ export namespace vulcanize.registry.v1beta1 {
         toObject() {
             const data: {
                 url?: string;
-                repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                build_artifact_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-                tls_cert_ref?: ReturnType<typeof HashReference.prototype.toObject>;
+                repo_registration_record_cid?: string;
+                build_artifact_cid?: string;
+                tls_cert_cid?: string;
                 type?: string;
                 version?: string;
             } = {};
             if (this.url != null) {
                 data.url = this.url;
             }
-            if (this.repo_reference != null) {
-                data.repo_reference = this.repo_reference.toObject();
+            if (this.repo_registration_record_cid != null) {
+                data.repo_registration_record_cid = this.repo_registration_record_cid;
             }
-            if (this.build_artifact_ref != null) {
-                data.build_artifact_ref = this.build_artifact_ref.toObject();
+            if (this.build_artifact_cid != null) {
+                data.build_artifact_cid = this.build_artifact_cid;
             }
-            if (this.tls_cert_ref != null) {
-                data.tls_cert_ref = this.tls_cert_ref.toObject();
+            if (this.tls_cert_cid != null) {
+                data.tls_cert_cid = this.tls_cert_cid;
             }
             if (this.type != null) {
                 data.type = this.type;
@@ -563,12 +485,12 @@ export namespace vulcanize.registry.v1beta1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.url.length)
                 writer.writeString(1, this.url);
-            if (this.has_repo_reference)
-                writer.writeMessage(2, this.repo_reference, () => this.repo_reference.serialize(writer));
-            if (this.has_build_artifact_ref)
-                writer.writeMessage(3, this.build_artifact_ref, () => this.build_artifact_ref.serialize(writer));
-            if (this.has_tls_cert_ref)
-                writer.writeMessage(4, this.tls_cert_ref, () => this.tls_cert_ref.serialize(writer));
+            if (this.repo_registration_record_cid.length)
+                writer.writeString(2, this.repo_registration_record_cid);
+            if (this.build_artifact_cid.length)
+                writer.writeString(3, this.build_artifact_cid);
+            if (this.tls_cert_cid.length)
+                writer.writeString(4, this.tls_cert_cid);
             if (this.type.length)
                 writer.writeString(5, this.type);
             if (this.version.length)
@@ -586,13 +508,13 @@ export namespace vulcanize.registry.v1beta1 {
                         message.url = reader.readString();
                         break;
                     case 2:
-                        reader.readMessage(message.repo_reference, () => message.repo_reference = HashReference.deserialize(reader));
+                        message.repo_registration_record_cid = reader.readString();
                         break;
                     case 3:
-                        reader.readMessage(message.build_artifact_ref, () => message.build_artifact_ref = HashReference.deserialize(reader));
+                        message.build_artifact_cid = reader.readString();
                         break;
                     case 4:
-                        reader.readMessage(message.tls_cert_ref, () => message.tls_cert_ref = HashReference.deserialize(reader));
+                        message.tls_cert_cid = reader.readString();
                         break;
                     case 5:
                         message.type = reader.readString();
@@ -610,1508 +532,6 @@ export namespace vulcanize.registry.v1beta1 {
         }
         static deserializeBinary(bytes: Uint8Array): WebsiteRegistrationRecord {
             return WebsiteRegistrationRecord.deserialize(bytes);
-        }
-    }
-    export class GitRepository extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            name?: string;
-            repo_reference?: string;
-            description?: string;
-            version?: string;
-            type?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("name" in data && data.name != undefined) {
-                    this.name = data.name;
-                }
-                if ("repo_reference" in data && data.repo_reference != undefined) {
-                    this.repo_reference = data.repo_reference;
-                }
-                if ("description" in data && data.description != undefined) {
-                    this.description = data.description;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-            }
-        }
-        get name() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-        }
-        set name(value: string) {
-            pb_1.Message.setField(this, 1, value);
-        }
-        get repo_reference() {
-            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
-        }
-        set repo_reference(value: string) {
-            pb_1.Message.setField(this, 2, value);
-        }
-        get description() {
-            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
-        }
-        set description(value: string) {
-            pb_1.Message.setField(this, 3, value);
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            name?: string;
-            repo_reference?: string;
-            description?: string;
-            version?: string;
-            type?: string;
-        }): GitRepository {
-            const message = new GitRepository({});
-            if (data.name != null) {
-                message.name = data.name;
-            }
-            if (data.repo_reference != null) {
-                message.repo_reference = data.repo_reference;
-            }
-            if (data.description != null) {
-                message.description = data.description;
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                name?: string;
-                repo_reference?: string;
-                description?: string;
-                version?: string;
-                type?: string;
-            } = {};
-            if (this.name != null) {
-                data.name = this.name;
-            }
-            if (this.repo_reference != null) {
-                data.repo_reference = this.repo_reference;
-            }
-            if (this.description != null) {
-                data.description = this.description;
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.name.length)
-                writer.writeString(1, this.name);
-            if (this.repo_reference.length)
-                writer.writeString(2, this.repo_reference);
-            if (this.description.length)
-                writer.writeString(3, this.description);
-            if (this.version.length)
-                writer.writeString(4, this.version);
-            if (this.type.length)
-                writer.writeString(5, this.type);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GitRepository {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GitRepository();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        message.name = reader.readString();
-                        break;
-                    case 2:
-                        message.repo_reference = reader.readString();
-                        break;
-                    case 3:
-                        message.description = reader.readString();
-                        break;
-                    case 4:
-                        message.version = reader.readString();
-                        break;
-                    case 5:
-                        message.type = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): GitRepository {
-            return GitRepository.deserialize(bytes);
-        }
-    }
-    export class Binary extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            hash_reference?: HashReference;
-            targeted_arch?: string;
-            runtime_version?: string;
-            repo_reference?: HashReference;
-            version?: string;
-            type?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("hash_reference" in data && data.hash_reference != undefined) {
-                    this.hash_reference = data.hash_reference;
-                }
-                if ("targeted_arch" in data && data.targeted_arch != undefined) {
-                    this.targeted_arch = data.targeted_arch;
-                }
-                if ("runtime_version" in data && data.runtime_version != undefined) {
-                    this.runtime_version = data.runtime_version;
-                }
-                if ("repo_reference" in data && data.repo_reference != undefined) {
-                    this.repo_reference = data.repo_reference;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-            }
-        }
-        get hash_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 1) as HashReference;
-        }
-        set hash_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 1, value);
-        }
-        get has_hash_reference() {
-            return pb_1.Message.getField(this, 1) != null;
-        }
-        get targeted_arch() {
-            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
-        }
-        set targeted_arch(value: string) {
-            pb_1.Message.setField(this, 2, value);
-        }
-        get runtime_version() {
-            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
-        }
-        set runtime_version(value: string) {
-            pb_1.Message.setField(this, 3, value);
-        }
-        get repo_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 4) as HashReference;
-        }
-        set repo_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 4, value);
-        }
-        get has_repo_reference() {
-            return pb_1.Message.getField(this, 4) != null;
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 6, value);
-        }
-        static fromObject(data: {
-            hash_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            targeted_arch?: string;
-            runtime_version?: string;
-            repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            version?: string;
-            type?: string;
-        }): Binary {
-            const message = new Binary({});
-            if (data.hash_reference != null) {
-                message.hash_reference = HashReference.fromObject(data.hash_reference);
-            }
-            if (data.targeted_arch != null) {
-                message.targeted_arch = data.targeted_arch;
-            }
-            if (data.runtime_version != null) {
-                message.runtime_version = data.runtime_version;
-            }
-            if (data.repo_reference != null) {
-                message.repo_reference = HashReference.fromObject(data.repo_reference);
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                hash_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                targeted_arch?: string;
-                runtime_version?: string;
-                repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                version?: string;
-                type?: string;
-            } = {};
-            if (this.hash_reference != null) {
-                data.hash_reference = this.hash_reference.toObject();
-            }
-            if (this.targeted_arch != null) {
-                data.targeted_arch = this.targeted_arch;
-            }
-            if (this.runtime_version != null) {
-                data.runtime_version = this.runtime_version;
-            }
-            if (this.repo_reference != null) {
-                data.repo_reference = this.repo_reference.toObject();
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.has_hash_reference)
-                writer.writeMessage(1, this.hash_reference, () => this.hash_reference.serialize(writer));
-            if (this.targeted_arch.length)
-                writer.writeString(2, this.targeted_arch);
-            if (this.runtime_version.length)
-                writer.writeString(3, this.runtime_version);
-            if (this.has_repo_reference)
-                writer.writeMessage(4, this.repo_reference, () => this.repo_reference.serialize(writer));
-            if (this.version.length)
-                writer.writeString(5, this.version);
-            if (this.type.length)
-                writer.writeString(6, this.type);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): Binary {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new Binary();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        reader.readMessage(message.hash_reference, () => message.hash_reference = HashReference.deserialize(reader));
-                        break;
-                    case 2:
-                        message.targeted_arch = reader.readString();
-                        break;
-                    case 3:
-                        message.runtime_version = reader.readString();
-                        break;
-                    case 4:
-                        reader.readMessage(message.repo_reference, () => message.repo_reference = HashReference.deserialize(reader));
-                        break;
-                    case 5:
-                        message.version = reader.readString();
-                        break;
-                    case 6:
-                        message.type = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): Binary {
-            return Binary.deserialize(bytes);
-        }
-    }
-    export class DockerImage extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            image_id?: string;
-            binary_reference?: HashReference;
-            repo_reference?: HashReference;
-            version?: string;
-            type?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("image_id" in data && data.image_id != undefined) {
-                    this.image_id = data.image_id;
-                }
-                if ("binary_reference" in data && data.binary_reference != undefined) {
-                    this.binary_reference = data.binary_reference;
-                }
-                if ("repo_reference" in data && data.repo_reference != undefined) {
-                    this.repo_reference = data.repo_reference;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-            }
-        }
-        get image_id() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-        }
-        set image_id(value: string) {
-            pb_1.Message.setField(this, 1, value);
-        }
-        get binary_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 2) as HashReference;
-        }
-        set binary_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 2, value);
-        }
-        get has_binary_reference() {
-            return pb_1.Message.getField(this, 2) != null;
-        }
-        get repo_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 3) as HashReference;
-        }
-        set repo_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 3, value);
-        }
-        get has_repo_reference() {
-            return pb_1.Message.getField(this, 3) != null;
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            image_id?: string;
-            binary_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            version?: string;
-            type?: string;
-        }): DockerImage {
-            const message = new DockerImage({});
-            if (data.image_id != null) {
-                message.image_id = data.image_id;
-            }
-            if (data.binary_reference != null) {
-                message.binary_reference = HashReference.fromObject(data.binary_reference);
-            }
-            if (data.repo_reference != null) {
-                message.repo_reference = HashReference.fromObject(data.repo_reference);
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                image_id?: string;
-                binary_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                version?: string;
-                type?: string;
-            } = {};
-            if (this.image_id != null) {
-                data.image_id = this.image_id;
-            }
-            if (this.binary_reference != null) {
-                data.binary_reference = this.binary_reference.toObject();
-            }
-            if (this.repo_reference != null) {
-                data.repo_reference = this.repo_reference.toObject();
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.image_id.length)
-                writer.writeString(1, this.image_id);
-            if (this.has_binary_reference)
-                writer.writeMessage(2, this.binary_reference, () => this.binary_reference.serialize(writer));
-            if (this.has_repo_reference)
-                writer.writeMessage(3, this.repo_reference, () => this.repo_reference.serialize(writer));
-            if (this.version.length)
-                writer.writeString(4, this.version);
-            if (this.type.length)
-                writer.writeString(5, this.type);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): DockerImage {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new DockerImage();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        message.image_id = reader.readString();
-                        break;
-                    case 2:
-                        reader.readMessage(message.binary_reference, () => message.binary_reference = HashReference.deserialize(reader));
-                        break;
-                    case 3:
-                        reader.readMessage(message.repo_reference, () => message.repo_reference = HashReference.deserialize(reader));
-                        break;
-                    case 4:
-                        message.version = reader.readString();
-                        break;
-                    case 5:
-                        message.type = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): DockerImage {
-            return DockerImage.deserialize(bytes);
-        }
-    }
-    export class WatcherRegistrationRecord extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            metadata?: WatcherRegistrationRecord.WatcherMetadata;
-            repo_reference?: HashReference;
-            wasm?: WatcherRegistrationRecord.WASMBinary;
-            version?: string;
-            type?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("metadata" in data && data.metadata != undefined) {
-                    this.metadata = data.metadata;
-                }
-                if ("repo_reference" in data && data.repo_reference != undefined) {
-                    this.repo_reference = data.repo_reference;
-                }
-                if ("wasm" in data && data.wasm != undefined) {
-                    this.wasm = data.wasm;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-            }
-        }
-        get metadata() {
-            return pb_1.Message.getWrapperField(this, WatcherRegistrationRecord.WatcherMetadata, 1) as WatcherRegistrationRecord.WatcherMetadata;
-        }
-        set metadata(value: WatcherRegistrationRecord.WatcherMetadata) {
-            pb_1.Message.setWrapperField(this, 1, value);
-        }
-        get has_metadata() {
-            return pb_1.Message.getField(this, 1) != null;
-        }
-        get repo_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 2) as HashReference;
-        }
-        set repo_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 2, value);
-        }
-        get has_repo_reference() {
-            return pb_1.Message.getField(this, 2) != null;
-        }
-        get wasm() {
-            return pb_1.Message.getWrapperField(this, WatcherRegistrationRecord.WASMBinary, 3) as WatcherRegistrationRecord.WASMBinary;
-        }
-        set wasm(value: WatcherRegistrationRecord.WASMBinary) {
-            pb_1.Message.setWrapperField(this, 3, value);
-        }
-        get has_wasm() {
-            return pb_1.Message.getField(this, 3) != null;
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            metadata?: ReturnType<typeof WatcherRegistrationRecord.WatcherMetadata.prototype.toObject>;
-            repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            wasm?: ReturnType<typeof WatcherRegistrationRecord.WASMBinary.prototype.toObject>;
-            version?: string;
-            type?: string;
-        }): WatcherRegistrationRecord {
-            const message = new WatcherRegistrationRecord({});
-            if (data.metadata != null) {
-                message.metadata = WatcherRegistrationRecord.WatcherMetadata.fromObject(data.metadata);
-            }
-            if (data.repo_reference != null) {
-                message.repo_reference = HashReference.fromObject(data.repo_reference);
-            }
-            if (data.wasm != null) {
-                message.wasm = WatcherRegistrationRecord.WASMBinary.fromObject(data.wasm);
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                metadata?: ReturnType<typeof WatcherRegistrationRecord.WatcherMetadata.prototype.toObject>;
-                repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                wasm?: ReturnType<typeof WatcherRegistrationRecord.WASMBinary.prototype.toObject>;
-                version?: string;
-                type?: string;
-            } = {};
-            if (this.metadata != null) {
-                data.metadata = this.metadata.toObject();
-            }
-            if (this.repo_reference != null) {
-                data.repo_reference = this.repo_reference.toObject();
-            }
-            if (this.wasm != null) {
-                data.wasm = this.wasm.toObject();
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.has_metadata)
-                writer.writeMessage(1, this.metadata, () => this.metadata.serialize(writer));
-            if (this.has_repo_reference)
-                writer.writeMessage(2, this.repo_reference, () => this.repo_reference.serialize(writer));
-            if (this.has_wasm)
-                writer.writeMessage(3, this.wasm, () => this.wasm.serialize(writer));
-            if (this.version.length)
-                writer.writeString(4, this.version);
-            if (this.type.length)
-                writer.writeString(5, this.type);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): WatcherRegistrationRecord {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WatcherRegistrationRecord();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        reader.readMessage(message.metadata, () => message.metadata = WatcherRegistrationRecord.WatcherMetadata.deserialize(reader));
-                        break;
-                    case 2:
-                        reader.readMessage(message.repo_reference, () => message.repo_reference = HashReference.deserialize(reader));
-                        break;
-                    case 3:
-                        reader.readMessage(message.wasm, () => message.wasm = WatcherRegistrationRecord.WASMBinary.deserialize(reader));
-                        break;
-                    case 4:
-                        message.version = reader.readString();
-                        break;
-                    case 5:
-                        message.type = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): WatcherRegistrationRecord {
-            return WatcherRegistrationRecord.deserialize(bytes);
-        }
-    }
-    export namespace WatcherRegistrationRecord {
-        export class WatcherMetadata extends pb_1.Message {
-            #one_of_decls: number[][] = [];
-            constructor(data?: any[] | {
-                version?: string;
-                chain_reference?: HashReference;
-            }) {
-                super();
-                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-                if (!Array.isArray(data) && typeof data == "object") {
-                    if ("version" in data && data.version != undefined) {
-                        this.version = data.version;
-                    }
-                    if ("chain_reference" in data && data.chain_reference != undefined) {
-                        this.chain_reference = data.chain_reference;
-                    }
-                }
-            }
-            get version() {
-                return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-            }
-            set version(value: string) {
-                pb_1.Message.setField(this, 1, value);
-            }
-            get chain_reference() {
-                return pb_1.Message.getWrapperField(this, HashReference, 2) as HashReference;
-            }
-            set chain_reference(value: HashReference) {
-                pb_1.Message.setWrapperField(this, 2, value);
-            }
-            get has_chain_reference() {
-                return pb_1.Message.getField(this, 2) != null;
-            }
-            static fromObject(data: {
-                version?: string;
-                chain_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            }): WatcherMetadata {
-                const message = new WatcherMetadata({});
-                if (data.version != null) {
-                    message.version = data.version;
-                }
-                if (data.chain_reference != null) {
-                    message.chain_reference = HashReference.fromObject(data.chain_reference);
-                }
-                return message;
-            }
-            toObject() {
-                const data: {
-                    version?: string;
-                    chain_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                } = {};
-                if (this.version != null) {
-                    data.version = this.version;
-                }
-                if (this.chain_reference != null) {
-                    data.chain_reference = this.chain_reference.toObject();
-                }
-                return data;
-            }
-            serialize(): Uint8Array;
-            serialize(w: pb_1.BinaryWriter): void;
-            serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-                const writer = w || new pb_1.BinaryWriter();
-                if (this.version.length)
-                    writer.writeString(1, this.version);
-                if (this.has_chain_reference)
-                    writer.writeMessage(2, this.chain_reference, () => this.chain_reference.serialize(writer));
-                if (!w)
-                    return writer.getResultBuffer();
-            }
-            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): WatcherMetadata {
-                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WatcherMetadata();
-                while (reader.nextField()) {
-                    if (reader.isEndGroup())
-                        break;
-                    switch (reader.getFieldNumber()) {
-                        case 1:
-                            message.version = reader.readString();
-                            break;
-                        case 2:
-                            reader.readMessage(message.chain_reference, () => message.chain_reference = HashReference.deserialize(reader));
-                            break;
-                        default: reader.skipField();
-                    }
-                }
-                return message;
-            }
-            serializeBinary(): Uint8Array {
-                return this.serialize();
-            }
-            static deserializeBinary(bytes: Uint8Array): WatcherMetadata {
-                return WatcherMetadata.deserialize(bytes);
-            }
-        }
-        export class WASMBinary extends pb_1.Message {
-            #one_of_decls: number[][] = [];
-            constructor(data?: any[] | {
-                hash_reference?: HashReference;
-                metadata?: WatcherRegistrationRecord.WASMBinaryMetadata;
-            }) {
-                super();
-                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-                if (!Array.isArray(data) && typeof data == "object") {
-                    if ("hash_reference" in data && data.hash_reference != undefined) {
-                        this.hash_reference = data.hash_reference;
-                    }
-                    if ("metadata" in data && data.metadata != undefined) {
-                        this.metadata = data.metadata;
-                    }
-                }
-            }
-            get hash_reference() {
-                return pb_1.Message.getWrapperField(this, HashReference, 1) as HashReference;
-            }
-            set hash_reference(value: HashReference) {
-                pb_1.Message.setWrapperField(this, 1, value);
-            }
-            get has_hash_reference() {
-                return pb_1.Message.getField(this, 1) != null;
-            }
-            get metadata() {
-                return pb_1.Message.getWrapperField(this, WatcherRegistrationRecord.WASMBinaryMetadata, 2) as WatcherRegistrationRecord.WASMBinaryMetadata;
-            }
-            set metadata(value: WatcherRegistrationRecord.WASMBinaryMetadata) {
-                pb_1.Message.setWrapperField(this, 2, value);
-            }
-            get has_metadata() {
-                return pb_1.Message.getField(this, 2) != null;
-            }
-            static fromObject(data: {
-                hash_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                metadata?: ReturnType<typeof WatcherRegistrationRecord.WASMBinaryMetadata.prototype.toObject>;
-            }): WASMBinary {
-                const message = new WASMBinary({});
-                if (data.hash_reference != null) {
-                    message.hash_reference = HashReference.fromObject(data.hash_reference);
-                }
-                if (data.metadata != null) {
-                    message.metadata = WatcherRegistrationRecord.WASMBinaryMetadata.fromObject(data.metadata);
-                }
-                return message;
-            }
-            toObject() {
-                const data: {
-                    hash_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                    metadata?: ReturnType<typeof WatcherRegistrationRecord.WASMBinaryMetadata.prototype.toObject>;
-                } = {};
-                if (this.hash_reference != null) {
-                    data.hash_reference = this.hash_reference.toObject();
-                }
-                if (this.metadata != null) {
-                    data.metadata = this.metadata.toObject();
-                }
-                return data;
-            }
-            serialize(): Uint8Array;
-            serialize(w: pb_1.BinaryWriter): void;
-            serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-                const writer = w || new pb_1.BinaryWriter();
-                if (this.has_hash_reference)
-                    writer.writeMessage(1, this.hash_reference, () => this.hash_reference.serialize(writer));
-                if (this.has_metadata)
-                    writer.writeMessage(2, this.metadata, () => this.metadata.serialize(writer));
-                if (!w)
-                    return writer.getResultBuffer();
-            }
-            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): WASMBinary {
-                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WASMBinary();
-                while (reader.nextField()) {
-                    if (reader.isEndGroup())
-                        break;
-                    switch (reader.getFieldNumber()) {
-                        case 1:
-                            reader.readMessage(message.hash_reference, () => message.hash_reference = HashReference.deserialize(reader));
-                            break;
-                        case 2:
-                            reader.readMessage(message.metadata, () => message.metadata = WatcherRegistrationRecord.WASMBinaryMetadata.deserialize(reader));
-                            break;
-                        default: reader.skipField();
-                    }
-                }
-                return message;
-            }
-            serializeBinary(): Uint8Array {
-                return this.serialize();
-            }
-            static deserializeBinary(bytes: Uint8Array): WASMBinary {
-                return WASMBinary.deserialize(bytes);
-            }
-        }
-        export class WASMBinaryMetadata extends pb_1.Message {
-            #one_of_decls: number[][] = [];
-            constructor(data?: any[] | {
-                compiler_version?: string;
-                execution_engine_version?: string;
-            }) {
-                super();
-                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-                if (!Array.isArray(data) && typeof data == "object") {
-                    if ("compiler_version" in data && data.compiler_version != undefined) {
-                        this.compiler_version = data.compiler_version;
-                    }
-                    if ("execution_engine_version" in data && data.execution_engine_version != undefined) {
-                        this.execution_engine_version = data.execution_engine_version;
-                    }
-                }
-            }
-            get compiler_version() {
-                return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-            }
-            set compiler_version(value: string) {
-                pb_1.Message.setField(this, 1, value);
-            }
-            get execution_engine_version() {
-                return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
-            }
-            set execution_engine_version(value: string) {
-                pb_1.Message.setField(this, 2, value);
-            }
-            static fromObject(data: {
-                compiler_version?: string;
-                execution_engine_version?: string;
-            }): WASMBinaryMetadata {
-                const message = new WASMBinaryMetadata({});
-                if (data.compiler_version != null) {
-                    message.compiler_version = data.compiler_version;
-                }
-                if (data.execution_engine_version != null) {
-                    message.execution_engine_version = data.execution_engine_version;
-                }
-                return message;
-            }
-            toObject() {
-                const data: {
-                    compiler_version?: string;
-                    execution_engine_version?: string;
-                } = {};
-                if (this.compiler_version != null) {
-                    data.compiler_version = this.compiler_version;
-                }
-                if (this.execution_engine_version != null) {
-                    data.execution_engine_version = this.execution_engine_version;
-                }
-                return data;
-            }
-            serialize(): Uint8Array;
-            serialize(w: pb_1.BinaryWriter): void;
-            serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-                const writer = w || new pb_1.BinaryWriter();
-                if (this.compiler_version.length)
-                    writer.writeString(1, this.compiler_version);
-                if (this.execution_engine_version.length)
-                    writer.writeString(2, this.execution_engine_version);
-                if (!w)
-                    return writer.getResultBuffer();
-            }
-            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): WASMBinaryMetadata {
-                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WASMBinaryMetadata();
-                while (reader.nextField()) {
-                    if (reader.isEndGroup())
-                        break;
-                    switch (reader.getFieldNumber()) {
-                        case 1:
-                            message.compiler_version = reader.readString();
-                            break;
-                        case 2:
-                            message.execution_engine_version = reader.readString();
-                            break;
-                        default: reader.skipField();
-                    }
-                }
-                return message;
-            }
-            serializeBinary(): Uint8Array {
-                return this.serialize();
-            }
-            static deserializeBinary(bytes: Uint8Array): WASMBinaryMetadata {
-                return WASMBinaryMetadata.deserialize(bytes);
-            }
-        }
-    }
-    export class ResponderContract extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            service_provider_ref?: HashReference;
-            auction_ref?: HashReference;
-            watcher_ref?: HashReference;
-            version?: string;
-            type?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("service_provider_ref" in data && data.service_provider_ref != undefined) {
-                    this.service_provider_ref = data.service_provider_ref;
-                }
-                if ("auction_ref" in data && data.auction_ref != undefined) {
-                    this.auction_ref = data.auction_ref;
-                }
-                if ("watcher_ref" in data && data.watcher_ref != undefined) {
-                    this.watcher_ref = data.watcher_ref;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-            }
-        }
-        get service_provider_ref() {
-            return pb_1.Message.getWrapperField(this, HashReference, 1) as HashReference;
-        }
-        set service_provider_ref(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 1, value);
-        }
-        get has_service_provider_ref() {
-            return pb_1.Message.getField(this, 1) != null;
-        }
-        get auction_ref() {
-            return pb_1.Message.getWrapperField(this, HashReference, 2) as HashReference;
-        }
-        set auction_ref(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 2, value);
-        }
-        get has_auction_ref() {
-            return pb_1.Message.getField(this, 2) != null;
-        }
-        get watcher_ref() {
-            return pb_1.Message.getWrapperField(this, HashReference, 3) as HashReference;
-        }
-        set watcher_ref(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 3, value);
-        }
-        get has_watcher_ref() {
-            return pb_1.Message.getField(this, 3) != null;
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            service_provider_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-            auction_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-            watcher_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-            version?: string;
-            type?: string;
-        }): ResponderContract {
-            const message = new ResponderContract({});
-            if (data.service_provider_ref != null) {
-                message.service_provider_ref = HashReference.fromObject(data.service_provider_ref);
-            }
-            if (data.auction_ref != null) {
-                message.auction_ref = HashReference.fromObject(data.auction_ref);
-            }
-            if (data.watcher_ref != null) {
-                message.watcher_ref = HashReference.fromObject(data.watcher_ref);
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                service_provider_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-                auction_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-                watcher_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-                version?: string;
-                type?: string;
-            } = {};
-            if (this.service_provider_ref != null) {
-                data.service_provider_ref = this.service_provider_ref.toObject();
-            }
-            if (this.auction_ref != null) {
-                data.auction_ref = this.auction_ref.toObject();
-            }
-            if (this.watcher_ref != null) {
-                data.watcher_ref = this.watcher_ref.toObject();
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.has_service_provider_ref)
-                writer.writeMessage(1, this.service_provider_ref, () => this.service_provider_ref.serialize(writer));
-            if (this.has_auction_ref)
-                writer.writeMessage(2, this.auction_ref, () => this.auction_ref.serialize(writer));
-            if (this.has_watcher_ref)
-                writer.writeMessage(3, this.watcher_ref, () => this.watcher_ref.serialize(writer));
-            if (this.version.length)
-                writer.writeString(4, this.version);
-            if (this.type.length)
-                writer.writeString(5, this.type);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ResponderContract {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ResponderContract();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        reader.readMessage(message.service_provider_ref, () => message.service_provider_ref = HashReference.deserialize(reader));
-                        break;
-                    case 2:
-                        reader.readMessage(message.auction_ref, () => message.auction_ref = HashReference.deserialize(reader));
-                        break;
-                    case 3:
-                        reader.readMessage(message.watcher_ref, () => message.watcher_ref = HashReference.deserialize(reader));
-                        break;
-                    case 4:
-                        message.version = reader.readString();
-                        break;
-                    case 5:
-                        message.type = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): ResponderContract {
-            return ResponderContract.deserialize(bytes);
-        }
-    }
-    export class JSPackage extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            repo_reference?: HashReference;
-            js_package_ref?: HashReference;
-            version?: string;
-            type?: string;
-            name?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("repo_reference" in data && data.repo_reference != undefined) {
-                    this.repo_reference = data.repo_reference;
-                }
-                if ("js_package_ref" in data && data.js_package_ref != undefined) {
-                    this.js_package_ref = data.js_package_ref;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-                if ("name" in data && data.name != undefined) {
-                    this.name = data.name;
-                }
-            }
-        }
-        get repo_reference() {
-            return pb_1.Message.getWrapperField(this, HashReference, 1) as HashReference;
-        }
-        set repo_reference(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 1, value);
-        }
-        get has_repo_reference() {
-            return pb_1.Message.getField(this, 1) != null;
-        }
-        get js_package_ref() {
-            return pb_1.Message.getWrapperField(this, HashReference, 2) as HashReference;
-        }
-        set js_package_ref(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 2, value);
-        }
-        get has_js_package_ref() {
-            return pb_1.Message.getField(this, 2) != null;
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 3, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get name() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set name(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-            js_package_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-            version?: string;
-            type?: string;
-            name?: string;
-        }): JSPackage {
-            const message = new JSPackage({});
-            if (data.repo_reference != null) {
-                message.repo_reference = HashReference.fromObject(data.repo_reference);
-            }
-            if (data.js_package_ref != null) {
-                message.js_package_ref = HashReference.fromObject(data.js_package_ref);
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            if (data.name != null) {
-                message.name = data.name;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                repo_reference?: ReturnType<typeof HashReference.prototype.toObject>;
-                js_package_ref?: ReturnType<typeof HashReference.prototype.toObject>;
-                version?: string;
-                type?: string;
-                name?: string;
-            } = {};
-            if (this.repo_reference != null) {
-                data.repo_reference = this.repo_reference.toObject();
-            }
-            if (this.js_package_ref != null) {
-                data.js_package_ref = this.js_package_ref.toObject();
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            if (this.name != null) {
-                data.name = this.name;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.has_repo_reference)
-                writer.writeMessage(1, this.repo_reference, () => this.repo_reference.serialize(writer));
-            if (this.has_js_package_ref)
-                writer.writeMessage(2, this.js_package_ref, () => this.js_package_ref.serialize(writer));
-            if (this.version.length)
-                writer.writeString(3, this.version);
-            if (this.type.length)
-                writer.writeString(4, this.type);
-            if (this.name.length)
-                writer.writeString(5, this.name);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): JSPackage {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new JSPackage();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        reader.readMessage(message.repo_reference, () => message.repo_reference = HashReference.deserialize(reader));
-                        break;
-                    case 2:
-                        reader.readMessage(message.js_package_ref, () => message.js_package_ref = HashReference.deserialize(reader));
-                        break;
-                    case 3:
-                        message.version = reader.readString();
-                        break;
-                    case 4:
-                        message.type = reader.readString();
-                        break;
-                    case 5:
-                        message.name = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): JSPackage {
-            return JSPackage.deserialize(bytes);
-        }
-    }
-    export class ChainRegistrationRecord extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            name?: string;
-            ipld_types?: string[];
-            type?: string;
-            version?: string;
-            chain_id?: string;
-            network_id?: string;
-            genesis_hash?: HashReference;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [2], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("name" in data && data.name != undefined) {
-                    this.name = data.name;
-                }
-                if ("ipld_types" in data && data.ipld_types != undefined) {
-                    this.ipld_types = data.ipld_types;
-                }
-                if ("type" in data && data.type != undefined) {
-                    this.type = data.type;
-                }
-                if ("version" in data && data.version != undefined) {
-                    this.version = data.version;
-                }
-                if ("chain_id" in data && data.chain_id != undefined) {
-                    this.chain_id = data.chain_id;
-                }
-                if ("network_id" in data && data.network_id != undefined) {
-                    this.network_id = data.network_id;
-                }
-                if ("genesis_hash" in data && data.genesis_hash != undefined) {
-                    this.genesis_hash = data.genesis_hash;
-                }
-            }
-        }
-        get name() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-        }
-        set name(value: string) {
-            pb_1.Message.setField(this, 1, value);
-        }
-        get ipld_types() {
-            return pb_1.Message.getFieldWithDefault(this, 2, []) as string[];
-        }
-        set ipld_types(value: string[]) {
-            pb_1.Message.setField(this, 2, value);
-        }
-        get type() {
-            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
-        }
-        set type(value: string) {
-            pb_1.Message.setField(this, 3, value);
-        }
-        get version() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set version(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get chain_id() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set chain_id(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        get network_id() {
-            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
-        }
-        set network_id(value: string) {
-            pb_1.Message.setField(this, 6, value);
-        }
-        get genesis_hash() {
-            return pb_1.Message.getWrapperField(this, HashReference, 7) as HashReference;
-        }
-        set genesis_hash(value: HashReference) {
-            pb_1.Message.setWrapperField(this, 7, value);
-        }
-        get has_genesis_hash() {
-            return pb_1.Message.getField(this, 7) != null;
-        }
-        static fromObject(data: {
-            name?: string;
-            ipld_types?: string[];
-            type?: string;
-            version?: string;
-            chain_id?: string;
-            network_id?: string;
-            genesis_hash?: ReturnType<typeof HashReference.prototype.toObject>;
-        }): ChainRegistrationRecord {
-            const message = new ChainRegistrationRecord({});
-            if (data.name != null) {
-                message.name = data.name;
-            }
-            if (data.ipld_types != null) {
-                message.ipld_types = data.ipld_types;
-            }
-            if (data.type != null) {
-                message.type = data.type;
-            }
-            if (data.version != null) {
-                message.version = data.version;
-            }
-            if (data.chain_id != null) {
-                message.chain_id = data.chain_id;
-            }
-            if (data.network_id != null) {
-                message.network_id = data.network_id;
-            }
-            if (data.genesis_hash != null) {
-                message.genesis_hash = HashReference.fromObject(data.genesis_hash);
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                name?: string;
-                ipld_types?: string[];
-                type?: string;
-                version?: string;
-                chain_id?: string;
-                network_id?: string;
-                genesis_hash?: ReturnType<typeof HashReference.prototype.toObject>;
-            } = {};
-            if (this.name != null) {
-                data.name = this.name;
-            }
-            if (this.ipld_types != null) {
-                data.ipld_types = this.ipld_types;
-            }
-            if (this.type != null) {
-                data.type = this.type;
-            }
-            if (this.version != null) {
-                data.version = this.version;
-            }
-            if (this.chain_id != null) {
-                data.chain_id = this.chain_id;
-            }
-            if (this.network_id != null) {
-                data.network_id = this.network_id;
-            }
-            if (this.genesis_hash != null) {
-                data.genesis_hash = this.genesis_hash.toObject();
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.name.length)
-                writer.writeString(1, this.name);
-            if (this.ipld_types.length)
-                writer.writeRepeatedString(2, this.ipld_types);
-            if (this.type.length)
-                writer.writeString(3, this.type);
-            if (this.version.length)
-                writer.writeString(4, this.version);
-            if (this.chain_id.length)
-                writer.writeString(5, this.chain_id);
-            if (this.network_id.length)
-                writer.writeString(6, this.network_id);
-            if (this.has_genesis_hash)
-                writer.writeMessage(7, this.genesis_hash, () => this.genesis_hash.serialize(writer));
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ChainRegistrationRecord {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ChainRegistrationRecord();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        message.name = reader.readString();
-                        break;
-                    case 2:
-                        pb_1.Message.addToRepeatedField(message, 2, reader.readString());
-                        break;
-                    case 3:
-                        message.type = reader.readString();
-                        break;
-                    case 4:
-                        message.version = reader.readString();
-                        break;
-                    case 5:
-                        message.chain_id = reader.readString();
-                        break;
-                    case 6:
-                        message.network_id = reader.readString();
-                        break;
-                    case 7:
-                        reader.readMessage(message.genesis_hash, () => message.genesis_hash = HashReference.deserialize(reader));
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): ChainRegistrationRecord {
-            return ChainRegistrationRecord.deserialize(bytes);
         }
     }
 }

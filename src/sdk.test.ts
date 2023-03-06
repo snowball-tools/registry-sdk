@@ -3,7 +3,7 @@ import path from 'path';
 import { Registry } from './index';
 import { getConfig, ensureUpdatedConfig, provisionBondId } from './testing/helper';
 
-const WATCHER_YML_PATH = path.join(__dirname, './testing/examples/website_registration_example.yml');
+const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 jest.setTimeout(40 * 1000);
 
@@ -45,17 +45,17 @@ describe('Querying', () => {
   });
 
   test('Query records by reference.', async () => {
-    const { ref } = watcher.record.repo_reference;
-    const records = await registry.queryRecords({ "repo_reference---ref---": ref}, true);
+    const { repo_registration_record_cid } = watcher.record;
+    const records = await registry.queryRecords({ repo_registration_record_cid }, true);
     expect(records.length).toBeGreaterThanOrEqual(1);
 
-    const { attributes: { repo_reference: {ref: record_repo_registration_record_cid}  } } = records[0];
-    expect(ref).toBe(record_repo_registration_record_cid);
+    const { attributes: { repo_registration_record_cid: record_repo_registration_record_cid } } = records[0];
+    expect(repo_registration_record_cid).toBe(record_repo_registration_record_cid);
   });
 
   test('Query records by attributes.', async () => {
     const { version, name } = watcher.record;
-    const records = await registry.queryRecords({ "version---": version, "name---": name }, true);
+    const records = await registry.queryRecords({ version, name }, true);
     expect(records.length).toBe(1);
 
     [ watcher ] = records;
@@ -74,7 +74,7 @@ describe('Querying', () => {
     const [record] = await registry.getRecordsByIds([watcher.id], true);
     expect(record.id).toBe(watcher.id);
     // temp fix
-    expect(record.attributes.repo_reference.ref).toBeDefined();
-    expect(record.attributes.repo_reference.ref).toHaveLength(46);
+    expect(record.attributes.repo_registration_record_cid).toBeDefined();
+    expect(record.attributes.repo_registration_record_cid).toHaveLength(46);
   });
 });

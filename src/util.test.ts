@@ -4,7 +4,7 @@ import { Registry } from './index';
 import { getBaseConfig, getConfig } from './testing/helper';
 import { Util } from './util';
 
-const WATCHER_YML_PATH = path.join(__dirname, './testing/examples/git_repo_example.yml');
+const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 jest.setTimeout(90 * 1000);
 

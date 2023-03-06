@@ -3,7 +3,7 @@ import path from 'path';
 import { Registry } from './index';
 import { ensureUpdatedConfig, getConfig } from './testing/helper';
 
-const WATCHER_YML_PATH = path.join(__dirname, './testing/examples/watcher_registraion_example.yml');
+const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
@@ -97,17 +97,17 @@ const bondTests = () => {
 
     // Create a new record.
     version1 = await publishNewWatcherVersion(bondId1);
-    let [record1] = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version1 }, true);
+    let [record1] = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version1 }, true);
     expect(record1.bondId).toBe(bondId1);
 
     // Dissociate record, query and confirm.
     await registry.dissociateBond({ recordId: record1.id }, privateKey, fee);
-    [record1] = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version1 }, true);
+    [record1] = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version1 }, true);
     expect(record1.bondId).toBe('');
 
     // Associate record with bond, query and confirm.
     await registry.associateBond({ recordId: record1.id, bondId: bondId1 }, privateKey, fee);
-    [record1] = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version1 }, true);
+    [record1] = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version1 }, true);
     expect(record1.bondId).toBe(bondId1);
   });
 
@@ -117,9 +117,9 @@ const bondTests = () => {
 
     // Check version1, version2 as associated with bondId1.
     let records;
-    records = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version1 }, true);
+    records = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version1 }, true);
     expect(records[0].bondId).toBe(bondId1);
-    records = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version2 }, true);
+    records = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version2 }, true);
     expect(records[0].bondId).toBe(bondId1);
 
     // Create another bond.
@@ -131,16 +131,16 @@ const bondTests = () => {
 
     // Reassociate records from bondId1 to bondId2, verify change.
     await registry.reassociateRecords({ oldBondId: bondId1, newBondId: bondId2 }, privateKey, fee);
-    records = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version1 }, true);
+    records = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version1 }, true);
     expect(records[0].bondId).toBe(bondId2);
-    records = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version2 }, true);
+    records = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version2 }, true);
     expect(records[0].bondId).toBe(bondId2);
 
     // Dissociate all records from bond, verify change.
     await registry.dissociateRecords({ bondId: bondId2 }, privateKey, fee);
-    records = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version1 }, true);
+    records = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version1 }, true);
     expect(records[0].bondId).toBe('');
-    records = await registry.queryRecords({ "type---": watcher.record.type, "name---": watcher.record.name, "version---": version2 }, true);
+    records = await registry.queryRecords({ type: watcher.record.type, name: watcher.record.name, version: version2 }, true);
     expect(records[0].bondId).toBe('');
   });
 };
