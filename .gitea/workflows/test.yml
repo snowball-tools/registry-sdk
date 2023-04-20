@@ -27,7 +27,7 @@ jobs:
         run: ls -tlh && env
       - name: Start dockerd
         run: |
-          dockerd -H unix:///var/run/docker.ci.sock --userland-proxy=false &
+          dockerd -H $DOCKER_HOST --userland-proxy=false &
           sleep 5
       - name: build containers scripts
         working-directory: laconicd/tests/sdk_tests
