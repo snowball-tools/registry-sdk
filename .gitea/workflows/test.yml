@@ -9,7 +9,7 @@ on:
       - release/**
 
 env:
-  DOCKER_HOST: /var/run/dind.sock
+  DOCKER_HOST: unix:///var/run/dind.sock
 
 jobs:
   sdk_tests:
