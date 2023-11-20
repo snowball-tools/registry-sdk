@@ -29,17 +29,22 @@ export class Record {
   }
 
   get attributes() {
+    let a = new any.google.protobuf.Any();
 
-    var a = new any.google.protobuf.Any()
+    if (this._record.type) {
+      const namespace: any = attributes.vulcanize.registry.v1beta1;
+      if (!namespace[this._record.type]) {
+        throw new Error(`Class not found: ${this._record.type}`);
+      }
 
-    if (this._record.type=="WebsiteRegistrationRecord"){
-      var attr= new attributes.vulcanize.registry.v1beta1.WebsiteRegistrationRecord(this._record)
-      a= new any.google.protobuf.Any({
-        type_url: "/vulcanize.registry.v1beta1.WebsiteRegistrationRecord",
-        value: attr.serialize()
-      })
+      const value = namespace[this._record.type].fromObject(this._record);
+      a = new any.google.protobuf.Any({
+        type_url: `/vulcanize.registry.v1beta1.${this._record.type}`,
+        value: value.serialize(),
+      });
     }
-    return a
+
+    return a;
   }
 
   /**
