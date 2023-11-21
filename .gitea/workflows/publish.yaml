@@ -7,12 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 16.x ]
+        node-version: [ 18.x ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Download yarn
+        run: |
+          curl -fsSL -o /usr/local/bin/yarn https://github.com/yarnpkg/yarn/releases/download/v1.22.21/yarn-1.22.21.js
+          chmod +x /usr/local/bin/yarn
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
