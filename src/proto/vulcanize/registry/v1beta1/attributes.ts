@@ -1160,12 +1160,12 @@ export namespace vulcanize.registry.v1beta1 {
             application?: string;
             dns?: string;
             config?: string;
-            crn?: string[];
+            deployment?: string;
             meta?: string;
             tags?: string[];
         }) {
             super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [7, 21], this.#one_of_decls);
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [21], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("type" in data && data.type != undefined) {
                     this.type = data.type;
@@ -1185,8 +1185,8 @@ export namespace vulcanize.registry.v1beta1 {
                 if ("config" in data && data.config != undefined) {
                     this.config = data.config;
                 }
-                if ("crn" in data && data.crn != undefined) {
-                    this.crn = data.crn;
+                if ("deployment" in data && data.deployment != undefined) {
+                    this.deployment = data.deployment;
                 }
                 if ("meta" in data && data.meta != undefined) {
                     this.meta = data.meta;
@@ -1232,10 +1232,10 @@ export namespace vulcanize.registry.v1beta1 {
         set config(value: string) {
             pb_1.Message.setField(this, 6, value);
         }
-        get crn() {
-            return pb_1.Message.getFieldWithDefault(this, 7, []) as string[];
+        get deployment() {
+            return pb_1.Message.getFieldWithDefault(this, 7, "") as string;
         }
-        set crn(value: string[]) {
+        set deployment(value: string) {
             pb_1.Message.setField(this, 7, value);
         }
         get meta() {
@@ -1257,7 +1257,7 @@ export namespace vulcanize.registry.v1beta1 {
             application?: string;
             dns?: string;
             config?: string;
-            crn?: string[];
+            deployment?: string;
             meta?: string;
             tags?: string[];
         }): ApplicationDeploymentRequest {
@@ -1280,8 +1280,8 @@ export namespace vulcanize.registry.v1beta1 {
             if (data.config != null) {
                 message.config = data.config;
             }
-            if (data.crn != null) {
-                message.crn = data.crn;
+            if (data.deployment != null) {
+                message.deployment = data.deployment;
             }
             if (data.meta != null) {
                 message.meta = data.meta;
@@ -1299,7 +1299,7 @@ export namespace vulcanize.registry.v1beta1 {
                 application?: string;
                 dns?: string;
                 config?: string;
-                crn?: string[];
+                deployment?: string;
                 meta?: string;
                 tags?: string[];
             } = {};
@@ -1321,8 +1321,8 @@ export namespace vulcanize.registry.v1beta1 {
             if (this.config != null) {
                 data.config = this.config;
             }
-            if (this.crn != null) {
-                data.crn = this.crn;
+            if (this.deployment != null) {
+                data.deployment = this.deployment;
             }
             if (this.meta != null) {
                 data.meta = this.meta;
@@ -1348,8 +1348,8 @@ export namespace vulcanize.registry.v1beta1 {
                 writer.writeString(5, this.dns);
             if (this.config.length)
                 writer.writeString(6, this.config);
-            if (this.crn.length)
-                writer.writeRepeatedString(7, this.crn);
+            if (this.deployment.length)
+                writer.writeString(7, this.deployment);
             if (this.meta.length)
                 writer.writeString(20, this.meta);
             if (this.tags.length)
@@ -1382,7 +1382,7 @@ export namespace vulcanize.registry.v1beta1 {
                         message.config = reader.readString();
                         break;
                     case 7:
-                        pb_1.Message.addToRepeatedField(message, 7, reader.readString());
+                        message.deployment = reader.readString();
                         break;
                     case 20:
                         message.meta = reader.readString();
