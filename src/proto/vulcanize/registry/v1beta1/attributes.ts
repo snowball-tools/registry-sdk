@@ -544,7 +544,7 @@ export namespace vulcanize.registry.v1beta1 {
             homepage?: string;
             license?: string;
             author?: string;
-            repository?: string;
+            repository?: string[];
             repository_ref?: string;
             app_version?: string;
             app_type?: string;
@@ -555,7 +555,7 @@ export namespace vulcanize.registry.v1beta1 {
             tags?: string[];
         }) {
             super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [13, 14, 21], this.#one_of_decls);
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [8, 13, 14, 21], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("type" in data && data.type != undefined) {
                     this.type = data.type;
@@ -650,9 +650,9 @@ export namespace vulcanize.registry.v1beta1 {
             pb_1.Message.setField(this, 7, value);
         }
         get repository() {
-            return pb_1.Message.getFieldWithDefault(this, 8, "") as string;
+            return pb_1.Message.getFieldWithDefault(this, 8, []) as string[];
         }
-        set repository(value: string) {
+        set repository(value: string[]) {
             pb_1.Message.setField(this, 8, value);
         }
         get repository_ref() {
@@ -711,7 +711,7 @@ export namespace vulcanize.registry.v1beta1 {
             homepage?: string;
             license?: string;
             author?: string;
-            repository?: string;
+            repository?: string[];
             repository_ref?: string;
             app_version?: string;
             app_type?: string;
@@ -781,7 +781,7 @@ export namespace vulcanize.registry.v1beta1 {
                 homepage?: string;
                 license?: string;
                 author?: string;
-                repository?: string;
+                repository?: string[];
                 repository_ref?: string;
                 app_version?: string;
                 app_type?: string;
@@ -860,7 +860,7 @@ export namespace vulcanize.registry.v1beta1 {
             if (this.author.length)
                 writer.writeString(7, this.author);
             if (this.repository.length)
-                writer.writeString(8, this.repository);
+                writer.writeRepeatedString(8, this.repository);
             if (this.repository_ref.length)
                 writer.writeString(9, this.repository_ref);
             if (this.app_version.length)
@@ -908,7 +908,7 @@ export namespace vulcanize.registry.v1beta1 {
                         message.author = reader.readString();
                         break;
                     case 8:
-                        message.repository = reader.readString();
+                        pb_1.Message.addToRepeatedField(message, 8, reader.readString());
                         break;
                     case 9:
                         message.repository_ref = reader.readString();
@@ -946,6 +946,303 @@ export namespace vulcanize.registry.v1beta1 {
             return ApplicationRecord.deserialize(bytes);
         }
     }
+    export class ApplicationArtifact extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            type?: string;
+            name?: string;
+            description?: string;
+            version?: string;
+            application?: string;
+            content_type?: string;
+            os?: string;
+            cpu?: string;
+            uri?: string[];
+            meta?: string;
+            tags?: string[];
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [10, 21], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("type" in data && data.type != undefined) {
+                    this.type = data.type;
+                }
+                if ("name" in data && data.name != undefined) {
+                    this.name = data.name;
+                }
+                if ("description" in data && data.description != undefined) {
+                    this.description = data.description;
+                }
+                if ("version" in data && data.version != undefined) {
+                    this.version = data.version;
+                }
+                if ("application" in data && data.application != undefined) {
+                    this.application = data.application;
+                }
+                if ("content_type" in data && data.content_type != undefined) {
+                    this.content_type = data.content_type;
+                }
+                if ("os" in data && data.os != undefined) {
+                    this.os = data.os;
+                }
+                if ("cpu" in data && data.cpu != undefined) {
+                    this.cpu = data.cpu;
+                }
+                if ("uri" in data && data.uri != undefined) {
+                    this.uri = data.uri;
+                }
+                if ("meta" in data && data.meta != undefined) {
+                    this.meta = data.meta;
+                }
+                if ("tags" in data && data.tags != undefined) {
+                    this.tags = data.tags;
+                }
+            }
+        }
+        get type() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set type(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get name() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set name(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get description() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set description(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get version() {
+            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
+        }
+        set version(value: string) {
+            pb_1.Message.setField(this, 5, value);
+        }
+        get application() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+        }
+        set application(value: string) {
+            pb_1.Message.setField(this, 6, value);
+        }
+        get content_type() {
+            return pb_1.Message.getFieldWithDefault(this, 7, "") as string;
+        }
+        set content_type(value: string) {
+            pb_1.Message.setField(this, 7, value);
+        }
+        get os() {
+            return pb_1.Message.getFieldWithDefault(this, 8, "") as string;
+        }
+        set os(value: string) {
+            pb_1.Message.setField(this, 8, value);
+        }
+        get cpu() {
+            return pb_1.Message.getFieldWithDefault(this, 9, "") as string;
+        }
+        set cpu(value: string) {
+            pb_1.Message.setField(this, 9, value);
+        }
+        get uri() {
+            return pb_1.Message.getFieldWithDefault(this, 10, []) as string[];
+        }
+        set uri(value: string[]) {
+            pb_1.Message.setField(this, 10, value);
+        }
+        get meta() {
+            return pb_1.Message.getFieldWithDefault(this, 20, "") as string;
+        }
+        set meta(value: string) {
+            pb_1.Message.setField(this, 20, value);
+        }
+        get tags() {
+            return pb_1.Message.getFieldWithDefault(this, 21, []) as string[];
+        }
+        set tags(value: string[]) {
+            pb_1.Message.setField(this, 21, value);
+        }
+        static fromObject(data: {
+            type?: string;
+            name?: string;
+            description?: string;
+            version?: string;
+            application?: string;
+            content_type?: string;
+            os?: string;
+            cpu?: string;
+            uri?: string[];
+            meta?: string;
+            tags?: string[];
+        }): ApplicationArtifact {
+            const message = new ApplicationArtifact({});
+            if (data.type != null) {
+                message.type = data.type;
+            }
+            if (data.name != null) {
+                message.name = data.name;
+            }
+            if (data.description != null) {
+                message.description = data.description;
+            }
+            if (data.version != null) {
+                message.version = data.version;
+            }
+            if (data.application != null) {
+                message.application = data.application;
+            }
+            if (data.content_type != null) {
+                message.content_type = data.content_type;
+            }
+            if (data.os != null) {
+                message.os = data.os;
+            }
+            if (data.cpu != null) {
+                message.cpu = data.cpu;
+            }
+            if (data.uri != null) {
+                message.uri = data.uri;
+            }
+            if (data.meta != null) {
+                message.meta = data.meta;
+            }
+            if (data.tags != null) {
+                message.tags = data.tags;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                type?: string;
+                name?: string;
+                description?: string;
+                version?: string;
+                application?: string;
+                content_type?: string;
+                os?: string;
+                cpu?: string;
+                uri?: string[];
+                meta?: string;
+                tags?: string[];
+            } = {};
+            if (this.type != null) {
+                data.type = this.type;
+            }
+            if (this.name != null) {
+                data.name = this.name;
+            }
+            if (this.description != null) {
+                data.description = this.description;
+            }
+            if (this.version != null) {
+                data.version = this.version;
+            }
+            if (this.application != null) {
+                data.application = this.application;
+            }
+            if (this.content_type != null) {
+                data.content_type = this.content_type;
+            }
+            if (this.os != null) {
+                data.os = this.os;
+            }
+            if (this.cpu != null) {
+                data.cpu = this.cpu;
+            }
+            if (this.uri != null) {
+                data.uri = this.uri;
+            }
+            if (this.meta != null) {
+                data.meta = this.meta;
+            }
+            if (this.tags != null) {
+                data.tags = this.tags;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.type.length)
+                writer.writeString(1, this.type);
+            if (this.name.length)
+                writer.writeString(2, this.name);
+            if (this.description.length)
+                writer.writeString(4, this.description);
+            if (this.version.length)
+                writer.writeString(5, this.version);
+            if (this.application.length)
+                writer.writeString(6, this.application);
+            if (this.content_type.length)
+                writer.writeString(7, this.content_type);
+            if (this.os.length)
+                writer.writeString(8, this.os);
+            if (this.cpu.length)
+                writer.writeString(9, this.cpu);
+            if (this.uri.length)
+                writer.writeRepeatedString(10, this.uri);
+            if (this.meta.length)
+                writer.writeString(20, this.meta);
+            if (this.tags.length)
+                writer.writeRepeatedString(21, this.tags);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ApplicationArtifact {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ApplicationArtifact();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.type = reader.readString();
+                        break;
+                    case 2:
+                        message.name = reader.readString();
+                        break;
+                    case 4:
+                        message.description = reader.readString();
+                        break;
+                    case 5:
+                        message.version = reader.readString();
+                        break;
+                    case 6:
+                        message.application = reader.readString();
+                        break;
+                    case 7:
+                        message.content_type = reader.readString();
+                        break;
+                    case 8:
+                        message.os = reader.readString();
+                        break;
+                    case 9:
+                        message.cpu = reader.readString();
+                        break;
+                    case 10:
+                        pb_1.Message.addToRepeatedField(message, 10, reader.readString());
+                        break;
+                    case 20:
+                        message.meta = reader.readString();
+                        break;
+                    case 21:
+                        pb_1.Message.addToRepeatedField(message, 21, reader.readString());
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): ApplicationArtifact {
+            return ApplicationArtifact.deserialize(bytes);
+        }
+    }
     export class DnsRecord extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
@@ -954,6 +1251,7 @@ export namespace vulcanize.registry.v1beta1 {
             version?: string;
             resource_type?: string;
             value?: string;
+            request?: string;
             meta?: string;
             tags?: string[];
         }) {
@@ -974,6 +1272,9 @@ export namespace vulcanize.registry.v1beta1 {
                 }
                 if ("value" in data && data.value != undefined) {
                     this.value = data.value;
+                }
+                if ("request" in data && data.request != undefined) {
+                    this.request = data.request;
                 }
                 if ("meta" in data && data.meta != undefined) {
                     this.meta = data.meta;
@@ -1013,6 +1314,12 @@ export namespace vulcanize.registry.v1beta1 {
         set value(value: string) {
             pb_1.Message.setField(this, 5, value);
         }
+        get request() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+        }
+        set request(value: string) {
+            pb_1.Message.setField(this, 6, value);
+        }
         get meta() {
             return pb_1.Message.getFieldWithDefault(this, 20, "") as string;
         }
@@ -1031,6 +1338,7 @@ export namespace vulcanize.registry.v1beta1 {
             version?: string;
             resource_type?: string;
             value?: string;
+            request?: string;
             meta?: string;
             tags?: string[];
         }): DnsRecord {
@@ -1050,6 +1358,9 @@ export namespace vulcanize.registry.v1beta1 {
             if (data.value != null) {
                 message.value = data.value;
             }
+            if (data.request != null) {
+                message.request = data.request;
+            }
             if (data.meta != null) {
                 message.meta = data.meta;
             }
@@ -1065,6 +1376,7 @@ export namespace vulcanize.registry.v1beta1 {
                 version?: string;
                 resource_type?: string;
                 value?: string;
+                request?: string;
                 meta?: string;
                 tags?: string[];
             } = {};
@@ -1082,6 +1394,9 @@ export namespace vulcanize.registry.v1beta1 {
             }
             if (this.value != null) {
                 data.value = this.value;
+            }
+            if (this.request != null) {
+                data.request = this.request;
             }
             if (this.meta != null) {
                 data.meta = this.meta;
@@ -1105,6 +1420,8 @@ export namespace vulcanize.registry.v1beta1 {
                 writer.writeString(4, this.resource_type);
             if (this.value.length)
                 writer.writeString(5, this.value);
+            if (this.request.length)
+                writer.writeString(6, this.request);
             if (this.meta.length)
                 writer.writeString(20, this.meta);
             if (this.tags.length)
@@ -1132,6 +1449,9 @@ export namespace vulcanize.registry.v1beta1 {
                         break;
                     case 5:
                         message.value = reader.readString();
+                        break;
+                    case 6:
+                        message.request = reader.readString();
                         break;
                     case 20:
                         message.meta = reader.readString();

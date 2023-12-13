@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/laconic-sdk",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "git@github.com:cerc-io/laconic-sdk.git",
