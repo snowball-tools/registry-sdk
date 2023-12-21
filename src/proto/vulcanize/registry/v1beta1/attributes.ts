@@ -1996,6 +1996,370 @@ export namespace vulcanize.registry.v1beta1 {
             return ApplicationDeploymentRecord.deserialize(bytes);
         }
     }
+    export class ApplicationDeploymentRemovalRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            type?: string;
+            version?: string;
+            deployment?: string;
+            request?: string;
+            meta?: string;
+            tags?: string[];
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [21], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("type" in data && data.type != undefined) {
+                    this.type = data.type;
+                }
+                if ("version" in data && data.version != undefined) {
+                    this.version = data.version;
+                }
+                if ("deployment" in data && data.deployment != undefined) {
+                    this.deployment = data.deployment;
+                }
+                if ("request" in data && data.request != undefined) {
+                    this.request = data.request;
+                }
+                if ("meta" in data && data.meta != undefined) {
+                    this.meta = data.meta;
+                }
+                if ("tags" in data && data.tags != undefined) {
+                    this.tags = data.tags;
+                }
+            }
+        }
+        get type() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set type(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get version() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set version(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get deployment() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set deployment(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get request() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set request(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get meta() {
+            return pb_1.Message.getFieldWithDefault(this, 20, "") as string;
+        }
+        set meta(value: string) {
+            pb_1.Message.setField(this, 20, value);
+        }
+        get tags() {
+            return pb_1.Message.getFieldWithDefault(this, 21, []) as string[];
+        }
+        set tags(value: string[]) {
+            pb_1.Message.setField(this, 21, value);
+        }
+        static fromObject(data: {
+            type?: string;
+            version?: string;
+            deployment?: string;
+            request?: string;
+            meta?: string;
+            tags?: string[];
+        }): ApplicationDeploymentRemovalRequest {
+            const message = new ApplicationDeploymentRemovalRequest({});
+            if (data.type != null) {
+                message.type = data.type;
+            }
+            if (data.version != null) {
+                message.version = data.version;
+            }
+            if (data.deployment != null) {
+                message.deployment = data.deployment;
+            }
+            if (data.request != null) {
+                message.request = data.request;
+            }
+            if (data.meta != null) {
+                message.meta = data.meta;
+            }
+            if (data.tags != null) {
+                message.tags = data.tags;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                type?: string;
+                version?: string;
+                deployment?: string;
+                request?: string;
+                meta?: string;
+                tags?: string[];
+            } = {};
+            if (this.type != null) {
+                data.type = this.type;
+            }
+            if (this.version != null) {
+                data.version = this.version;
+            }
+            if (this.deployment != null) {
+                data.deployment = this.deployment;
+            }
+            if (this.request != null) {
+                data.request = this.request;
+            }
+            if (this.meta != null) {
+                data.meta = this.meta;
+            }
+            if (this.tags != null) {
+                data.tags = this.tags;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.type.length)
+                writer.writeString(1, this.type);
+            if (this.version.length)
+                writer.writeString(2, this.version);
+            if (this.deployment.length)
+                writer.writeString(3, this.deployment);
+            if (this.request.length)
+                writer.writeString(4, this.request);
+            if (this.meta.length)
+                writer.writeString(20, this.meta);
+            if (this.tags.length)
+                writer.writeRepeatedString(21, this.tags);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ApplicationDeploymentRemovalRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ApplicationDeploymentRemovalRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.type = reader.readString();
+                        break;
+                    case 2:
+                        message.version = reader.readString();
+                        break;
+                    case 3:
+                        message.deployment = reader.readString();
+                        break;
+                    case 4:
+                        message.request = reader.readString();
+                        break;
+                    case 20:
+                        message.meta = reader.readString();
+                        break;
+                    case 21:
+                        pb_1.Message.addToRepeatedField(message, 21, reader.readString());
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): ApplicationDeploymentRemovalRequest {
+            return ApplicationDeploymentRemovalRequest.deserialize(bytes);
+        }
+    }
+    export class ApplicationDeploymentRemovalRecord extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            type?: string;
+            version?: string;
+            deployment?: string;
+            request?: string;
+            meta?: string;
+            tags?: string[];
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [21], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("type" in data && data.type != undefined) {
+                    this.type = data.type;
+                }
+                if ("version" in data && data.version != undefined) {
+                    this.version = data.version;
+                }
+                if ("deployment" in data && data.deployment != undefined) {
+                    this.deployment = data.deployment;
+                }
+                if ("request" in data && data.request != undefined) {
+                    this.request = data.request;
+                }
+                if ("meta" in data && data.meta != undefined) {
+                    this.meta = data.meta;
+                }
+                if ("tags" in data && data.tags != undefined) {
+                    this.tags = data.tags;
+                }
+            }
+        }
+        get type() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set type(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get version() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set version(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get deployment() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set deployment(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get request() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set request(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get meta() {
+            return pb_1.Message.getFieldWithDefault(this, 20, "") as string;
+        }
+        set meta(value: string) {
+            pb_1.Message.setField(this, 20, value);
+        }
+        get tags() {
+            return pb_1.Message.getFieldWithDefault(this, 21, []) as string[];
+        }
+        set tags(value: string[]) {
+            pb_1.Message.setField(this, 21, value);
+        }
+        static fromObject(data: {
+            type?: string;
+            version?: string;
+            deployment?: string;
+            request?: string;
+            meta?: string;
+            tags?: string[];
+        }): ApplicationDeploymentRemovalRecord {
+            const message = new ApplicationDeploymentRemovalRecord({});
+            if (data.type != null) {
+                message.type = data.type;
+            }
+            if (data.version != null) {
+                message.version = data.version;
+            }
+            if (data.deployment != null) {
+                message.deployment = data.deployment;
+            }
+            if (data.request != null) {
+                message.request = data.request;
+            }
+            if (data.meta != null) {
+                message.meta = data.meta;
+            }
+            if (data.tags != null) {
+                message.tags = data.tags;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                type?: string;
+                version?: string;
+                deployment?: string;
+                request?: string;
+                meta?: string;
+                tags?: string[];
+            } = {};
+            if (this.type != null) {
+                data.type = this.type;
+            }
+            if (this.version != null) {
+                data.version = this.version;
+            }
+            if (this.deployment != null) {
+                data.deployment = this.deployment;
+            }
+            if (this.request != null) {
+                data.request = this.request;
+            }
+            if (this.meta != null) {
+                data.meta = this.meta;
+            }
+            if (this.tags != null) {
+                data.tags = this.tags;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.type.length)
+                writer.writeString(1, this.type);
+            if (this.version.length)
+                writer.writeString(2, this.version);
+            if (this.deployment.length)
+                writer.writeString(3, this.deployment);
+            if (this.request.length)
+                writer.writeString(4, this.request);
+            if (this.meta.length)
+                writer.writeString(20, this.meta);
+            if (this.tags.length)
+                writer.writeRepeatedString(21, this.tags);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ApplicationDeploymentRemovalRecord {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ApplicationDeploymentRemovalRecord();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.type = reader.readString();
+                        break;
+                    case 2:
+                        message.version = reader.readString();
+                        break;
+                    case 3:
+                        message.deployment = reader.readString();
+                        break;
+                    case 4:
+                        message.request = reader.readString();
+                        break;
+                    case 20:
+                        message.meta = reader.readString();
+                        break;
+                    case 21:
+                        pb_1.Message.addToRepeatedField(message, 21, reader.readString());
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): ApplicationDeploymentRemovalRecord {
+            return ApplicationDeploymentRemovalRecord.deserialize(bytes);
+        }
+    }
     export class GeneralRecord extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
