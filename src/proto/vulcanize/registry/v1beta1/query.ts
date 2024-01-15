@@ -239,7 +239,7 @@ export namespace vulcanize.registry.v1beta1 {
         }
     }
     export namespace QueryListRecordsRequest {
-        export class ReferenceInput extends pb_1.Message {
+        export class LinkInput extends pb_1.Message {
             #one_of_decls: number[][] = [];
             constructor(data?: any[] | {
                 id?: string;
@@ -260,8 +260,8 @@ export namespace vulcanize.registry.v1beta1 {
             }
             static fromObject(data: {
                 id?: string;
-            }): ReferenceInput {
-                const message = new ReferenceInput({});
+            }): LinkInput {
+                const message = new LinkInput({});
                 if (data.id != null) {
                     message.id = data.id;
                 }
@@ -285,8 +285,8 @@ export namespace vulcanize.registry.v1beta1 {
                 if (!w)
                     return writer.getResultBuffer();
             }
-            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ReferenceInput {
-                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ReferenceInput();
+            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): LinkInput {
+                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new LinkInput();
                 while (reader.nextField()) {
                     if (reader.isEndGroup())
                         break;
@@ -302,27 +302,220 @@ export namespace vulcanize.registry.v1beta1 {
             serializeBinary(): Uint8Array {
                 return this.serialize();
             }
-            static deserializeBinary(bytes: Uint8Array): ReferenceInput {
-                return ReferenceInput.deserialize(bytes);
+            static deserializeBinary(bytes: Uint8Array): LinkInput {
+                return LinkInput.deserialize(bytes);
             }
         }
-        export class ValueInput extends pb_1.Message {
+        export class ArrayInput extends pb_1.Message {
             #one_of_decls: number[][] = [];
             constructor(data?: any[] | {
-                type?: string;
-                string?: string;
-                int?: number;
-                float?: number;
-                boolean?: boolean;
-                reference?: QueryListRecordsRequest.ReferenceInput;
                 values?: QueryListRecordsRequest.ValueInput[];
             }) {
                 super();
-                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [7], this.#one_of_decls);
+                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [1], this.#one_of_decls);
                 if (!Array.isArray(data) && typeof data == "object") {
-                    if ("type" in data && data.type != undefined) {
-                        this.type = data.type;
+                    if ("values" in data && data.values != undefined) {
+                        this.values = data.values;
                     }
+                }
+            }
+            get values() {
+                return pb_1.Message.getRepeatedWrapperField(this, QueryListRecordsRequest.ValueInput, 1) as QueryListRecordsRequest.ValueInput[];
+            }
+            set values(value: QueryListRecordsRequest.ValueInput[]) {
+                pb_1.Message.setRepeatedWrapperField(this, 1, value);
+            }
+            static fromObject(data: {
+                values?: ReturnType<typeof QueryListRecordsRequest.ValueInput.prototype.toObject>[];
+            }): ArrayInput {
+                const message = new ArrayInput({});
+                if (data.values != null) {
+                    message.values = data.values.map(item => QueryListRecordsRequest.ValueInput.fromObject(item));
+                }
+                return message;
+            }
+            toObject() {
+                const data: {
+                    values?: ReturnType<typeof QueryListRecordsRequest.ValueInput.prototype.toObject>[];
+                } = {};
+                if (this.values != null) {
+                    data.values = this.values.map((item: QueryListRecordsRequest.ValueInput) => item.toObject());
+                }
+                return data;
+            }
+            serialize(): Uint8Array;
+            serialize(w: pb_1.BinaryWriter): void;
+            serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+                const writer = w || new pb_1.BinaryWriter();
+                if (this.values.length)
+                    writer.writeRepeatedMessage(1, this.values, (item: QueryListRecordsRequest.ValueInput) => item.serialize(writer));
+                if (!w)
+                    return writer.getResultBuffer();
+            }
+            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ArrayInput {
+                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ArrayInput();
+                while (reader.nextField()) {
+                    if (reader.isEndGroup())
+                        break;
+                    switch (reader.getFieldNumber()) {
+                        case 1:
+                            reader.readMessage(message.values, () => pb_1.Message.addToRepeatedWrapperField(message, 1, QueryListRecordsRequest.ValueInput.deserialize(reader), QueryListRecordsRequest.ValueInput));
+                            break;
+                        default: reader.skipField();
+                    }
+                }
+                return message;
+            }
+            serializeBinary(): Uint8Array {
+                return this.serialize();
+            }
+            static deserializeBinary(bytes: Uint8Array): ArrayInput {
+                return ArrayInput.deserialize(bytes);
+            }
+        }
+        export class MapInput extends pb_1.Message {
+            #one_of_decls: number[][] = [];
+            constructor(data?: any[] | {
+                values?: Map<string, QueryListRecordsRequest.ValueInput>;
+            }) {
+                super();
+                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+                if (!Array.isArray(data) && typeof data == "object") {
+                    if ("values" in data && data.values != undefined) {
+                        this.values = data.values;
+                    }
+                }
+                if (!this.values)
+                    this.values = new Map();
+            }
+            get values() {
+                return pb_1.Message.getField(this, 1) as any as Map<string, QueryListRecordsRequest.ValueInput>;
+            }
+            set values(value: Map<string, QueryListRecordsRequest.ValueInput>) {
+                pb_1.Message.setField(this, 1, value as any);
+            }
+            static fromObject(data: {
+                values?: {
+                    [key: string]: ReturnType<typeof QueryListRecordsRequest.ValueInput.prototype.toObject>;
+                };
+            }): MapInput {
+                const message = new MapInput({});
+                if (typeof data.values == "object") {
+                    message.values = new Map(Object.entries(data.values).map(([key, value]) => [key, QueryListRecordsRequest.ValueInput.fromObject(value)]));
+                }
+                return message;
+            }
+            toObject() {
+                const data: {
+                    values?: {
+                        [key: string]: ReturnType<typeof QueryListRecordsRequest.ValueInput.prototype.toObject>;
+                    };
+                } = {};
+                if (this.values != null) {
+                    data.values = (Object.fromEntries)((Array.from)(this.values).map(([key, value]) => [key, value.toObject()]));
+                }
+                return data;
+            }
+            serialize(): Uint8Array;
+            serialize(w: pb_1.BinaryWriter): void;
+            serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+                const writer = w || new pb_1.BinaryWriter();
+                for (const [key, value] of this.values) {
+                    writer.writeMessage(1, this.values, () => {
+                        writer.writeString(1, key);
+                        writer.writeMessage(2, value, () => value.serialize(writer));
+                    });
+                }
+                if (!w)
+                    return writer.getResultBuffer();
+            }
+            static deserialize(bytes: Uint8Array | pb_1.BinaryReader): MapInput {
+                const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new MapInput();
+                while (reader.nextField()) {
+                    if (reader.isEndGroup())
+                        break;
+                    switch (reader.getFieldNumber()) {
+                        case 1:
+                            reader.readMessage(message, () => pb_1.Map.deserializeBinary(message.values as any, reader, reader.readString, () => {
+                                let value;
+                                reader.readMessage(message, () => value = QueryListRecordsRequest.ValueInput.deserialize(reader));
+                                return value;
+                            }));
+                            break;
+                        default: reader.skipField();
+                    }
+                }
+                return message;
+            }
+            serializeBinary(): Uint8Array {
+                return this.serialize();
+            }
+            static deserializeBinary(bytes: Uint8Array): MapInput {
+                return MapInput.deserialize(bytes);
+            }
+        }
+        export class ValueInput extends pb_1.Message {
+            #one_of_decls: number[][] = [[1, 2, 3, 4, 5, 6, 7]];
+            constructor(data?: any[] | ({} & (({
+                string?: string;
+                int?: never;
+                float?: never;
+                boolean?: never;
+                link?: never;
+                array?: never;
+                map?: never;
+            } | {
+                string?: never;
+                int?: number;
+                float?: never;
+                boolean?: never;
+                link?: never;
+                array?: never;
+                map?: never;
+            } | {
+                string?: never;
+                int?: never;
+                float?: number;
+                boolean?: never;
+                link?: never;
+                array?: never;
+                map?: never;
+            } | {
+                string?: never;
+                int?: never;
+                float?: never;
+                boolean?: boolean;
+                link?: never;
+                array?: never;
+                map?: never;
+            } | {
+                string?: never;
+                int?: never;
+                float?: never;
+                boolean?: never;
+                link?: string;
+                array?: never;
+                map?: never;
+            } | {
+                string?: never;
+                int?: never;
+                float?: never;
+                boolean?: never;
+                link?: never;
+                array?: QueryListRecordsRequest.ArrayInput;
+                map?: never;
+            } | {
+                string?: never;
+                int?: never;
+                float?: never;
+                boolean?: never;
+                link?: never;
+                array?: never;
+                map?: QueryListRecordsRequest.MapInput;
+            })))) {
+                super();
+                pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+                if (!Array.isArray(data) && typeof data == "object") {
                     if ("string" in data && data.string != undefined) {
                         this.string = data.string;
                     }
@@ -335,72 +528,105 @@ export namespace vulcanize.registry.v1beta1 {
                     if ("boolean" in data && data.boolean != undefined) {
                         this.boolean = data.boolean;
                     }
-                    if ("reference" in data && data.reference != undefined) {
-                        this.reference = data.reference;
+                    if ("link" in data && data.link != undefined) {
+                        this.link = data.link;
                     }
-                    if ("values" in data && data.values != undefined) {
-                        this.values = data.values;
+                    if ("array" in data && data.array != undefined) {
+                        this.array = data.array;
+                    }
+                    if ("map" in data && data.map != undefined) {
+                        this.map = data.map;
                     }
                 }
             }
-            get type() {
+            get string() {
                 return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
             }
-            set type(value: string) {
-                pb_1.Message.setField(this, 1, value);
-            }
-            get string() {
-                return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
-            }
             set string(value: string) {
-                pb_1.Message.setField(this, 2, value);
+                pb_1.Message.setOneofField(this, 1, this.#one_of_decls[0], value);
+            }
+            get has_string() {
+                return pb_1.Message.getField(this, 1) != null;
             }
             get int() {
-                return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
+                return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
             }
             set int(value: number) {
-                pb_1.Message.setField(this, 3, value);
+                pb_1.Message.setOneofField(this, 2, this.#one_of_decls[0], value);
+            }
+            get has_int() {
+                return pb_1.Message.getField(this, 2) != null;
             }
             get float() {
-                return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
+                return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
             }
             set float(value: number) {
-                pb_1.Message.setField(this, 4, value);
+                pb_1.Message.setOneofField(this, 3, this.#one_of_decls[0], value);
+            }
+            get has_float() {
+                return pb_1.Message.getField(this, 3) != null;
             }
             get boolean() {
-                return pb_1.Message.getFieldWithDefault(this, 5, false) as boolean;
+                return pb_1.Message.getFieldWithDefault(this, 4, false) as boolean;
             }
             set boolean(value: boolean) {
-                pb_1.Message.setField(this, 5, value);
+                pb_1.Message.setOneofField(this, 4, this.#one_of_decls[0], value);
             }
-            get reference() {
-                return pb_1.Message.getWrapperField(this, QueryListRecordsRequest.ReferenceInput, 6) as QueryListRecordsRequest.ReferenceInput;
+            get has_boolean() {
+                return pb_1.Message.getField(this, 4) != null;
             }
-            set reference(value: QueryListRecordsRequest.ReferenceInput) {
-                pb_1.Message.setWrapperField(this, 6, value);
+            get link() {
+                return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
             }
-            get has_reference() {
+            set link(value: string) {
+                pb_1.Message.setOneofField(this, 5, this.#one_of_decls[0], value);
+            }
+            get has_link() {
+                return pb_1.Message.getField(this, 5) != null;
+            }
+            get array() {
+                return pb_1.Message.getWrapperField(this, QueryListRecordsRequest.ArrayInput, 6) as QueryListRecordsRequest.ArrayInput;
+            }
+            set array(value: QueryListRecordsRequest.ArrayInput) {
+                pb_1.Message.setOneofWrapperField(this, 6, this.#one_of_decls[0], value);
+            }
+            get has_array() {
                 return pb_1.Message.getField(this, 6) != null;
             }
-            get values() {
-                return pb_1.Message.getRepeatedWrapperField(this, QueryListRecordsRequest.ValueInput, 7) as QueryListRecordsRequest.ValueInput[];
+            get map() {
+                return pb_1.Message.getWrapperField(this, QueryListRecordsRequest.MapInput, 7) as QueryListRecordsRequest.MapInput;
             }
-            set values(value: QueryListRecordsRequest.ValueInput[]) {
-                pb_1.Message.setRepeatedWrapperField(this, 7, value);
+            set map(value: QueryListRecordsRequest.MapInput) {
+                pb_1.Message.setOneofWrapperField(this, 7, this.#one_of_decls[0], value);
+            }
+            get has_map() {
+                return pb_1.Message.getField(this, 7) != null;
+            }
+            get value() {
+                const cases: {
+                    [index: number]: "none" | "string" | "int" | "float" | "boolean" | "link" | "array" | "map";
+                } = {
+                    0: "none",
+                    1: "string",
+                    2: "int",
+                    3: "float",
+                    4: "boolean",
+                    5: "link",
+                    6: "array",
+                    7: "map"
+                };
+                return cases[pb_1.Message.computeOneofCase(this, [1, 2, 3, 4, 5, 6, 7])];
             }
             static fromObject(data: {
-                type?: string;
                 string?: string;
                 int?: number;
                 float?: number;
                 boolean?: boolean;
-                reference?: ReturnType<typeof QueryListRecordsRequest.ReferenceInput.prototype.toObject>;
-                values?: ReturnType<typeof QueryListRecordsRequest.ValueInput.prototype.toObject>[];
+                link?: string;
+                array?: ReturnType<typeof QueryListRecordsRequest.ArrayInput.prototype.toObject>;
+                map?: ReturnType<typeof QueryListRecordsRequest.MapInput.prototype.toObject>;
             }): ValueInput {
                 const message = new ValueInput({});
-                if (data.type != null) {
-                    message.type = data.type;
-                }
                 if (data.string != null) {
                     message.string = data.string;
                 }
@@ -413,27 +639,27 @@ export namespace vulcanize.registry.v1beta1 {
                 if (data.boolean != null) {
                     message.boolean = data.boolean;
                 }
-                if (data.reference != null) {
-                    message.reference = QueryListRecordsRequest.ReferenceInput.fromObject(data.reference);
+                if (data.link != null) {
+                    message.link = data.link;
                 }
-                if (data.values != null) {
-                    message.values = data.values.map(item => QueryListRecordsRequest.ValueInput.fromObject(item));
+                if (data.array != null) {
+                    message.array = QueryListRecordsRequest.ArrayInput.fromObject(data.array);
+                }
+                if (data.map != null) {
+                    message.map = QueryListRecordsRequest.MapInput.fromObject(data.map);
                 }
                 return message;
             }
             toObject() {
                 const data: {
-                    type?: string;
                     string?: string;
                     int?: number;
                     float?: number;
                     boolean?: boolean;
-                    reference?: ReturnType<typeof QueryListRecordsRequest.ReferenceInput.prototype.toObject>;
-                    values?: ReturnType<typeof QueryListRecordsRequest.ValueInput.prototype.toObject>[];
+                    link?: string;
+                    array?: ReturnType<typeof QueryListRecordsRequest.ArrayInput.prototype.toObject>;
+                    map?: ReturnType<typeof QueryListRecordsRequest.MapInput.prototype.toObject>;
                 } = {};
-                if (this.type != null) {
-                    data.type = this.type;
-                }
                 if (this.string != null) {
                     data.string = this.string;
                 }
@@ -446,11 +672,14 @@ export namespace vulcanize.registry.v1beta1 {
                 if (this.boolean != null) {
                     data.boolean = this.boolean;
                 }
-                if (this.reference != null) {
-                    data.reference = this.reference.toObject();
+                if (this.link != null) {
+                    data.link = this.link;
                 }
-                if (this.values != null) {
-                    data.values = this.values.map((item: QueryListRecordsRequest.ValueInput) => item.toObject());
+                if (this.array != null) {
+                    data.array = this.array.toObject();
+                }
+                if (this.map != null) {
+                    data.map = this.map.toObject();
                 }
                 return data;
             }
@@ -458,20 +687,20 @@ export namespace vulcanize.registry.v1beta1 {
             serialize(w: pb_1.BinaryWriter): void;
             serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
                 const writer = w || new pb_1.BinaryWriter();
-                if (this.type.length)
-                    writer.writeString(1, this.type);
-                if (this.string.length)
-                    writer.writeString(2, this.string);
-                if (this.int != 0)
-                    writer.writeInt64(3, this.int);
-                if (this.float != 0)
-                    writer.writeDouble(4, this.float);
-                if (this.boolean != false)
-                    writer.writeBool(5, this.boolean);
-                if (this.has_reference)
-                    writer.writeMessage(6, this.reference, () => this.reference.serialize(writer));
-                if (this.values.length)
-                    writer.writeRepeatedMessage(7, this.values, (item: QueryListRecordsRequest.ValueInput) => item.serialize(writer));
+                if (this.has_string)
+                    writer.writeString(1, this.string);
+                if (this.has_int)
+                    writer.writeInt64(2, this.int);
+                if (this.has_float)
+                    writer.writeDouble(3, this.float);
+                if (this.has_boolean)
+                    writer.writeBool(4, this.boolean);
+                if (this.has_link)
+                    writer.writeString(5, this.link);
+                if (this.has_array)
+                    writer.writeMessage(6, this.array, () => this.array.serialize(writer));
+                if (this.has_map)
+                    writer.writeMessage(7, this.map, () => this.map.serialize(writer));
                 if (!w)
                     return writer.getResultBuffer();
             }
@@ -482,25 +711,25 @@ export namespace vulcanize.registry.v1beta1 {
                         break;
                     switch (reader.getFieldNumber()) {
                         case 1:
-                            message.type = reader.readString();
-                            break;
-                        case 2:
                             message.string = reader.readString();
                             break;
-                        case 3:
+                        case 2:
                             message.int = reader.readInt64();
                             break;
-                        case 4:
+                        case 3:
                             message.float = reader.readDouble();
                             break;
-                        case 5:
+                        case 4:
                             message.boolean = reader.readBool();
                             break;
+                        case 5:
+                            message.link = reader.readString();
+                            break;
                         case 6:
-                            reader.readMessage(message.reference, () => message.reference = QueryListRecordsRequest.ReferenceInput.deserialize(reader));
+                            reader.readMessage(message.array, () => message.array = QueryListRecordsRequest.ArrayInput.deserialize(reader));
                             break;
                         case 7:
-                            reader.readMessage(message.values, () => pb_1.Message.addToRepeatedWrapperField(message, 7, QueryListRecordsRequest.ValueInput.deserialize(reader), QueryListRecordsRequest.ValueInput));
+                            reader.readMessage(message.map, () => message.map = QueryListRecordsRequest.MapInput.deserialize(reader));
                             break;
                         default: reader.skipField();
                     }

@@ -3,8 +3,6 @@ import { Validator } from 'jsonschema';
 
 import RecordSchema from './schema/record.json';
 import { Util } from './util';
-import * as attributes from './proto/vulcanize/registry/v1beta1/attributes';
-import * as any from './proto/google/protobuf/any';
 
 /**
  * Record.
@@ -29,22 +27,7 @@ export class Record {
   }
 
   get attributes() {
-    let a = new any.google.protobuf.Any();
-
-    if (this._record.type) {
-      const namespace: any = attributes.vulcanize.registry.v1beta1;
-      if (!namespace[this._record.type]) {
-        throw new Error(`Class not found: ${this._record.type}`);
-      }
-
-      const value = namespace[this._record.type].fromObject(this._record);
-      a = new any.google.protobuf.Any({
-        type_url: `/vulcanize.registry.v1beta1.${this._record.type}`,
-        value: value.serialize(),
-      });
-    }
-
-    return a;
+    return Buffer.from(JSON.stringify(this._record), 'binary')
   }
 
   /**

@@ -9,7 +9,6 @@ import * as dependency_1 from "./../../../google/protobuf/duration";
 import * as dependency_2 from "./../../../google/protobuf/timestamp";
 import * as dependency_3 from "./../../../gogoproto/gogo";
 import * as dependency_4 from "./../../../cosmos/base/v1beta1/coin";
-import * as dependency_5 from "./../../../google/protobuf/any";
 import * as pb_1 from "google-protobuf";
 export namespace vulcanize.registry.v1beta1 {
     export class Params extends pb_1.Message {
@@ -348,7 +347,7 @@ export namespace vulcanize.registry.v1beta1 {
             expiry_time?: string;
             deleted?: boolean;
             owners?: string[];
-            attributes?: dependency_5.google.protobuf.Any;
+            attributes?: Uint8Array;
             names?: string[];
             type?: string;
         }) {
@@ -421,13 +420,10 @@ export namespace vulcanize.registry.v1beta1 {
             pb_1.Message.setField(this, 6, value);
         }
         get attributes() {
-            return pb_1.Message.getWrapperField(this, dependency_5.google.protobuf.Any, 7) as dependency_5.google.protobuf.Any;
+            return pb_1.Message.getFieldWithDefault(this, 7, new Uint8Array(0)) as Uint8Array;
         }
-        set attributes(value: dependency_5.google.protobuf.Any) {
-            pb_1.Message.setWrapperField(this, 7, value);
-        }
-        get has_attributes() {
-            return pb_1.Message.getField(this, 7) != null;
+        set attributes(value: Uint8Array) {
+            pb_1.Message.setField(this, 7, value);
         }
         get names() {
             return pb_1.Message.getFieldWithDefault(this, 8, []) as string[];
@@ -448,7 +444,7 @@ export namespace vulcanize.registry.v1beta1 {
             expiry_time?: string;
             deleted?: boolean;
             owners?: string[];
-            attributes?: ReturnType<typeof dependency_5.google.protobuf.Any.prototype.toObject>;
+            attributes?: Uint8Array;
             names?: string[];
             type?: string;
         }): Record {
@@ -472,7 +468,7 @@ export namespace vulcanize.registry.v1beta1 {
                 message.owners = data.owners;
             }
             if (data.attributes != null) {
-                message.attributes = dependency_5.google.protobuf.Any.fromObject(data.attributes);
+                message.attributes = data.attributes;
             }
             if (data.names != null) {
                 message.names = data.names;
@@ -490,7 +486,7 @@ export namespace vulcanize.registry.v1beta1 {
                 expiry_time?: string;
                 deleted?: boolean;
                 owners?: string[];
-                attributes?: ReturnType<typeof dependency_5.google.protobuf.Any.prototype.toObject>;
+                attributes?: Uint8Array;
                 names?: string[];
                 type?: string;
             } = {};
@@ -513,7 +509,7 @@ export namespace vulcanize.registry.v1beta1 {
                 data.owners = this.owners;
             }
             if (this.attributes != null) {
-                data.attributes = this.attributes.toObject();
+                data.attributes = this.attributes;
             }
             if (this.names != null) {
                 data.names = this.names;
@@ -539,8 +535,8 @@ export namespace vulcanize.registry.v1beta1 {
                 writer.writeBool(5, this.deleted);
             if (this.owners.length)
                 writer.writeRepeatedString(6, this.owners);
-            if (this.has_attributes)
-                writer.writeMessage(7, this.attributes, () => this.attributes.serialize(writer));
+            if (this.attributes.length)
+                writer.writeBytes(7, this.attributes);
             if (this.names.length)
                 writer.writeRepeatedString(8, this.names);
             if (this.type.length)
@@ -573,7 +569,7 @@ export namespace vulcanize.registry.v1beta1 {
                         pb_1.Message.addToRepeatedField(message, 6, reader.readString());
                         break;
                     case 7:
-                        reader.readMessage(message.attributes, () => message.attributes = dependency_5.google.protobuf.Any.deserialize(reader));
+                        message.attributes = reader.readBytes();
                         break;
                     case 8:
                         pb_1.Message.addToRepeatedField(message, 8, reader.readString());

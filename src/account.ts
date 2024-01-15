@@ -166,10 +166,6 @@ export class Account {
     assert(message);
     const eipMessageDomain: any = message.eipToSign.domain;
 
-    if(message.eipToSign.message.msgs[0].value.payload!=null){
-      message.eipToSign.message.msgs[0].value.payload.record.attributes.value=Array.from(message.eipToSign.message.msgs[0].value.payload.record.attributes.value)
-    }
-
     const signature = signTypedData({
       data: {
         types: message.eipToSign.types as MessageTypes,

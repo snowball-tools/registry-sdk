@@ -12,13 +12,5 @@ Run following scripts when [proto files](./proto/) are updated.
 2. Generate typescript code for the proto files
 
     ```bash
-    ./scripts/create-proto-files.sh
+    ./scripts/proto-gen.sh
     ```
-
-3. Remove GRPC code from generated code
-
-    ```bash
-    ./scripts/remove-grpc.sh
-    ```
-
-    Reference: https://github.com/tharsis/evmosjs/tree/main/packages/proto#note

@@ -50,18 +50,18 @@ describe('Querying', () => {
     expect(records.length).toBeGreaterThanOrEqual(1);
 
     const { attributes: { repo_registration_record_cid: record_repo_registration_record_cid } } = records[0];
-    expect(repo_registration_record_cid).toBe(record_repo_registration_record_cid);
+    expect(repo_registration_record_cid).toStrictEqual(record_repo_registration_record_cid);
   });
 
   test('Query records by attributes.', async () => {
-    const { version, name } = watcher.record;
-    const records = await registry.queryRecords({ version, name }, true);
+    const { version, url } = watcher.record;
+    const records = await registry.queryRecords({ version, url, type: undefined }, true);
     expect(records.length).toBe(1);
 
     [ watcher ] = records;
-    const { attributes: { version: recordVersion, name: recordName } } = watcher;
+    const { attributes: { version: recordVersion, url: recordName } } = watcher;
     expect(recordVersion).toBe(version);
-    expect(recordName).toBe(name);
+    expect(recordName).toBe(url);
   });
 
   test('Query records by id.', async () => {
@@ -75,6 +75,7 @@ describe('Querying', () => {
     expect(record.id).toBe(watcher.id);
     // temp fix
     expect(record.attributes.repo_registration_record_cid).toBeDefined();
-    expect(record.attributes.repo_registration_record_cid).toHaveLength(46);
+    expect(record.attributes.repo_registration_record_cid).toHaveProperty("/");
+    expect(record.attributes.repo_registration_record_cid["/"]).toHaveLength(46);
   });
 });

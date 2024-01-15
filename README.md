@@ -34,6 +34,12 @@ Follow these steps to run the tests:
 
 - Run the tests with auctions enabled
 
+  - Remove laconicd data from previous run
+
+    ```bash
+    rm -rf ~/.laconicd
+    ```
+
   - In laconicd repo run:
 
     ```bash
@@ -53,6 +59,12 @@ Follow these steps to run the tests:
     ```
 
 - Run the tests for record and authority expiry
+
+  - Remove laconicd data from previous run
+
+    ```bash
+    rm -rf ~/.laconicd
+    ```
 
   - In laconicd repo run:
 

@@ -10,15 +10,23 @@ const attributeField = `
   attributes {
     key
     value {
-      null
-      int
-      float
-      string
-      boolean
-      json
-      reference {
-        id
+      ... on BooleanValue { bool: value }
+      ... on IntValue { int: value }
+      ... on FloatValue { float: value }
+      ... on StringValue { string: value }
+      ... on BytesValue { bytes: value }
+      ... on LinkValue { link: value }
+      ... on ArrayValue {
+        array: value {
+          ... on BooleanValue { bool: value }
+          ... on IntValue { int: value }
+          ... on FloatValue { float: value }
+          ... on StringValue { string: value }
+          ... on BytesValue { bytes: value }
+          ... on LinkValue { link: value }
+        }
       }
+      ... on MapValue { map: value { key mapping: value { __typename } } }
     }
   }
 `;

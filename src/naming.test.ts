@@ -119,9 +119,9 @@ const namingTests = () => {
     await registry.setName({ crn, cid: watcherId }, privateKey, fee);
 
     // Query records should return it (some CRN points to it).
-    const records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
+    const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
+    expect(record).toBeDefined();
+    expect(record.names).toHaveLength(1);
   });
 
   test('Lookup name', async () => {
