@@ -180,9 +180,9 @@ export class Registry {
   }
 
   /**
- * Publish record.
- * @param transactionPrivateKey - private key in HEX to sign transaction.
- */
+   * Publish record.
+   * @param transactionPrivateKey - private key in HEX to sign transaction.
+   */
   async setRecord(
     params: { privateKey: string, record: any, bondId: string },
     transactionPrivateKey: string,

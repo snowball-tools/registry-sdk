@@ -21,34 +21,18 @@ RUN \
     && npm config -g set prefix ${NPM_GLOBAL} \
     && su ${USERNAME} -c "npm config -g set prefix ${NPM_GLOBAL}" \
     # Install eslint
-    && su ${USERNAME} -c "umask 0002 && npm install -g eslint lerna jest" \
+    && su ${USERNAME} -c "umask 0002 && npm install -g eslint" \
     && npm cache clean --force > /dev/null 2>&1
 
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-
-# [Optional] Uncomment if you want to install an additional version of node using nvm
-# ARG EXTRA_NODE_VERSION=10
-# RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
-
-# [Optional] Uncomment if you want to install more global node modules
-# RUN su node -c "npm install -g <your-package-list-here>"
-
 WORKDIR /
-RUN mkdir node_modules && mkdir proto && mkdir scripts && mkdir src
-COPY node_modules ./node_modules/
-COPY proto . ./proto/
-COPY scripts ./scripts/
-COPY src ./src/
 COPY entrypoint.sh .
 ENTRYPOINT ["/entrypoint.sh"]
-# Placeholder CMD : generally this will be overridden at run time like :
-# docker run -it -v /home/builder/cerc/laconic-sdk:/workspace cerc/builder-js sh -c 'cd /workspace && yarn && yarn build'
 CMD node --version
 
-# Temp hack, clone the laconic-sdk repo here
-WORKDIR /app
+WORKDIR /app/laconic-sdk
+
+COPY package*.json .
 RUN yarn install
+COPY . .
 
 WORKDIR /app/laconic-sdk

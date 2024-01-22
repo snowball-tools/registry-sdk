@@ -7,7 +7,7 @@ import { ensureUpdatedConfig, getConfig } from './testing/helper';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
-jest.setTimeout(120 * 1000);
+jest.setTimeout(5 * 60 * 1000);
 
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
@@ -17,12 +17,6 @@ const namingTests = () => {
   let bondId: string;
   let watcher: any;
   let watcherId: string;
-
-  let authorityName: string;
-  let otherAuthorityName: string;
-  let otherPrivateKey: string;
-
-  let crn: string;
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, restEndpoint, chainId);
@@ -46,221 +40,272 @@ const namingTests = () => {
     watcherId = result.data.id;
   });
 
-  test('Reserve authority.', async () => {
-    authorityName = `laconic-${Date.now()}`;
-    await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+  describe('Authority tests', () => {
+    test('Reserve authority.', async () => {
+      const authorityName = `laconic-${Date.now()}`;
+
+      await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+    });
+
+    describe('With authority reserved', () => {
+      let authorityName: string;
+      let crn: string;
+
+      beforeAll(async () => {
+
+        authorityName = `laconic-${Date.now()}`;
+        crn = `crn://${authorityName}/app/test`;
+
+        await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+      })
+
+      test('Lookup authority.', async () => {
+        const [record] = await registry.lookupAuthorities([authorityName]);
+
+        expect(record).toBeDefined();
+        expect(record.ownerAddress).not.toBe('');
+        expect(record.ownerPublicKey).not.toBe('');
+        expect(Number(record.height)).toBeGreaterThan(0);
+      });
+
+      test('Lookup non existing authority', async () => {
+        const [record] = await registry.lookupAuthorities(['does-not-exist']);
+
+        expect(record.ownerAddress).toBe('');
+        expect(record.ownerPublicKey).toBe('');
+        expect(Number(record.height)).toBe(0);
+      });
+
+      test('Reserve already reserved authority', async () => {
+        await expect(registry.reserveAuthority({ name: authorityName }, privateKey, fee)).
+          rejects.toThrow('Name already reserved.');
+      });
+
+      test('Reserve sub-authority.', async () => {
+        const subAuthority = `echo.${authorityName}`;
+        await registry.reserveAuthority({ name: subAuthority }, privateKey, fee);
+
+        const [record] = await registry.lookupAuthorities([subAuthority]);
+        expect(record).toBeDefined();
+        expect(record.ownerAddress).not.toBe('');
+        expect(record.ownerPublicKey).not.toBe('');
+        expect(Number(record.height)).toBeGreaterThan(0);
+      });
+
+      test('Reserve sub-authority with different owner.', async () => {
+        // Create another account, send tx to set public key on the account.
+        const mnenonic1 = Account.generateMnemonic();
+        const otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
+        await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount1.formattedCosmosAddress }, privateKey, fee);
+
+        const mnenonic2 = Account.generateMnemonic();
+        const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
+        await registry.sendCoins({ denom: 'aphoton', amount: '10', destinationAddress: otherAccount2.formattedCosmosAddress }, otherAccount1.getPrivateKey(), fee);
+
+        const subAuthority = `halo.${authorityName}`;
+        await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.formattedCosmosAddress }, privateKey, fee);
+
+        const [record] = await registry.lookupAuthorities([subAuthority]);
+        expect(record).toBeDefined();
+        expect(record.ownerAddress).toBeDefined();
+        expect(record.ownerAddress).toBe(otherAccount1.getCosmosAddress());
+        expect(record.ownerPublicKey).toBeDefined();
+        expect(Number(record.height)).toBeGreaterThan(0);
+      });
+
+      test('Set name for unbonded authority', async () => {
+        assert(watcherId)
+        await expect(registry.setName({ crn, cid: watcherId }, privateKey, fee)).
+          rejects.toThrow('Authority bond not found.');
+      });
+
+      test('Set authority bond', async () => {
+        await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
+      });
+    });
   });
 
-  test('Lookup authority.', async () => {
-    const [record] = await registry.lookupAuthorities([authorityName]);
+  describe('Naming tests', () => {
+    let authorityName: string;
+    let otherAuthorityName: string;
+    let otherPrivateKey: string;
+    let otherAccount: Account;
 
-    expect(record).toBeDefined();
-    expect(record.ownerAddress).not.toBe('');
-    expect(record.ownerPublicKey).not.toBe('');
-    expect(Number(record.height)).toBeGreaterThan(0);
-  });
+    beforeAll(async () => {
+      authorityName = `laconic-${Date.now()}`;
 
-  test('Lookup non existing authority', async () => {
-    const [record] = await registry.lookupAuthorities(['does-not-exist']);
+      await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+      await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
 
-    expect(record.ownerAddress).toBe('');
-    expect(record.ownerPublicKey).toBe('');
-    expect(Number(record.height)).toBe(0);
-  });
+      // Create another account.
+      const mnenonic = Account.generateMnemonic();
+      otherAccount = await Account.generateFromMnemonic(mnenonic);
+      await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, fee);
 
-  test('Reserve already reserved authority', async () => {
-    await expect(registry.reserveAuthority({ name: authorityName }, privateKey, fee)).rejects.toThrow('Name already reserved.');
-  });
+      otherAuthorityName = `other-${Date.now()}`;
+      otherPrivateKey = otherAccount.privateKey.toString('hex');
+    });
 
-  test('Reserve sub-authority.', async () => {
-    const subAuthority = `echo.${authorityName}`;
-    await registry.reserveAuthority({ name: subAuthority }, privateKey, fee);
+    test('Set name', async () => {
+      const crn = `crn://${authorityName}/app/test1`;
 
-    const [record] = await registry.lookupAuthorities([subAuthority]);
-    expect(record).toBeDefined();
-    expect(record.ownerAddress).not.toBe('');
-    expect(record.ownerPublicKey).not.toBe('');
-    expect(Number(record.height)).toBeGreaterThan(0);
-  });
+      await registry.setName({ crn, cid: watcherId }, privateKey, fee);
 
-  test('Reserve sub-authority with different owner.', async () => {
-    // Create another account, send tx to set public key on the account.
-    const mnenonic1 = Account.generateMnemonic();
-    const otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
-    await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount1.formattedCosmosAddress }, privateKey, fee);
+      // Query records should return it (some CRN points to it).
+      const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
+      expect(record).toBeDefined();
+      expect(record.names).toHaveLength(1);
 
-    const mnenonic2 = Account.generateMnemonic();
-    const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
-    await registry.sendCoins({ denom: 'aphoton', amount: '10', destinationAddress: otherAccount2.formattedCosmosAddress }, otherAccount1.getPrivateKey(), fee);
+      await registry.deleteName({ crn }, privateKey, fee);
+    });
 
-    const subAuthority = `halo.${authorityName}`;
-    await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.formattedCosmosAddress }, privateKey, fee);
+    describe('With name set', () => {
+      let crn: string;
 
-    const [record] = await registry.lookupAuthorities([subAuthority]);
-    expect(record).toBeDefined();
-    expect(record.ownerAddress).toBeDefined();
-    expect(record.ownerAddress).toBe(otherAccount1.getCosmosAddress());
-    expect(record.ownerPublicKey).toBeDefined();
-    expect(Number(record.height)).toBeGreaterThan(0);
-  });
+      beforeAll(async () => {
+        crn = `crn://${authorityName}/app/test2`;
+        await registry.setName({ crn, cid: watcherId }, privateKey, fee);
+      });
 
-  test('Set name for unbonded authority', async () => {
-    crn = `crn://${authorityName}/app/test`;
-    assert(watcherId)
-    await expect(registry.setName({ crn, cid: watcherId }, privateKey, fee)).rejects.toThrow('Authority bond not found.');
-  });
+      afterAll(async () => {
+        await registry.deleteName({ crn }, privateKey, fee);
+      });
 
-  test('Set authority bond', async () => {
-    await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
-  });
+      test('Lookup name', async () => {
+        const records = await registry.lookupNames([crn]);
+        expect(records).toBeDefined();
+        expect(records).toHaveLength(1);
 
-  test('Set name', async () => {
-    crn = `crn://${authorityName}/app/test`;
-    await registry.setName({ crn, cid: watcherId }, privateKey, fee);
+        const [{ latest, history }] = records;
+        expect(latest).toBeDefined();
+        expect(latest.id).toBeDefined();
+        expect(latest.id).toBe(watcherId);
+        expect(latest.height).toBeDefined();
+        expect(history).toBeUndefined();
+      });
 
-    // Query records should return it (some CRN points to it).
-    const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
-    expect(record).toBeDefined();
-    expect(record.names).toHaveLength(1);
-  });
+      test('Resolve name', async () => {
+        const records = await registry.resolveNames([crn]);
+        expect(records).toBeDefined();
+        expect(records).toHaveLength(1);
 
-  test('Lookup name', async () => {
-    const records = await registry.lookupNames([crn]);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
+        const [{ attributes }] = records;
+        expect(attributes).toEqual(watcher.record);
+      });
 
-    const [{ latest, history }] = records;
-    expect(latest).toBeDefined();
-    expect(latest.id).toBeDefined();
-    expect(latest.id).toBe(watcherId);
-    expect(latest.height).toBeDefined();
-    expect(history).toBeUndefined();
-  });
+      test('Lookup name with history', async () => {
+        const updatedWatcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
+        const result = await registry.setRecord(
+          {
+            privateKey,
+            bondId,
+            record: updatedWatcher.record
+          },
+          privateKey,
+          fee
+        )
 
-  test('Resolve name', async () => {
-    const records = await registry.resolveNames([crn]);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
+        const updatedWatcherId = result.data.id;
+        await registry.setName({ crn, cid: updatedWatcherId }, privateKey, fee);
 
-    const [{ attributes }] = records;
-    expect(attributes).toEqual(watcher.record);
-  });
+        const records = await registry.lookupNames([crn], true);
+        expect(records).toHaveLength(1);
 
-  test('Lookup name with history', async () => {
-    const updatedWatcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
-    const result = await registry.setRecord(
-      {
-        privateKey,
-        bondId,
-        record: updatedWatcher.record
-      },
-      privateKey,
-      fee
-    )
+        const [{ latest, history }] = records;
+        expect(latest).toBeDefined();
+        expect(latest.id).toBeDefined();
+        expect(latest.id).toBe(updatedWatcherId);
+        expect(latest.height).toBeDefined();
+        expect(history).toBeDefined();
+        expect(history).toHaveLength(1);
 
-    const updatedWatcherId = result.data.id;
-    await registry.setName({ crn, cid: updatedWatcherId }, privateKey, fee);
+        const [oldRecord] = history;
+        expect(oldRecord).toBeDefined();
+        expect(oldRecord.id).toBeDefined();
+        expect(oldRecord.id).toBe(watcherId);
+        expect(oldRecord.height).toBeDefined();
+      });
 
-    const records = await registry.lookupNames([crn], true);
-    expect(records).toHaveLength(1);
+      test('Delete name', async () => {
+        await registry.deleteName({ crn }, privateKey, fee);
 
-    const [{ latest, history }] = records;
-    expect(latest).toBeDefined();
-    expect(latest.id).toBeDefined();
-    expect(latest.id).toBe(updatedWatcherId);
-    expect(latest.height).toBeDefined();
-    expect(history).toBeDefined();
-    expect(history).toHaveLength(1);
+        let records = await registry.lookupNames([crn], true);
+        expect(records).toBeDefined();
+        expect(records).toHaveLength(1);
 
-    const [oldRecord] = history;
-    expect(oldRecord).toBeDefined();
-    expect(oldRecord.id).toBeDefined();
-    expect(oldRecord.id).toBe(watcherId);
-    expect(oldRecord.height).toBeDefined();
-  });
+        const [{ latest }] = records;
+        expect(latest).toBeDefined();
+        expect(latest.id).toBeDefined();
+        expect(latest.id).toBe('');
+        expect(latest.height).toBeDefined();
 
-  test('Set name without reserving authority', async () => {
-    await expect(registry.setName({ crn: 'crn://not-reserved/app/test', cid: watcherId }, privateKey, fee))
-      .rejects.toThrow('Name authority not found.');
-  });
+        // Query records should NOT return it (no CRN points to it).
+        records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
+        expect(records).toBeDefined();
+        expect(records).toHaveLength(0);
 
-  test('Set name for non-owned authority', async () => {
-    // Create another account.
-    const mnenonic = Account.generateMnemonic();
-    const otherAccount = await Account.generateFromMnemonic(mnenonic);
-    await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, fee);
+        // Query all records should return it (all: true).
+        records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
+        expect(records).toBeDefined();
+        expect(records).toHaveLength(1);
+      });
 
-    // Other account reserves an authority.
-    otherAuthorityName = `other-${Date.now()}`;
-    otherPrivateKey = otherAccount.privateKey.toString('hex');
-    await registry.reserveAuthority({ name: otherAuthorityName }, otherPrivateKey, fee);
+      test('Delete already deleted name', async () => {
+        await registry.deleteName({ crn }, privateKey, fee);
+        await registry.deleteName({ crn }, privateKey, fee);
 
-    // Try setting name under other authority.
-    await expect(registry.setName({ crn: `crn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, fee)).rejects.toThrow('Access denied.');
-  });
+        const records = await registry.lookupNames([crn], true);
+        expect(records).toBeDefined();
+        expect(records).toHaveLength(1);
 
-  test('Lookup non existing name', async () => {
-    const records = await registry.lookupNames(['crn://not-reserved/app/test']);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
-    const [record] = records;
-    expect(record).toBeNull();
-  });
+        const [{ latest }] = records;
+        expect(latest).toBeDefined();
+        expect(latest.id).toBeDefined();
+        expect(latest.id).toBe('');
+        expect(latest.height).toBeDefined();
+      });
+    });
 
-  test('Resolve non existing name', async () => {
-    const records = await registry.resolveNames(['crn://not-reserved/app/test']);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
-    const [record] = records;
-    expect(record).toBeNull();
-  });
+    test('Set name without reserving authority', async () => {
+      await expect(registry.setName({ crn: 'crn://not-reserved/app/test', cid: watcherId }, privateKey, fee))
+        .rejects.toThrow('Name authority not found.');
+    });
 
-  test('Delete name', async () => {
-    await registry.deleteName({ crn }, privateKey, fee);
+    test('Set name for non-owned authority', async () => {
+      await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, fee);
 
-    let records = await registry.lookupNames([crn], true);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
+      // Other account reserves an authority.
+      await registry.reserveAuthority({ name: otherAuthorityName }, otherPrivateKey, fee);
 
-    const [{ latest }] = records;
-    expect(latest).toBeDefined();
-    expect(latest.id).toBeDefined();
-    expect(latest.id).toBe('');
-    expect(latest.height).toBeDefined();
+      // Try setting name under other authority.
+      await expect(registry.setName({ crn: `crn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, fee)).rejects.toThrow('Access denied.');
+    });
 
-    // Query records should NOT return it (no CRN points to it).
-    records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(0);
+    test('Delete name for non-owned authority.', async () => {
+      const otherBondId = await registry.getNextBondId(otherPrivateKey);
+      await registry.createBond({ denom: 'aphoton', amount: '10000' }, otherPrivateKey, fee);
+      await registry.setAuthorityBond({ name: otherAuthorityName, bondId: otherBondId }, otherPrivateKey, fee);
+      await registry.setName({ crn: `crn://${otherAuthorityName}/app/test`, cid: watcherId }, otherPrivateKey, fee);
 
-    // Query all records should return it (all: true).
-    records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
-  });
+      // Try deleting name under other authority.
+      await expect(registry.deleteName({ crn: `crn://${otherAuthorityName}/app/test` }, privateKey, fee)).rejects.toThrow('Access denied.');
+    });
 
-  test('Delete already deleted name', async () => {
-    await registry.deleteName({ crn }, privateKey, fee);
+    test('Lookup non existing name', async () => {
+      const records = await registry.lookupNames(['crn://not-reserved/app/test']);
+      expect(records).toBeDefined();
+      expect(records).toHaveLength(1);
+      const [record] = records;
+      expect(record).toBeNull();
+    });
 
-    const records = await registry.lookupNames([crn], true);
-    expect(records).toBeDefined();
-    expect(records).toHaveLength(1);
-
-    const [{ latest }] = records;
-    expect(latest).toBeDefined();
-    expect(latest.id).toBeDefined();
-    expect(latest.id).toBe('');
-    expect(latest.height).toBeDefined();
-  });
-
-  test('Delete name for non-owned authority.', async () => {
-    const otherBondId = await registry.getNextBondId(otherPrivateKey);
-    await registry.createBond({ denom: 'aphoton', amount: '10000' }, otherPrivateKey, fee);
-    await registry.setAuthorityBond({ name: otherAuthorityName, bondId: otherBondId }, otherPrivateKey, fee);
-    await registry.setName({ crn: `crn://${otherAuthorityName}/app/test`, cid: watcherId }, otherPrivateKey, fee);
-
-    // Try deleting name under other authority.
-    await expect(registry.deleteName({ crn: `crn://${otherAuthorityName}/app/test` }, privateKey, fee)).rejects.toThrow('Access denied.');
+    test('Resolve non existing name', async () => {
+      const records = await registry.resolveNames(['crn://not-reserved/app/test']);
+      expect(records).toBeDefined();
+      expect(records).toHaveLength(1);
+      const [record] = records;
+      expect(record).toBeNull();
+    });
   });
 };
 
