@@ -79,7 +79,7 @@ export class Util {
     const res: {[key: string]: any} = {};
 
     attributes.forEach(attr => {
-      res[attr.key] = this.fromGQLValue(attr.value);
+      res[attr.key] = (attr.value === null) ? null : this.fromGQLValue(attr.value);
     });
 
     return res;
