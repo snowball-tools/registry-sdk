@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { Registry } from './index';
-import { getConfig, ensureUpdatedConfig, provisionBondId } from './testing/helper';
+import { getConfig, ensureUpdatedConfig } from './testing/helper';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
@@ -16,7 +16,9 @@ describe('Querying', () => {
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, restEndpoint, chainId);
-    bondId = await provisionBondId(registry, privateKey, fee);
+
+    bondId = await registry.getNextBondId(privateKey);
+    await registry.createBond({ denom: 'aphoton', amount: '1000000000' }, privateKey, fee);
 
     const publishNewWatcherVersion = async () => {
       watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);

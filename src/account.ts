@@ -11,11 +11,13 @@ import { Ripemd160 } from "@cosmjs/crypto";
 import { fromHex, toHex } from '@cosmjs/encoding';
 import { ethToEthermint } from "@tharsis/address-converter"
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
+import { DirectSecp256k1Wallet } from "@cosmjs/proto-signing";
 
 import { Payload, Signature } from './types';
 
 const AMINO_PREFIX = 'EB5AE98721';
 const HDPATH = "m/44'/60'/0'/0";
+const ACCOUNT_PREFIX = "laconic";
 
 const bip32 = BIP32Factory(ecc);
 
@@ -38,6 +40,8 @@ export class Account {
   _registryPublicKey!: string
   _registryAddress!: string
   _ethAddress!: string
+  _wallet!: DirectSecp256k1Wallet
+  _address!: string
 
   /**
    * Generate bip39 mnemonic.
@@ -66,9 +70,7 @@ export class Account {
    */
   constructor(privateKey: Buffer) {
     assert(privateKey);
-
     this._privateKey = privateKey;
-    this.init()
   }
 
   get privateKey() {
@@ -91,7 +93,22 @@ export class Account {
     return this._registryAddress;
   }
 
-  init () {
+  get address() {
+    return this._address;
+  }
+
+  get wallet() {
+    return this._wallet;
+  }
+
+  async init () {
+    this._wallet = await DirectSecp256k1Wallet.fromKey(
+      this._privateKey,
+      ACCOUNT_PREFIX
+    );
+
+    this._address = (await this._wallet.getAccounts())[0].address
+
     // Generate public key.
     this._publicKey = secp256k1.publicKeyCreate(this._privateKey)
     this._encodedPubkey = encodeSecp256k1Pubkey(this._publicKey).value

@@ -7,6 +7,7 @@ import {
   createMessageSend,
   MessageSendParams
 } from '@tharsis/transactions'
+import { DeliverTxResponse, GasPrice, StdFee } from '@cosmjs/stargate';
 
 import { RegistryClient } from "./registry-client";
 import { Account } from "./account";
@@ -51,6 +52,8 @@ import {
   MessageMsgCommitBid,
   MessageMsgRevealBid
 } from './messages/auction';
+import { LaconicClient } from './laconic-client';
+import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
@@ -214,7 +217,8 @@ export class Registry {
   async getNextBondId(privateKey: string) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const accounts = await this.getAccounts([account.formattedCosmosAddress]);
+    await account.init()
+    const accounts = await this.getAccounts([account.address]);
     if (!accounts.length) {
       throw new Error('Account does not exist.');
     }
@@ -243,57 +247,74 @@ export class Registry {
   /**
    * Create bond.
    */
-  async createBond(params: MessageMsgCreateBond, privateKey: string, fee: Fee) {
-    let result;
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+  async createBond({ denom , amount }: MessageMsgCreateBond, privateKey: string, fee: StdFee): Promise<MsgCreateBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'))
+    await account.init()
+    const laconicClient = await this.getLaconicClient(account)
 
-    const msg = createTxMsgCreateBond(this._chain, sender, fee, '', params)
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.createBond(
+      account.address,
+      denom,
+      amount,
+      fee
+    );
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0])
   }
 
   /**
    * Refill bond.
    */
-  async refillBond(params: MessageMsgRefillBond, privateKey: string, fee: Fee) {
-    let result;
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+  async refillBond({ denom, amount, id}: MessageMsgRefillBond, privateKey: string, fee: StdFee): Promise<MsgRefillBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'))
+    await account.init()
+    const laconicClient = await this.getLaconicClient(account)
 
-    const msg = createTxMsgRefillBond(this._chain, sender, fee, '', params)
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.refillBond(
+      account.address,
+      denom,
+      amount,
+      id,
+      fee
+    );
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0])
   }
 
   /**
    * Withdraw (from) bond.
    */
-  async withdrawBond(params: MessageMsgWithdrawBond, privateKey: string, fee: Fee) {
-    let result;
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+  async withdrawBond({ denom, amount, id }: MessageMsgWithdrawBond, privateKey: string, fee: StdFee): Promise<MsgWithdrawBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'))
+    await account.init()
+    const laconicClient = await this.getLaconicClient(account)
 
-    const msg = createTxMsgWithdrawBond(this._chain, sender, fee, '', params)
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.withdrawBond(
+      account.address,
+      denom,
+      amount,
+      id,
+      fee
+    );
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0])
   }
 
   /**
    * Cancel bond.
    */
-  async cancelBond(params: MessageMsgCancelBond, privateKey: string, fee: Fee) {
-    let result;
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+  async cancelBond({ id }: MessageMsgCancelBond, privateKey: string, fee: StdFee): Promise<MsgCancelBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'))
+    await account.init()
+    const laconicClient = await this.getLaconicClient(account)
 
-    const msg = createTxMsgCancelBond(this._chain, sender, fee, '', params)
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.cancelBond(
+      account.address,
+      id,
+      fee
+    );
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0])
   }
 
   /**
@@ -563,6 +584,10 @@ export class Registry {
       accountNumber: number,
       pubkey: account.encodedPubkey,
     }
+  }
+
+  async getLaconicClient(account: Account){
+    return LaconicClient.connectWithSigner(this._endpoints.rest, account.wallet)
   }
 }
 
