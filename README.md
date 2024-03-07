@@ -1,4 +1,4 @@
-# laconic-sdk
+# registry-sdk
 
 Client library used by TS/JS applications to communicate with laconicd.
 
@@ -26,7 +26,7 @@ Follow these steps to run the tests:
 
 - Copy the private key and assign it to variable `PRIVATE_KEY` in the `.env` file.
 
-- Run the tests in laconic-sdk repo:
+- Run the tests in registry-sdk repo:
 
   ```bash
   yarn test

@@ -54,6 +54,7 @@ import {
 } from './messages/auction';
 import { LaconicClient } from './laconic-client';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
+import { Coin } from './proto2/cosmos/base/v1beta1/coin';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
@@ -199,15 +200,23 @@ export class Registry {
   /**
    * Send coins.
    */
-  async sendCoins (params: MessageSendParams, privateKey: string, fee: Fee) {
-    let result;
+  async sendCoins ({ amount, denom, destinationAddress }: MessageSendParams, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    const msg = createMessageSend(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.sendTokens(
+      account.address,
+      destinationAddress,
+      [
+        Coin.fromPartial({
+          denom,
+          amount
+        })
+      ],
+      fee);
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -375,34 +384,36 @@ export class Registry {
   /**
    * Reserve authority.
    */
-  async reserveAuthority (params: { name: string, owner?: string }, privateKey: string, fee: Fee) {
-    let result;
+  async reserveAuthority ({ name, owner }: { name: string, owner?: string }, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+    const response: DeliverTxResponse = await laconicClient.reserveAuthority(
+      account.address,
+      name,
+      owner || account.address,
+      fee
+    );
 
-    const msgParams = {
-      name: params.name,
-      owner: params.owner || sender.accountAddress
-    };
-
-    const msg = createTxMsgReserveAuthority(this._chain, sender, fee, '', msgParams);
-    result = await this._submitTx(msg, privateKey, sender);
-
-    return parseTxResponse(result);
+    // TODO: Parse error response
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Set authority bond.
    */
-  async setAuthorityBond (params: MessageMsgSetAuthorityBond, privateKey: string, fee: Fee) {
-    let result;
+  async setAuthorityBond ({ bondId, name }: MessageMsgSetAuthorityBond, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+    const response: DeliverTxResponse = await laconicClient.setAuthorityBond(
+      account.address,
+      bondId,
+      name,
+      fee
+    );
 
-    const msg = createTxMsgSetAuthorityBond(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
-
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**

@@ -1,7 +1,9 @@
 import { Registry, Account, createBid } from './index';
-import { getConfig } from './testing/helper';
+import { getConfig, getLaconic2Config } from './testing/helper';
+import { DENOM } from './constants';
 
 jest.setTimeout(30 * 60 * 1000);
+const { fee: laconic2Fee } = getLaconic2Config();
 
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
@@ -23,15 +25,15 @@ const auctionTests = (numBidders = 3) => {
     for (let i = 0; i < numBidders; i++) {
       const mnenonic = Account.generateMnemonic();
       const account = await Account.generateFromMnemonic(mnenonic);
-      const bidderAddress = account.formattedCosmosAddress;
-      await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: bidderAddress }, privateKey, fee);
-      accounts.push({ address: bidderAddress, privateKey: account.privateKey.toString('hex') });
+      await account.init();
+      await registry.sendCoins({ denom: DENOM, amount: '100000', destinationAddress: account.address }, privateKey, laconic2Fee);
+      accounts.push({ address: account.address, privateKey: account.privateKey.toString('hex') });
     }
   });
 
   test('Reserve authority.', async () => {
     authorityName = `laconic-${Date.now()}`;
-    await registry.reserveAuthority({ name: authorityName }, accounts[0].privateKey, fee);
+    await registry.reserveAuthority({ name: authorityName }, accounts[0].privateKey, laconic2Fee);
   });
 
   test('Authority should be under auction.', async () => {
