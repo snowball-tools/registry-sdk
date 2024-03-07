@@ -3,9 +3,8 @@ import { getConfig, getLaconic2Config } from './testing/helper';
 import { DENOM } from './constants';
 
 jest.setTimeout(30 * 60 * 1000);
-const { fee: laconic2Fee } = getLaconic2Config();
-
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
+const { fee: laconic2Fee } = getLaconic2Config();
 
 const auctionTests = (numBidders = 3) => {
   let registry: Registry;
@@ -26,7 +25,7 @@ const auctionTests = (numBidders = 3) => {
       const mnenonic = Account.generateMnemonic();
       const account = await Account.generateFromMnemonic(mnenonic);
       await account.init();
-      await registry.sendCoins({ denom: DENOM, amount: '100000', destinationAddress: account.address }, privateKey, laconic2Fee);
+      await registry.sendCoins({ denom: DENOM, amount: '20000000', destinationAddress: account.address }, privateKey, laconic2Fee);
       accounts.push({ address: account.address, privateKey: account.privateKey.toString('hex') });
     }
   });
@@ -50,8 +49,8 @@ const auctionTests = (numBidders = 3) => {
 
   test('Commit bids.', async () => {
     for (let i = 0; i < numBidders; i++) {
-      accounts[i].bid = await createBid(chainId, auctionId, accounts[i].address, `${10000000 + (i * 500)}aphoton`);
-      await registry.commitBid({ auctionId, commitHash: accounts[i].bid.commitHash }, accounts[i].privateKey, fee);
+      accounts[i].bid = await createBid(chainId, auctionId, accounts[i].address, `${10000000 + (i * 500)}${DENOM}`);
+      await registry.commitBid({ auctionId, commitHash: accounts[i].bid.commitHash }, accounts[i].privateKey, laconic2Fee);
     }
   });
 
@@ -75,7 +74,7 @@ const auctionTests = (numBidders = 3) => {
     expect(auction.status).toEqual('reveal');
 
     for (let i = 0; i < numBidders; i++) {
-      await registry.revealBid({ auctionId, reveal: accounts[i].bid.revealString }, accounts[i].privateKey, fee);
+      await registry.revealBid({ auctionId, reveal: accounts[i].bid.revealString }, accounts[i].privateKey, laconic2Fee);
     }
   });
 

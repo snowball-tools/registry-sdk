@@ -216,7 +216,8 @@ export class Registry {
       ],
       fee);
 
-    return laconicClient.registry.decode(response.msgResponses[0]);
+    // TODO: Register type /cosmos.bank.v1beta1.MsgSendResponse for decoding response
+    return response;
   }
 
   /**
@@ -419,29 +420,35 @@ export class Registry {
   /**
    * Commit auction bid.
    */
-  async commitBid (params: MessageMsgCommitBid, privateKey: string, fee: Fee) {
-    let result;
+  async commitBid ({ auctionId, commitHash }: MessageMsgCommitBid, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+    const response: DeliverTxResponse = await laconicClient.commitBid(
+      account.address,
+      auctionId,
+      commitHash,
+      fee
+    );
 
-    const msg = createTxMsgCommitBid(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
-
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Reveal auction bid.
    */
-  async revealBid (params: MessageMsgRevealBid, privateKey: string, fee: Fee) {
-    let result;
+  async revealBid ({ auctionId, reveal }: MessageMsgRevealBid, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+    const response: DeliverTxResponse = await laconicClient.revealBid(
+      account.address,
+      auctionId,
+      reveal,
+      fee
+    );
 
-    const msg = createTxMsgRevealBid(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
-
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**

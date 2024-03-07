@@ -12,11 +12,13 @@ import { Comet38Client } from '@cosmjs/tendermint-rpc';
 import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEncodeObject, MsgWithdrawBondEncodeObject, bondTypes, typeUrlMsgCancelBond, typeUrlMsgCreateBond, typeUrlMsgRefillBond, typeUrlMsgWithdrawBond } from './types/cerc/bond/message';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
 import { MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, registryTypes, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond } from './types/cerc/registry/message';
+import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
 
 export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
   ...bondTypes,
-  ...registryTypes
+  ...registryTypes,
+  ...auctionTypes
 ];
 
 function createDefaultRegistry (): Registry {
@@ -139,6 +141,44 @@ export class LaconicClient extends SigningStargateClient {
         name,
         signer,
         owner
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async commitBid (
+    signer: string,
+    auctionId: string,
+    commitHash: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgCommitBidEncodeObject = {
+      typeUrl: typeUrlMsgCommitBid,
+      value: {
+        signer,
+        auctionId,
+        commitHash
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async revealBid (
+    signer: string,
+    auctionId: string,
+    reveal: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgRevealBidEncodeObject = {
+      typeUrl: typeUrlMsgRevealBid,
+      value: {
+        signer,
+        auctionId,
+        reveal
       }
     };
 
