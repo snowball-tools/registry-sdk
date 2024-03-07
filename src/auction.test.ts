@@ -119,7 +119,6 @@ if (!process.env.TEST_AUCTIONS_ENABLED) {
 
     TEST_AUCTION_ENABLED=true ./init.sh
 
-
     Run tests:
 
     yarn test:auctions

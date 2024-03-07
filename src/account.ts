@@ -7,17 +7,17 @@ import secp256k1 from 'secp256k1';
 import { utils } from 'ethers';
 import { sha256 } from 'js-sha256';
 import { MessageTypes, signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { Ripemd160 } from "@cosmjs/crypto";
+import { Ripemd160 } from '@cosmjs/crypto';
 import { fromHex, toHex } from '@cosmjs/encoding';
-import { ethToEthermint } from "@tharsis/address-converter"
+import { ethToEthermint } from '@tharsis/address-converter';
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
-import { DirectSecp256k1Wallet } from "@cosmjs/proto-signing";
+import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
 import { Payload, Signature } from './types';
 
 const AMINO_PREFIX = 'EB5AE98721';
 const HDPATH = "m/44'/60'/0'/0";
-const ACCOUNT_PREFIX = "laconic";
+const ACCOUNT_PREFIX = 'laconic';
 
 const bip32 = BIP32Factory(ecc);
 
@@ -33,27 +33,27 @@ interface TypedMessageDomain {
  * Registry account.
  */
 export class Account {
-  _privateKey: Buffer
-  _publicKey!: Uint8Array
-  _encodedPubkey!: string
-  _formattedCosmosAddress!: string
-  _registryPublicKey!: string
-  _registryAddress!: string
-  _ethAddress!: string
-  _wallet!: DirectSecp256k1Wallet
-  _address!: string
+  _privateKey: Buffer;
+  _publicKey!: Uint8Array;
+  _encodedPubkey!: string;
+  _formattedCosmosAddress!: string;
+  _registryPublicKey!: string;
+  _registryAddress!: string;
+  _ethAddress!: string;
+  _wallet!: DirectSecp256k1Wallet;
+  _address!: string;
 
   /**
    * Generate bip39 mnemonic.
    */
-  static generateMnemonic() {
+  static generateMnemonic () {
     return bip39.generateMnemonic();
   }
 
   /**
    * Generate private key from mnemonic.
    */
-  static async generateFromMnemonic(mnemonic: string) {
+  static async generateFromMnemonic (mnemonic: string) {
     assert(mnemonic);
 
     const seed = await bip39.mnemonicToSeed(mnemonic);
@@ -68,36 +68,36 @@ export class Account {
   /**
    * New Account.
    */
-  constructor(privateKey: Buffer) {
+  constructor (privateKey: Buffer) {
     assert(privateKey);
     this._privateKey = privateKey;
   }
 
-  get privateKey() {
+  get privateKey () {
     return this._privateKey;
   }
 
-  get encodedPubkey() {
+  get encodedPubkey () {
     return this._encodedPubkey;
   }
 
-  get formattedCosmosAddress() {
+  get formattedCosmosAddress () {
     return this._formattedCosmosAddress;
   }
 
-  get registryPublicKey() {
+  get registryPublicKey () {
     return this._registryPublicKey;
   }
 
-  get registryAddress() {
+  get registryAddress () {
     return this._registryAddress;
   }
 
-  get address() {
+  get address () {
     return this._address;
   }
 
-  get wallet() {
+  get wallet () {
     return this._wallet;
   }
 
@@ -107,14 +107,14 @@ export class Account {
       ACCOUNT_PREFIX
     );
 
-    this._address = (await this._wallet.getAccounts())[0].address
+    this._address = (await this._wallet.getAccounts())[0].address;
 
     // Generate public key.
-    this._publicKey = secp256k1.publicKeyCreate(this._privateKey)
-    this._encodedPubkey = encodeSecp256k1Pubkey(this._publicKey).value
+    this._publicKey = secp256k1.publicKeyCreate(this._privateKey);
+    this._encodedPubkey = encodeSecp256k1Pubkey(this._publicKey).value;
 
     // 2. Generate eth address.
-    this._ethAddress = utils.computeAddress(this._publicKey)
+    this._ethAddress = utils.computeAddress(this._publicKey);
 
     // 3. Generate cosmos-sdk formatted address.
     this._formattedCosmosAddress = ethToEthermint(this._ethAddress);
@@ -131,21 +131,21 @@ export class Account {
   /**
    * Get private key.
    */
-  getPrivateKey() {
+  getPrivateKey () {
     return this._privateKey.toString('hex');
   }
 
   /**
    * Get cosmos address.
    */
-  getCosmosAddress() {
+  getCosmosAddress () {
     return this._formattedCosmosAddress;
   }
 
   /**
    * Get record signature.
    */
-  async signRecord(record: any) {
+  async signRecord (record: any) {
     assert(record);
 
     const recordAsJson = canonicalStringify(record);
@@ -162,14 +162,14 @@ export class Account {
     return Buffer.from(sigObj.signature);
   }
 
-  async signPayload(payload: Payload) {
+  async signPayload (payload: Payload) {
     assert(payload);
 
     const { record } = payload;
     const messageToSign = record.getMessageToSign();
 
     const sig = await this.signRecord(messageToSign);
-    assert(this.registryPublicKey)
+    assert(this.registryPublicKey);
     const signature = new Signature(this.registryPublicKey, sig.toString('base64'));
     payload.addSignature(signature);
 
@@ -179,7 +179,7 @@ export class Account {
   /**
    * Sign message.
    */
-  sign(message: any) {
+  sign (message: any) {
     assert(message);
     const eipMessageDomain: any = message.eipToSign.domain;
 
@@ -192,7 +192,7 @@ export class Account {
       },
       privateKey: this._privateKey,
       version: SignTypedDataVersion.V4
-    })
+    });
 
     return signature;
   }

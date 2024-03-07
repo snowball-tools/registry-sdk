@@ -31,17 +31,17 @@ export const getConfig = () => {
     fee: {
       amount: '40',
       denom: 'aphoton',
-      gas: '400000',
+      gas: '400000'
     }
-  }
+  };
 };
 
 // TODO: Merge both config
 export const getLaconic2Config = () => {
   return {
     fee: {
-      amount: [{ denom: "photon", amount: "40" }],
-      gas: "400000",
+      amount: [{ denom: 'photon', amount: '40' }],
+      gas: '400000'
     }
-  }
-}
+  };
+};

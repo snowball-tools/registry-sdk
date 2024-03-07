@@ -34,15 +34,15 @@ const utilTests = () => {
       },
       privateKey,
       fee
-    )
+    );
 
     watcherId = result.data.id;
   });
 
   test('Generate content id.', async () => {
     const cid = await Util.getContentId(watcher.record);
-    expect(cid).toBe(watcherId)
+    expect(cid).toBe(watcherId);
   });
-}
+};
 
 describe('Util', utilTests);

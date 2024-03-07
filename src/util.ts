@@ -1,7 +1,7 @@
-import * as Block from 'multiformats/block'
-import { sha256 as hasher } from 'multiformats/hashes/sha2'
-import * as dagCBOR from '@ipld/dag-cbor'
-import * as dagJSON from '@ipld/dag-json'
+import * as Block from 'multiformats/block';
+import { sha256 as hasher } from 'multiformats/hashes/sha2';
+import * as dagCBOR from '@ipld/dag-cbor';
+import * as dagJSON from '@ipld/dag-json';
 
 /**
  * Utils
@@ -10,7 +10,7 @@ export class Util {
   /**
    * Sorts JSON object.
    */
-  static sortJSON(obj: any) {
+  static sortJSON (obj: any) {
     if (obj instanceof Array) {
       for (let i = 0; i < obj.length; i++) {
         obj[i] = Util.sortJSON(obj[i]);
@@ -32,7 +32,7 @@ export class Util {
   /**
    * Marshal object into gql 'attributes' variable.
    */
-  static toGQLAttributes(obj: any) {
+  static toGQLAttributes (obj: any) {
     const vars: any[] = [];
     Object.keys(obj).forEach(key => {
       const value = this.toGQLValue(obj[key]);
@@ -44,38 +44,38 @@ export class Util {
     return vars;
   }
 
-  static toGQLValue(obj: any) {
-      if (obj === null) {
-        return null;
-      }
-      let type: string = typeof obj;
-      switch (type) {
-        case 'number':
-          type = (obj % 1 === 0) ? 'int' : 'float';
-          return { [type]: obj };
-        case 'string':
-          return { 'string': obj };
-        case 'boolean':
-          return { 'boolean': obj };
-        case 'object':
-          if (obj['/'] !== undefined) {
-            return { 'link': obj['/']  };
-          }
-          if (obj instanceof Array) {
-            return { 'array': obj };
-          }
-          return { 'map': obj };
-        case 'undefined':
-          return undefined;
-        default:
-          throw new Error(`Unknown object type '${type}': ${obj}`);
-      }
+  static toGQLValue (obj: any) {
+    if (obj === null) {
+      return null;
+    }
+    let type: string = typeof obj;
+    switch (type) {
+      case 'number':
+        type = (obj % 1 === 0) ? 'int' : 'float';
+        return { [type]: obj };
+      case 'string':
+        return { string: obj };
+      case 'boolean':
+        return { boolean: obj };
+      case 'object':
+        if (obj['/'] !== undefined) {
+          return { link: obj['/'] };
+        }
+        if (obj instanceof Array) {
+          return { array: obj };
+        }
+        return { map: obj };
+      case 'undefined':
+        return undefined;
+      default:
+        throw new Error(`Unknown object type '${type}': ${obj}`);
+    }
   }
 
   /**
    * Unmarshal attributes array to object.
    */
-  static fromGQLAttributes(attributes: any[] = []) {
+  static fromGQLAttributes (attributes: any[] = []) {
     const res: {[key: string]: any} = {};
 
     attributes.forEach(attr => {
@@ -85,7 +85,7 @@ export class Util {
     return res;
   }
 
-  static fromGQLValue(obj: any) {
+  static fromGQLValue (obj: any) {
     // Get first non-null key
     const present = Object.keys(obj).find(k => obj[k] !== null);
     if (present === undefined) {
@@ -105,15 +105,15 @@ export class Util {
   /**
    * Get record content ID.
    */
-  static async getContentId(record: any) {
-    const serialized = dagJSON.encode(record)
-    const recordData = dagJSON.decode(serialized)
+  static async getContentId (record: any) {
+    const serialized = dagJSON.encode(record);
+    const recordData = dagJSON.decode(serialized);
 
     const block = await Block.encode({
       value: recordData,
       codec: dagCBOR,
       hasher
-    })
+    });
 
     return block.cid.toString();
   }

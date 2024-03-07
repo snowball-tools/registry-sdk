@@ -60,7 +60,7 @@ describe('Querying', () => {
     const records = await registry.queryRecords({ version, url, type: undefined }, true);
     expect(records.length).toBe(1);
 
-    [ watcher ] = records;
+    [watcher] = records;
     const { attributes: { version: recordVersion, url: recordName } } = watcher;
     expect(recordVersion).toBe(version);
     expect(recordName).toBe(url);
@@ -77,7 +77,7 @@ describe('Querying', () => {
     expect(record.id).toBe(watcher.id);
     // temp fix
     expect(record.attributes.repo_registration_record_cid).toBeDefined();
-    expect(record.attributes.repo_registration_record_cid).toHaveProperty("/");
-    expect(record.attributes.repo_registration_record_cid["/"]).toHaveLength(46);
+    expect(record.attributes.repo_registration_record_cid).toHaveProperty('/');
+    expect(record.attributes.repo_registration_record_cid['/']).toHaveLength(46);
   });
 });

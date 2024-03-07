@@ -6,12 +6,12 @@ import {
   Fee,
   createMessageSend,
   MessageSendParams
-} from '@tharsis/transactions'
+} from '@tharsis/transactions';
 import { DeliverTxResponse, GasPrice, StdFee } from '@cosmjs/stargate';
 
-import { RegistryClient } from "./registry-client";
-import { Account } from "./account";
-import { createTransaction } from "./txbuilder";
+import { RegistryClient } from './registry-client';
+import { Account } from './account';
+import { createTransaction } from './txbuilder';
 import { Payload, Record } from './types';
 import { Util } from './util';
 import {
@@ -31,7 +31,7 @@ import {
   MessageMsgReAssociateRecords,
   MessageMsgRefillBond,
   MessageMsgWithdrawBond
-} from "./messages/bond";
+} from './messages/bond';
 import {
   createTxMsgDeleteName,
   createTxMsgReserveAuthority,
@@ -64,7 +64,7 @@ export const parseTxResponse = (result: any, parseResponse?: (data: string) => a
   const { txhash: hash, height, ...txResponse } = result;
 
   if (parseResponse) {
-    txResponse.data = parseResponse(txResponse.data)
+    txResponse.data = parseResponse(txResponse.data);
   }
 
   txResponse.events.forEach((event:any) => {
@@ -106,25 +106,24 @@ export const createBid = async (chainId: string, auctionId: string, bidderAddres
 export const isKeyValid = (key: string) => key && key.match(/^[0-9a-fA-F]{64}$/);
 
 export class Registry {
-  _endpoints: {[key: string]: string}
-  _chainID: string
-  _chain: Chain
-  _client: RegistryClient
+  _endpoints: {[key: string]: string};
+  _chainID: string;
+  _chain: Chain;
+  _client: RegistryClient;
 
-  static processWriteError(error: string) {
+  static processWriteError (error: string) {
     // error string a stacktrace containing the message.
     // https://gist.github.com/nikugogoi/de55d390574ded3466abad8bffd81952#file-txresponse-js-L7
-    const errorMessage = NAMESERVICE_ERRORS.find(message => error.includes(message))
+    const errorMessage = NAMESERVICE_ERRORS.find(message => error.includes(message));
 
     if (!errorMessage) {
-      console.error(error)
+      console.error(error);
     }
 
     return errorMessage || DEFAULT_WRITE_ERROR;
   }
 
-  constructor(gqlUrl: string, restUrl: string = "", chainId: string = DEFAULT_CHAIN_ID) {
-
+  constructor (gqlUrl: string, restUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
     this._endpoints = {
       rest: restUrl,
       gql: gqlUrl
@@ -142,43 +141,43 @@ export class Registry {
   /**
    * Get accounts by addresses.
    */
-  async getAccounts(addresses: string[]) {
+  async getAccounts (addresses: string[]) {
     return this._client.getAccounts(addresses);
   }
 
-  get endpoints() {
+  get endpoints () {
     return this._endpoints;
   }
 
-  get chainID() {
+  get chainID () {
     return this._chainID;
   }
 
   /**
    * Get server status.
    */
-  async getStatus() {
+  async getStatus () {
     return this._client.getStatus();
   }
 
   /**
    * Get records by ids.
    */
-  async getRecordsByIds(ids: string[], refs = false) {
+  async getRecordsByIds (ids: string[], refs = false) {
     return this._client.getRecordsByIds(ids, refs);
   }
 
   /**
    * Get records by attributes.
    */
-  async queryRecords(attributes: {[key: string]: any}, all = false, refs = false) {
+  async queryRecords (attributes: {[key: string]: any}, all = false, refs = false) {
     return this._client.queryRecords(attributes, all, refs);
   }
 
   /**
    * Resolve names to records.
    */
-  async resolveNames(names: string[], refs = false) {
+  async resolveNames (names: string[], refs = false) {
     return this._client.resolveNames(names, refs);
   }
 
@@ -186,7 +185,7 @@ export class Registry {
    * Publish record.
    * @param transactionPrivateKey - private key in HEX to sign transaction.
    */
-  async setRecord(
+  async setRecord (
     params: { privateKey: string, record: any, bondId: string },
     transactionPrivateKey: string,
     fee: Fee
@@ -200,12 +199,12 @@ export class Registry {
   /**
    * Send coins.
    */
-  async sendCoins(params: MessageSendParams, privateKey: string, fee: Fee) {
+  async sendCoins (params: MessageSendParams, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createMessageSend(this._chain, sender, fee, '', params)
+    const msg = createMessageSend(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -214,10 +213,10 @@ export class Registry {
   /**
    * Computes the next bondId for the given account private key.
    */
-  async getNextBondId(privateKey: string) {
+  async getNextBondId (privateKey: string) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    await account.init()
+    await account.init();
     const accounts = await this.getAccounts([account.address]);
     if (!accounts.length) {
       throw new Error('Account does not exist.');
@@ -233,24 +232,24 @@ export class Registry {
   /**
    * Get bonds by ids.
    */
-  async getBondsByIds(ids: string[]) {
+  async getBondsByIds (ids: string[]) {
     return this._client.getBondsByIds(ids);
   }
 
   /**
    * Query bonds by attributes.
    */
-  async queryBonds(attributes = {}) {
+  async queryBonds (attributes = {}) {
     return this._client.queryBonds(attributes);
   }
 
   /**
    * Create bond.
    */
-  async createBond({ denom , amount }: MessageMsgCreateBond, privateKey: string, fee: StdFee): Promise<MsgCreateBondResponse> {
-    const account = new Account(Buffer.from(privateKey, 'hex'))
-    await account.init()
-    const laconicClient = await this.getLaconicClient(account)
+  async createBond ({ denom, amount }: MessageMsgCreateBond, privateKey: string, fee: StdFee): Promise<MsgCreateBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
     const response: DeliverTxResponse = await laconicClient.createBond(
       account.address,
@@ -259,16 +258,16 @@ export class Registry {
       fee
     );
 
-    return laconicClient.registry.decode(response.msgResponses[0])
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Refill bond.
    */
-  async refillBond({ denom, amount, id}: MessageMsgRefillBond, privateKey: string, fee: StdFee): Promise<MsgRefillBondResponse> {
-    const account = new Account(Buffer.from(privateKey, 'hex'))
-    await account.init()
-    const laconicClient = await this.getLaconicClient(account)
+  async refillBond ({ denom, amount, id }: MessageMsgRefillBond, privateKey: string, fee: StdFee): Promise<MsgRefillBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
     const response: DeliverTxResponse = await laconicClient.refillBond(
       account.address,
@@ -278,16 +277,16 @@ export class Registry {
       fee
     );
 
-    return laconicClient.registry.decode(response.msgResponses[0])
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Withdraw (from) bond.
    */
-  async withdrawBond({ denom, amount, id }: MessageMsgWithdrawBond, privateKey: string, fee: StdFee): Promise<MsgWithdrawBondResponse> {
-    const account = new Account(Buffer.from(privateKey, 'hex'))
-    await account.init()
-    const laconicClient = await this.getLaconicClient(account)
+  async withdrawBond ({ denom, amount, id }: MessageMsgWithdrawBond, privateKey: string, fee: StdFee): Promise<MsgWithdrawBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
     const response: DeliverTxResponse = await laconicClient.withdrawBond(
       account.address,
@@ -297,16 +296,16 @@ export class Registry {
       fee
     );
 
-    return laconicClient.registry.decode(response.msgResponses[0])
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Cancel bond.
    */
-  async cancelBond({ id }: MessageMsgCancelBond, privateKey: string, fee: StdFee): Promise<MsgCancelBondResponse> {
-    const account = new Account(Buffer.from(privateKey, 'hex'))
-    await account.init()
-    const laconicClient = await this.getLaconicClient(account)
+  async cancelBond ({ id }: MessageMsgCancelBond, privateKey: string, fee: StdFee): Promise<MsgCancelBondResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
     const response: DeliverTxResponse = await laconicClient.cancelBond(
       account.address,
@@ -314,18 +313,18 @@ export class Registry {
       fee
     );
 
-    return laconicClient.registry.decode(response.msgResponses[0])
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Associate record with bond.
    */
-  async associateBond(params: MessageMsgAssociateBond, privateKey: string, fee: Fee) {
+  async associateBond (params: MessageMsgAssociateBond, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgAssociateBond(this._chain, sender, fee, '', params)
+    const msg = createTxMsgAssociateBond(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -334,12 +333,12 @@ export class Registry {
   /**
    * Dissociate record from bond.
    */
-  async dissociateBond(params: MessageMsgDissociateBond, privateKey: string, fee: Fee) {
+  async dissociateBond (params: MessageMsgDissociateBond, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgDissociateBond(this._chain, sender, fee, '', params)
+    const msg = createTxMsgDissociateBond(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -348,12 +347,12 @@ export class Registry {
   /**
    * Dissociate all records from bond.
    */
-  async dissociateRecords(params: MessageMsgDissociateRecords, privateKey: string, fee: Fee) {
+  async dissociateRecords (params: MessageMsgDissociateRecords, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgDissociateRecords(this._chain, sender, fee, '', params)
+    const msg = createTxMsgDissociateRecords(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -362,12 +361,12 @@ export class Registry {
   /**
    * Reassociate records (switch bond).
    */
-  async reassociateRecords(params: MessageMsgReAssociateRecords, privateKey: string, fee: Fee) {
+  async reassociateRecords (params: MessageMsgReAssociateRecords, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgReAssociateRecords(this._chain, sender, fee, '', params)
+    const msg = createTxMsgReAssociateRecords(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -376,7 +375,7 @@ export class Registry {
   /**
    * Reserve authority.
    */
-  async reserveAuthority(params: { name: string, owner?: string }, privateKey: string, fee: Fee) {
+  async reserveAuthority (params: { name: string, owner?: string }, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
@@ -384,9 +383,9 @@ export class Registry {
     const msgParams = {
       name: params.name,
       owner: params.owner || sender.accountAddress
-    }
+    };
 
-    const msg = createTxMsgReserveAuthority(this._chain, sender, fee, '', msgParams)
+    const msg = createTxMsgReserveAuthority(this._chain, sender, fee, '', msgParams);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -395,12 +394,12 @@ export class Registry {
   /**
    * Set authority bond.
    */
-  async setAuthorityBond(params: MessageMsgSetAuthorityBond, privateKey: string, fee: Fee) {
+  async setAuthorityBond (params: MessageMsgSetAuthorityBond, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgSetAuthorityBond(this._chain, sender, fee, '', params)
+    const msg = createTxMsgSetAuthorityBond(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -409,12 +408,12 @@ export class Registry {
   /**
    * Commit auction bid.
    */
-  async commitBid(params: MessageMsgCommitBid, privateKey: string, fee: Fee) {
+  async commitBid (params: MessageMsgCommitBid, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgCommitBid(this._chain, sender, fee, '', params)
+    const msg = createTxMsgCommitBid(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -423,12 +422,12 @@ export class Registry {
   /**
    * Reveal auction bid.
    */
-  async revealBid(params: MessageMsgRevealBid, privateKey: string, fee: Fee) {
+  async revealBid (params: MessageMsgRevealBid, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgRevealBid(this._chain, sender, fee, '', params)
+    const msg = createTxMsgRevealBid(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -437,26 +436,26 @@ export class Registry {
   /**
    * Get records by ids.
    */
-  async getAuctionsByIds(ids: string[]) {
+  async getAuctionsByIds (ids: string[]) {
     return this._client.getAuctionsByIds(ids);
   }
 
   /**
    * Lookup authorities by names.
    */
-  async lookupAuthorities(names: string[], auction = false) {
+  async lookupAuthorities (names: string[], auction = false) {
     return this._client.lookupAuthorities(names, auction);
   }
 
   /**
    * Set name (CRN) to record ID (CID).
    */
-  async setName(params: MessageMsgSetName, privateKey: string, fee: Fee) {
+  async setName (params: MessageMsgSetName, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgSetName(this._chain, sender, fee, '', params)
+    const msg = createTxMsgSetName(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -465,19 +464,19 @@ export class Registry {
   /**
    * Lookup naming information.
    */
-  async lookupNames(names: string[], history = false) {
+  async lookupNames (names: string[], history = false) {
     return this._client.lookupNames(names, history);
   }
 
   /**
    * Delete name (CRN) mapping.
    */
-  async deleteName(params: MessageMsgDeleteName, privateKey: string, fee: Fee) {
+  async deleteName (params: MessageMsgDeleteName, privateKey: string, fee: Fee) {
     let result;
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgDeleteName(this._chain, sender, fee, '', params)
+    const msg = createTxMsgDeleteName(this._chain, sender, fee, '', params);
     result = await this._submitTx(msg, privateKey, sender);
 
     return parseTxResponse(result);
@@ -488,7 +487,7 @@ export class Registry {
    * @param privateKey - private key in HEX to sign message.
    * @param txPrivateKey - private key in HEX to sign transaction.
    */
-  async _submitRecordTx(
+  async _submitRecordTx (
     { privateKey, record, bondId }: { privateKey: string, record: any, bondId: string },
     txPrivateKey: string,
     fee: Fee
@@ -512,7 +511,7 @@ export class Registry {
     return this._submitRecordPayloadTx({ payload, bondId }, txPrivateKey, fee);
   }
 
-  async _submitRecordPayloadTx(params: MessageMsgSetRecord, privateKey: string, fee: Fee) {
+  async _submitRecordPayloadTx (params: MessageMsgSetRecord, privateKey: string, fee: Fee) {
     if (!isKeyValid(privateKey)) {
       throw new Error('Registry privateKey should be a hex string.');
     }
@@ -524,14 +523,14 @@ export class Registry {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const sender = await this._getSender(account);
 
-    const msg = createTxMsgSetRecord(this._chain, sender, fee, '', params)
+    const msg = createTxMsgSetRecord(this._chain, sender, fee, '', params);
     return this._submitTx(msg, privateKey, sender);
   }
 
   /**
    * Submit a generic Tx to the chain.
    */
-  async _submitTx(message: any, privateKey: string, sender: Sender) {
+  async _submitTx (message: any, privateKey: string, sender: Sender) {
     // Check private key.
     if (!isKeyValid(privateKey)) {
       throw new Error('Registry privateKey should be a hex string.');
@@ -543,7 +542,7 @@ export class Registry {
     // Generate signed Tx.
     const transaction = createTransaction(message, account, sender, this._chain);
 
-    const tx = generatePostBodyBroadcast(transaction, BroadcastMode.Block)
+    const tx = generatePostBodyBroadcast(transaction, BroadcastMode.Block);
 
     // Submit Tx to chain.
     const { tx_response: response } = await this._client.submit(tx);
@@ -551,7 +550,7 @@ export class Registry {
     if (response.code !== 0) {
       // Throw error when transaction is not successful.
       // https://docs.starport.com/guide/nameservice/05-play.html#buy-name-transaction-details
-      throw new Error(Registry.processWriteError(response.raw_log))
+      throw new Error(Registry.processWriteError(response.raw_log));
     }
 
     return response;
@@ -561,10 +560,10 @@ export class Registry {
    * https://evmos.dev/basics/chain_id.html
    */
   _parseEthChainId (chainId: string) {
-    const [ idWithChainNumber ] = chainId.split('-')
-    const [ _, ethChainId ] = idWithChainNumber.split('_')
+    const [idWithChainNumber] = chainId.split('-');
+    const [_, ethChainId] = idWithChainNumber.split('_');
 
-    return Number(ethChainId)
+    return Number(ethChainId);
   }
 
   /**
@@ -582,13 +581,13 @@ export class Registry {
       accountAddress: account.formattedCosmosAddress,
       sequence: sequence,
       accountNumber: number,
-      pubkey: account.encodedPubkey,
-    }
+      pubkey: account.encodedPubkey
+    };
   }
 
-  async getLaconicClient(account: Account){
-    return LaconicClient.connectWithSigner(this._endpoints.rest, account.wallet)
+  async getLaconicClient (account: Account) {
+    return LaconicClient.connectWithSigner(this._endpoints.rest, account.wallet);
   }
 }
 
-export { Account }
+export { Account };

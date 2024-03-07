@@ -11,25 +11,24 @@ const registryTests = () => {
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, restEndpoint, chainId);
-
   });
 
-  test('Get account info.', async() => {
+  test('Get account info.', async () => {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     const accounts = await registry.getAccounts([account.formattedCosmosAddress]);
-    expect(accounts).toHaveLength(1)
+    expect(accounts).toHaveLength(1);
     const [accountObj] = accounts;
     expect(accountObj.address).toBe(account.formattedCosmosAddress);
     expect(accountObj.pubKey).toBe(account.encodedPubkey);
     expect(accountObj.number).toBe('0');
     expect(accountObj.sequence).toBeDefined();
     expect(accountObj.balance).toHaveLength(1);
-    const [{ type, quantity }] = accountObj.balance
+    const [{ type, quantity }] = accountObj.balance;
     expect(type).toBe('aphoton');
     expect(quantity).toBeDefined();
-  })
+  });
 
-  test('Get account balance.', async() => {
+  test('Get account balance.', async () => {
     const mnenonic1 = Account.generateMnemonic();
     const otherAccount = await Account.generateFromMnemonic(mnenonic1);
     await registry.sendCoins({ denom: 'aphoton', amount: '100000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, fee);
@@ -37,10 +36,10 @@ const registryTests = () => {
     const [accountObj] = await registry.getAccounts([otherAccount.formattedCosmosAddress]);
     expect(accountObj).toBeDefined();
     expect(accountObj.address).toBe(otherAccount.formattedCosmosAddress);
-    const [{ type, quantity }] = accountObj.balance
+    const [{ type, quantity }] = accountObj.balance;
     expect(type).toBe('aphoton');
     expect(quantity).toBe('100000000');
-  })
-}
+  });
+};
 
 describe('Registry', registryTests);

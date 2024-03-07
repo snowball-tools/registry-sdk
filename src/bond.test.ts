@@ -2,13 +2,13 @@ import path from 'path';
 
 import { Registry } from './index';
 import { ensureUpdatedConfig, getConfig, getLaconic2Config } from './testing/helper';
-import { DENOM } from './constants'
+import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
-const BOND_AMOUNT = "10000";
+const BOND_AMOUNT = '10000';
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
-const { fee: laconic2Fee } = getLaconic2Config()
+const { fee: laconic2Fee } = getLaconic2Config();
 
 jest.setTimeout(90 * 1000);
 
@@ -32,7 +32,7 @@ const bondTests = () => {
   });
 
   describe('With bond created', () => {
-    let bond1: any
+    let bond1: any;
 
     beforeAll(async () => {
       let bondId1 = await registry.getNextBondId(privateKey);
@@ -67,7 +67,7 @@ const bondTests = () => {
     });
 
     test('Refill bond.', async () => {
-      const refillAmount = "500";
+      const refillAmount = '500';
       const total = (parseInt(BOND_AMOUNT) + parseInt(refillAmount)).toString();
       await registry.refillBond({ id: bond1.id, denom: DENOM, amount: refillAmount }, privateKey, laconic2Fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
@@ -78,7 +78,7 @@ const bondTests = () => {
     });
 
     test('Withdraw bond.', async () => {
-      await registry.withdrawBond({ id: bond1.id, denom: DENOM, amount: "500" }, privateKey, laconic2Fee);
+      await registry.withdrawBond({ id: bond1.id, denom: DENOM, amount: '500' }, privateKey, laconic2Fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
       expect(bond).toBeDefined();
       expect(bond.id).toBe(bond1.id);
@@ -89,11 +89,10 @@ const bondTests = () => {
     test('Cancel bond.', async () => {
       await registry.cancelBond({ id: bond1.id }, privateKey, laconic2Fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
-      expect(bond.id).toBe("");
-      expect(bond.owner).toBe("");
+      expect(bond.id).toBe('');
+      expect(bond.owner).toBe('');
       expect(bond.balance).toHaveLength(0);
     });
-
   });
 
   test('Associate/Dissociate bond.', async () => {

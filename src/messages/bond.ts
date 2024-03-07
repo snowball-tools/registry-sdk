@@ -1,88 +1,88 @@
 import {
-  generateTypes,
-} from '@tharsis/eip712'
+  generateTypes
+} from '@tharsis/eip712';
 import {
   Chain,
   Sender,
-  Fee,
-} from '@tharsis/transactions'
+  Fee
+} from '@tharsis/transactions';
 
-import * as bondTx from '../proto/vulcanize/bond/v1beta1/tx'
-import * as registryTx from '../proto/vulcanize/registry/v1beta1/tx'
-import * as coin from '../proto/cosmos/base/v1beta1/coin'
-import { createTx } from './util'
+import * as bondTx from '../proto/vulcanize/bond/v1beta1/tx';
+import * as registryTx from '../proto/vulcanize/registry/v1beta1/tx';
+import * as coin from '../proto/cosmos/base/v1beta1/coin';
+import { createTx } from './util';
 
 const MSG_CREATE_BOND_TYPES = {
   MsgValue: [
     { name: 'signer', type: 'string' },
-    { name: 'coins', type: 'TypeCoins[]' },
+    { name: 'coins', type: 'TypeCoins[]' }
   ],
   TypeCoins: [
     { name: 'denom', type: 'string' },
-    { name: 'amount', type: 'string' },
-  ],
-}
+    { name: 'amount', type: 'string' }
+  ]
+};
 
 const MSG_REFILL_BOND_TYPES = {
   MsgValue: [
     { name: 'id', type: 'string' },
     { name: 'signer', type: 'string' },
-    { name: 'coins', type: 'TypeCoins[]' },
+    { name: 'coins', type: 'TypeCoins[]' }
   ],
   TypeCoins: [
     { name: 'denom', type: 'string' },
-    { name: 'amount', type: 'string' },
-  ],
-}
+    { name: 'amount', type: 'string' }
+  ]
+};
 
 const MSG_WITHDRAW_BOND_TYPES = {
   MsgValue: [
     { name: 'id', type: 'string' },
     { name: 'signer', type: 'string' },
-    { name: 'coins', type: 'TypeCoins[]' },
+    { name: 'coins', type: 'TypeCoins[]' }
   ],
   TypeCoins: [
     { name: 'denom', type: 'string' },
-    { name: 'amount', type: 'string' },
-  ],
-}
+    { name: 'amount', type: 'string' }
+  ]
+};
 
 const MSG_CANCEL_BOND_TYPES = {
   MsgValue: [
     { name: 'id', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 const MSG_ASSOCIATE_BOND_TYPES = {
   MsgValue: [
     { name: 'record_id', type: 'string' },
     { name: 'bond_id', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 const MSG_DISSOCIATE_BOND_TYPES = {
   MsgValue: [
     { name: 'record_id', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 const MSG_DISSOCIATE_RECORDS_TYPES = {
   MsgValue: [
     { name: 'bond_id', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 const MSG_REASSOCIATE_RECORDS_TYPES = {
   MsgValue: [
     { name: 'new_bond_id', type: 'string' },
     { name: 'old_bond_id', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 export interface MessageMsgCreateBond {
   amount: string
@@ -123,200 +123,200 @@ export interface MessageMsgReAssociateRecords {
   oldBondId: string
 }
 
-export function createTxMsgCreateBond(
+export function createTxMsgCreateBond (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgCreateBond,
+  params: MessageMsgCreateBond
 ) {
-  const types = generateTypes(MSG_CREATE_BOND_TYPES)
+  const types = generateTypes(MSG_CREATE_BOND_TYPES);
 
   const msg = createMsgCreateBond(
     sender.accountAddress,
     params.amount,
     params.denom
-  )
+  );
 
   const msgCosmos = protoCreateMsgCreateBond(
     sender.accountAddress,
     params.amount,
     params.denom
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgRefillBond(
+export function createTxMsgRefillBond (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgRefillBond,
+  params: MessageMsgRefillBond
 ) {
-  const types = generateTypes(MSG_REFILL_BOND_TYPES)
+  const types = generateTypes(MSG_REFILL_BOND_TYPES);
 
   const msg = createMsgRefillBond(
     params.id,
     sender.accountAddress,
     params.amount,
     params.denom
-  )
+  );
 
   const msgCosmos = protoCreateMsgRefillBond(
     params.id,
     sender.accountAddress,
     params.amount,
     params.denom
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgWithdrawBond(
+export function createTxMsgWithdrawBond (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgWithdrawBond,
+  params: MessageMsgWithdrawBond
 ) {
-  const types = generateTypes(MSG_WITHDRAW_BOND_TYPES)
+  const types = generateTypes(MSG_WITHDRAW_BOND_TYPES);
 
   const msg = createMsgWithdrawBond(
     params.id,
     sender.accountAddress,
     params.amount,
     params.denom
-  )
+  );
 
   const msgCosmos = protoCreateMsgWithdrawBond(
     params.id,
     sender.accountAddress,
     params.amount,
     params.denom
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgCancelBond(
+export function createTxMsgCancelBond (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgCancelBond,
+  params: MessageMsgCancelBond
 ) {
-  const types = generateTypes(MSG_CANCEL_BOND_TYPES)
+  const types = generateTypes(MSG_CANCEL_BOND_TYPES);
 
   const msg = createMsgCancelBond(
     params.id,
     sender.accountAddress
-  )
+  );
 
   const msgCosmos = protoCreateMsgCancelBond(
     params.id,
     sender.accountAddress
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgAssociateBond(
+export function createTxMsgAssociateBond (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgAssociateBond,
+  params: MessageMsgAssociateBond
 ) {
-  const types = generateTypes(MSG_ASSOCIATE_BOND_TYPES)
+  const types = generateTypes(MSG_ASSOCIATE_BOND_TYPES);
 
   const msg = createMsgAssociateBond(
     params.recordId,
     params.bondId,
     sender.accountAddress
-  )
+  );
 
   const msgCosmos = protoCreateMsgAssociateBond(
     params.recordId,
     params.bondId,
     sender.accountAddress
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgDissociateBond(
+export function createTxMsgDissociateBond (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgDissociateBond,
+  params: MessageMsgDissociateBond
 ) {
-  const types = generateTypes(MSG_DISSOCIATE_BOND_TYPES)
+  const types = generateTypes(MSG_DISSOCIATE_BOND_TYPES);
 
   const msg = createMsgDissociateBond(
     params.recordId,
     sender.accountAddress
-  )
+  );
 
   const msgCosmos = protoCreateMsgDissociateBond(
     params.recordId,
     sender.accountAddress
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgDissociateRecords(
+export function createTxMsgDissociateRecords (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgDissociateRecords,
+  params: MessageMsgDissociateRecords
 ) {
-  const types = generateTypes(MSG_DISSOCIATE_RECORDS_TYPES)
+  const types = generateTypes(MSG_DISSOCIATE_RECORDS_TYPES);
 
   const msg = createMsgDissociateRecords(
     params.bondId,
     sender.accountAddress
-  )
+  );
 
   const msgCosmos = protoCreateMsgDissociateRecords(
     params.bondId,
     sender.accountAddress
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgReAssociateRecords(
+export function createTxMsgReAssociateRecords (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgReAssociateRecords,
+  params: MessageMsgReAssociateRecords
 ) {
-  const types = generateTypes(MSG_REASSOCIATE_RECORDS_TYPES)
+  const types = generateTypes(MSG_REASSOCIATE_RECORDS_TYPES);
 
   const msg = createMsgReAssociateRecords(
     params.newBondId,
     params.oldBondId,
     sender.accountAddress
-  )
+  );
 
   const msgCosmos = protoCreateMsgReAssociateRecords(
     params.newBondId,
     params.oldBondId,
     sender.accountAddress
-  )
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-function createMsgCreateBond(
+function createMsgCreateBond (
   signer: string,
   amount: string,
-  denom: string,
+  denom: string
 ) {
   return {
     type: 'bond/MsgCreateBond',
@@ -324,40 +324,40 @@ function createMsgCreateBond(
       coins: [
         {
           amount,
-          denom,
-        },
+          denom
+        }
       ],
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgCreateBond = (
   signer: string,
   amount: string,
-  denom: string,
+  denom: string
 ) => {
   const value = new coin.cosmos.base.v1beta1.Coin({
     denom,
-    amount,
-  })
+    amount
+  });
 
   const createBondMessage = new bondTx.vulcanize.bond.v1beta1.MsgCreateBond({
     signer,
     coins: [value]
-  })
+  });
 
   return {
     message: createBondMessage,
-    path: 'vulcanize.bond.v1beta1.MsgCreateBond',
-  }
-}
+    path: 'vulcanize.bond.v1beta1.MsgCreateBond'
+  };
+};
 
-function createMsgRefillBond(
+function createMsgRefillBond (
   id: string,
   signer: string,
   amount: string,
-  denom: string,
+  denom: string
 ) {
   return {
     type: 'bond/MsgRefillBond',
@@ -365,43 +365,43 @@ function createMsgRefillBond(
       coins: [
         {
           amount,
-          denom,
-        },
+          denom
+        }
       ],
       id,
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgRefillBond = (
   id: string,
   signer: string,
   amount: string,
-  denom: string,
+  denom: string
 ) => {
   const value = new coin.cosmos.base.v1beta1.Coin({
     denom,
-    amount,
-  })
+    amount
+  });
 
   const refillBondMessage = new bondTx.vulcanize.bond.v1beta1.MsgRefillBond({
     id,
     signer,
     coins: [value]
-  })
+  });
 
   return {
     message: refillBondMessage,
-    path: 'vulcanize.bond.v1beta1.MsgRefillBond',
-  }
-}
+    path: 'vulcanize.bond.v1beta1.MsgRefillBond'
+  };
+};
 
-function createMsgWithdrawBond(
+function createMsgWithdrawBond (
   id: string,
   signer: string,
   amount: string,
-  denom: string,
+  denom: string
 ) {
   return {
     type: 'bond/MsgWithdrawBond',
@@ -410,38 +410,38 @@ function createMsgWithdrawBond(
       coins: [
         {
           amount,
-          denom,
-        },
+          denom
+        }
       ],
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgWithdrawBond = (
   id: string,
   signer: string,
   amount: string,
-  denom: string,
+  denom: string
 ) => {
   const value = new coin.cosmos.base.v1beta1.Coin({
     denom,
-    amount,
-  })
+    amount
+  });
 
   const withdrawBondMessage = new bondTx.vulcanize.bond.v1beta1.MsgWithdrawBond({
     id,
     signer,
     coins: [value]
-  })
+  });
 
   return {
     message: withdrawBondMessage,
-    path: 'vulcanize.bond.v1beta1.MsgWithdrawBond',
-  }
-}
+    path: 'vulcanize.bond.v1beta1.MsgWithdrawBond'
+  };
+};
 
-function createMsgCancelBond(
+function createMsgCancelBond (
   id: string,
   signer: string
 ) {
@@ -450,8 +450,8 @@ function createMsgCancelBond(
     value: {
       id,
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgCancelBond = (
@@ -461,15 +461,15 @@ const protoCreateMsgCancelBond = (
   const cancelBondMessage = new bondTx.vulcanize.bond.v1beta1.MsgCancelBond({
     id,
     signer
-  })
+  });
 
   return {
     message: cancelBondMessage,
-    path: 'vulcanize.bond.v1beta1.MsgCancelBond',
-  }
-}
+    path: 'vulcanize.bond.v1beta1.MsgCancelBond'
+  };
+};
 
-function createMsgAssociateBond(
+function createMsgAssociateBond (
   recordId: string,
   bondId: string,
   signer: string
@@ -480,8 +480,8 @@ function createMsgAssociateBond(
       record_id: recordId,
       bond_id: bondId,
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgAssociateBond = (
@@ -493,15 +493,15 @@ const protoCreateMsgAssociateBond = (
     record_id: recordId,
     bond_id: bondId,
     signer
-  })
+  });
 
   return {
     message: associateBondMessage,
-    path: 'vulcanize.registry.v1beta1.MsgAssociateBond',
-  }
-}
+    path: 'vulcanize.registry.v1beta1.MsgAssociateBond'
+  };
+};
 
-function createMsgDissociateBond(
+function createMsgDissociateBond (
   recordId: string,
   signer: string
 ) {
@@ -510,8 +510,8 @@ function createMsgDissociateBond(
     value: {
       record_id: recordId,
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgDissociateBond = (
@@ -521,15 +521,15 @@ const protoCreateMsgDissociateBond = (
   const dissociateBondMessage = new registryTx.vulcanize.registry.v1beta1.MsgDissociateBond({
     record_id: recordId,
     signer
-  })
+  });
 
   return {
     message: dissociateBondMessage,
-    path: 'vulcanize.registry.v1beta1.MsgDissociateBond',
-  }
-}
+    path: 'vulcanize.registry.v1beta1.MsgDissociateBond'
+  };
+};
 
-function createMsgDissociateRecords(
+function createMsgDissociateRecords (
   bondId: string,
   signer: string
 ) {
@@ -538,8 +538,8 @@ function createMsgDissociateRecords(
     value: {
       bond_id: bondId,
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgDissociateRecords = (
@@ -549,15 +549,15 @@ const protoCreateMsgDissociateRecords = (
   const dissociateRecordsMessage = new registryTx.vulcanize.registry.v1beta1.MsgDissociateRecords({
     bond_id: bondId,
     signer
-  })
+  });
 
   return {
     message: dissociateRecordsMessage,
-    path: 'vulcanize.registry.v1beta1.MsgDissociateRecords',
-  }
-}
+    path: 'vulcanize.registry.v1beta1.MsgDissociateRecords'
+  };
+};
 
-function createMsgReAssociateRecords(
+function createMsgReAssociateRecords (
   newBondId: string,
   oldBondId: string,
   signer: string
@@ -568,8 +568,8 @@ function createMsgReAssociateRecords(
       new_bond_id: newBondId,
       old_bond_id: oldBondId,
       signer
-    },
-  }
+    }
+  };
 }
 
 const protoCreateMsgReAssociateRecords = (
@@ -581,10 +581,10 @@ const protoCreateMsgReAssociateRecords = (
     new_bond_id: newBondId,
     old_bond_id: oldBondId,
     signer
-  })
+  });
 
   return {
     message: reAssociateRecordsMessage,
-    path: 'vulcanize.registry.v1beta1.MsgReAssociateRecords',
-  }
-}
+    path: 'vulcanize.registry.v1beta1.MsgReAssociateRecords'
+  };
+};

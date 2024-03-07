@@ -8,12 +8,12 @@ import { Util } from './util';
  * Record.
  */
 export class Record {
-  _record: any
+  _record: any;
 
   /**
    * New Record.
    */
-  constructor(record: any) {
+  constructor (record: any) {
     assert(record);
 
     const validator = new Validator();
@@ -26,29 +26,29 @@ export class Record {
     this._record = record;
   }
 
-  get attributes() {
-    return Buffer.from(JSON.stringify(this._record), 'binary')
+  get attributes () {
+    return Buffer.from(JSON.stringify(this._record), 'binary');
   }
 
   /**
    * Serialize record.
    */
-  serialize() {
+  serialize () {
     return {
-      'id': '_',
-      'bond_id': '_',
-      'create_time': '_',
-      'expiry_time': '_',
+      id: '_',
+      bond_id: '_',
+      create_time: '_',
+      expiry_time: '_',
       // Setting deleted as false (zero value) throws error in EIP712 signature verification.
-      'deleted': true,
-      'attributes': this.attributes,
-    }
+      deleted: true,
+      attributes: this.attributes
+    };
   }
 
   /**
    * Get message to calculate record signature.
    */
-  getMessageToSign() {
+  getMessageToSign () {
     return Util.sortJSON(this._record);
   }
 }
@@ -57,13 +57,13 @@ export class Record {
  * Record Signature.
  */
 export class Signature {
-  _pubKey: string
-  _sig: string
+  _pubKey: string;
+  _sig: string;
 
   /**
    * New Signature.
    */
-  constructor(pubKey: string, sig: string) {
+  constructor (pubKey: string, sig: string) {
     assert(pubKey);
     assert(sig);
 
@@ -74,10 +74,10 @@ export class Signature {
   /**
    * Serialize Signature.
    */
-  serialize() {
+  serialize () {
     return Util.sortJSON({
-      'pub_key': this._pubKey,
-      'sig': this._sig
+      pub_key: this._pubKey,
+      sig: this._sig
     });
   }
 }
@@ -86,31 +86,31 @@ export class Signature {
  * Message Payload.
  */
 export class Payload {
-  _record: Record
-  _signatures: Signature[]
+  _record: Record;
+  _signatures: Signature[];
 
   /**
    * New Payload.
    */
-  constructor(record: Record, ...signatures: Signature[]) {
+  constructor (record: Record, ...signatures: Signature[]) {
     assert(record);
 
     this._record = record;
     this._signatures = signatures;
   }
 
-  get record() {
+  get record () {
     return this._record;
   }
 
-  get signatures() {
+  get signatures () {
     return this._signatures;
   }
 
   /**
    * Add message signature to payload.
    */
-  addSignature(signature: any) {
+  addSignature (signature: any) {
     assert(signature);
 
     this._signatures.push(signature);
@@ -119,12 +119,12 @@ export class Payload {
   /**
    * Serialize Payload.
    */
-  serialize() {
+  serialize () {
     // return Util.sortJSON({
     // });
     return {
-      'record': this._record.serialize(),
-      'signatures': this._signatures.map(s => s.serialize())
-    }
+      record: this._record.serialize(),
+      signatures: this._signatures.map(s => s.serialize())
+    };
   }
 }

@@ -4,7 +4,7 @@ import {
   signatureToWeb3Extension,
   Chain,
   Sender
-} from '@tharsis/transactions'
+} from '@tharsis/transactions';
 
 import { Account } from './account';
 
@@ -18,8 +18,8 @@ export const createTransaction = (message: any, account: Account, sender: Sender
   // Sign transaction.
   const signature = account.sign(message);
 
-  let extension = signatureToWeb3Extension(chain, sender, signature)
+  let extension = signatureToWeb3Extension(chain, sender, signature);
 
   // Create the txRaw.
-  return createTxRawEIP712(message.legacyAmino.body, message.legacyAmino.authInfo, extension)
+  return createTxRawEIP712(message.legacyAmino.body, message.legacyAmino.authInfo, extension);
 };

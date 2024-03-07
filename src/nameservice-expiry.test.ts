@@ -38,8 +38,8 @@ const nameserviceExpiryTests = () => {
       },
       privateKey,
       fee
-    )
-    console.log("SetRecordResult: " + result.data.id)
+    );
+    console.log('SetRecordResult: ' + result.data.id);
     const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     recordExpiryTime = new Date(record.expiryTime);
 
@@ -47,7 +47,7 @@ const nameserviceExpiryTests = () => {
     expect(bond).toBeDefined();
     expect(bond.balance).toHaveLength(1);
     expect(bond.balance[0].quantity).toBe('2000000');
-  })
+  });
 
   test('Reserve authority and set bond', async () => {
     authorityName = `laconic-${Date.now()}`;
@@ -62,41 +62,41 @@ const nameserviceExpiryTests = () => {
     setTimeout(done, 60 * 1000);
   });
 
-  test('Check record expiry time', async() => {
+  test('Check record expiry time', async () => {
     const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     const updatedExpiryTime = new Date();
     expect(updatedExpiryTime.getTime()).toBeGreaterThan(recordExpiryTime.getTime());
     recordExpiryTime = updatedExpiryTime;
-  })
+  });
 
-  test('Check authority expiry time', async() => {
+  test('Check authority expiry time', async () => {
     const [authority] = await registry.lookupAuthorities([authorityName]);
     const updatedExpiryTime = new Date();
     expect(updatedExpiryTime.getTime()).toBeGreaterThan(authorityExpiryTime.getTime());
     authorityExpiryTime = updatedExpiryTime;
-  })
+  });
 
   test('Check bond balance', async () => {
     const [bond] = await registry.getBondsByIds([bondId]);
-    console.log(bond)
+    console.log(bond);
     expect(bond).toBeDefined();
     expect(bond.balance).toHaveLength(0);
-  })
+  });
 
   test('Wait for expiry duration', (done) => {
     setTimeout(done, 60 * 1000);
   });
 
-  test('Check record deleted without bond balance', async() => {
+  test('Check record deleted without bond balance', async () => {
     const records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     expect(records).toHaveLength(0);
-  })
+  });
 
-  test('Check authority expired without bond balance', async() => {
+  test('Check authority expired without bond balance', async () => {
     const [authority] = await registry.lookupAuthorities([authorityName]);
     expect(authority.status).toBe('expired');
-  })
-}
+  });
+};
 
 if (!process.env.TEST_NAMESERVICE_EXPIRY) {
   // Required as jest complains if file has no tests.
@@ -107,11 +107,10 @@ if (!process.env.TEST_NAMESERVICE_EXPIRY) {
 
     TEST_REGISTRY_EXPIRY=true ./init.sh
 
-
     Run tests:
 
     yarn test:nameservice-expiry
   */
 
-  describe('Nameservice Expiry', nameserviceExpiryTests)
+  describe('Nameservice Expiry', nameserviceExpiryTests);
 }

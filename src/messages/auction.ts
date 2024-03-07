@@ -1,22 +1,22 @@
 import {
-  generateTypes,
-} from '@tharsis/eip712'
+  generateTypes
+} from '@tharsis/eip712';
 import {
   Chain,
   Sender,
-  Fee,
-} from '@tharsis/transactions'
+  Fee
+} from '@tharsis/transactions';
 
-import * as auctionTx from '../proto/vulcanize/auction/v1beta1/tx'
-import { createTx } from './util'
+import * as auctionTx from '../proto/vulcanize/auction/v1beta1/tx';
+import { createTx } from './util';
 
 const MSG_COMMIT_BID_TYPES = {
   MsgValue: [
     { name: 'auction_id', type: 'string' },
     { name: 'commit_hash', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 export interface MessageMsgCommitBid {
   auctionId: string,
@@ -27,64 +27,64 @@ const MSG_REVEAL_BID_TYPES = {
   MsgValue: [
     { name: 'auction_id', type: 'string' },
     { name: 'reveal', type: 'string' },
-    { name: 'signer', type: 'string' },
+    { name: 'signer', type: 'string' }
   ]
-}
+};
 
 export interface MessageMsgRevealBid {
   auctionId: string,
   reveal: string,
 }
 
-export function createTxMsgCommitBid(
+export function createTxMsgCommitBid (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgCommitBid,
+  params: MessageMsgCommitBid
 ) {
-  const types = generateTypes(MSG_COMMIT_BID_TYPES)
+  const types = generateTypes(MSG_COMMIT_BID_TYPES);
 
   const msg = createMsgCommitBid(
     params.auctionId,
     params.commitHash,
-    sender.accountAddress,
-  )
+    sender.accountAddress
+  );
 
   const msgCosmos = protoCreateMsgCommitBid(
     params.auctionId,
     params.commitHash,
-    sender.accountAddress,
-  )
+    sender.accountAddress
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-export function createTxMsgRevealBid(
+export function createTxMsgRevealBid (
   chain: Chain,
   sender: Sender,
   fee: Fee,
   memo: string,
-  params: MessageMsgRevealBid,
+  params: MessageMsgRevealBid
 ) {
-  const types = generateTypes(MSG_REVEAL_BID_TYPES)
+  const types = generateTypes(MSG_REVEAL_BID_TYPES);
 
   const msg = createMsgRevealBid(
     params.auctionId,
     params.reveal,
-    sender.accountAddress,
-  )
+    sender.accountAddress
+  );
 
   const msgCosmos = protoCreateMsgRevealBid(
     params.auctionId,
     params.reveal,
-    sender.accountAddress,
-  )
+    sender.accountAddress
+  );
 
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos)
+  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
 }
 
-function createMsgCommitBid(
+function createMsgCommitBid (
   auctionId: string,
   commitHash: string,
   signer: string
@@ -94,9 +94,9 @@ function createMsgCommitBid(
     value: {
       auction_id: auctionId,
       commit_hash: commitHash,
-      signer,
-    },
-  }
+      signer
+    }
+  };
 }
 
 const protoCreateMsgCommitBid = (
@@ -107,16 +107,16 @@ const protoCreateMsgCommitBid = (
   const commitBidMessage = new auctionTx.vulcanize.auction.v1beta1.MsgCommitBid({
     auction_id: auctionId,
     commit_hash: commitHash,
-    signer,
-  })
+    signer
+  });
 
   return {
     message: commitBidMessage,
-    path: 'vulcanize.auction.v1beta1.MsgCommitBid',
-  }
-}
+    path: 'vulcanize.auction.v1beta1.MsgCommitBid'
+  };
+};
 
-function createMsgRevealBid(
+function createMsgRevealBid (
   auctionId: string,
   reveal: string,
   signer: string
@@ -126,9 +126,9 @@ function createMsgRevealBid(
     value: {
       auction_id: auctionId,
       reveal,
-      signer,
-    },
-  }
+      signer
+    }
+  };
 }
 
 const protoCreateMsgRevealBid = (
@@ -139,11 +139,11 @@ const protoCreateMsgRevealBid = (
   const revealBidMessage = new auctionTx.vulcanize.auction.v1beta1.MsgRevealBid({
     auction_id: auctionId,
     reveal,
-    signer,
-  })
+    signer
+  });
 
   return {
     message: revealBidMessage,
-    path: 'vulcanize.auction.v1beta1.MsgRevealBid',
-  }
-}
+    path: 'vulcanize.auction.v1beta1.MsgRevealBid'
+  };
+};

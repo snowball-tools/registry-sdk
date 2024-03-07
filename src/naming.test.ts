@@ -35,7 +35,7 @@ const namingTests = () => {
       },
       privateKey,
       fee
-    )
+    );
 
     watcherId = result.data.id;
   });
@@ -52,12 +52,11 @@ const namingTests = () => {
       let crn: string;
 
       beforeAll(async () => {
-
         authorityName = `laconic-${Date.now()}`;
         crn = `crn://${authorityName}/app/test`;
 
         await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
-      })
+      });
 
       test('Lookup authority.', async () => {
         const [record] = await registry.lookupAuthorities([authorityName]);
@@ -77,8 +76,8 @@ const namingTests = () => {
       });
 
       test('Reserve already reserved authority', async () => {
-        await expect(registry.reserveAuthority({ name: authorityName }, privateKey, fee)).
-          rejects.toThrow('Name already reserved.');
+        await expect(registry.reserveAuthority({ name: authorityName }, privateKey, fee))
+          .rejects.toThrow('Name already reserved.');
       });
 
       test('Reserve sub-authority.', async () => {
@@ -114,9 +113,9 @@ const namingTests = () => {
       });
 
       test('Set name for unbonded authority', async () => {
-        assert(watcherId)
-        await expect(registry.setName({ crn, cid: watcherId }, privateKey, fee)).
-          rejects.toThrow('Authority bond not found.');
+        assert(watcherId);
+        await expect(registry.setName({ crn, cid: watcherId }, privateKey, fee))
+          .rejects.toThrow('Authority bond not found.');
       });
 
       test('Set authority bond', async () => {
@@ -203,7 +202,7 @@ const namingTests = () => {
           },
           privateKey,
           fee
-        )
+        );
 
         const updatedWatcherId = result.data.id;
         await registry.setName({ crn, cid: updatedWatcherId }, privateKey, fee);
