@@ -114,7 +114,7 @@ export class Account {
 
     const [account] = await this._wallet.getAccounts();
     this._address = account.address;
-    this._publicKeyLaconic2 = toHex(account.pubkey);
+    this._publicKeyLaconic2 = Buffer.from(AMINO_PREFIX + toHex(account.pubkey), 'hex').toString('base64');
 
     // Generate public key.
     this._publicKey = secp256k1.publicKeyCreate(this._privateKey);

@@ -50,7 +50,7 @@ describe('Querying', () => {
     expect(records.length).toBeGreaterThanOrEqual(1);
   });
 
-  xtest('Query records by reference.', async () => {
+  test('Query records by reference.', async () => {
     const { repo_registration_record_cid } = watcher.record;
     const records = await registry.queryRecords({ repo_registration_record_cid }, true);
     expect(records.length).toBeGreaterThanOrEqual(1);
@@ -59,7 +59,7 @@ describe('Querying', () => {
     expect(repo_registration_record_cid).toStrictEqual(record_repo_registration_record_cid);
   });
 
-  xtest('Query records by attributes.', async () => {
+  test('Query records by attributes.', async () => {
     const { version, url } = watcher.record;
     const records = await registry.queryRecords({ version, url, type: undefined }, true);
     expect(records.length).toBe(1);
@@ -70,13 +70,13 @@ describe('Querying', () => {
     expect(recordName).toBe(url);
   });
 
-  xtest('Query records by id.', async () => {
+  test('Query records by id.', async () => {
     const records = await registry.getRecordsByIds([watcher.id]);
     expect(records.length).toBe(1);
     expect(records[0].id).toBe(watcher.id);
   });
 
-  xtest('Query records passing refs true.', async () => {
+  test('Query records passing refs true.', async () => {
     const [record] = await registry.getRecordsByIds([watcher.id], true);
     expect(record.id).toBe(watcher.id);
     // temp fix
