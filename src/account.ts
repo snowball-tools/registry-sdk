@@ -13,7 +13,7 @@ import { ethToEthermint } from '@tharsis/address-converter';
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
-import { Payload, Signature } from './types';
+import { Payload, Record as RegistryRecord, Signature } from './types';
 
 const AMINO_PREFIX = 'EB5AE98721';
 const HDPATH = "m/44'/60'/0'/0";
@@ -42,6 +42,7 @@ export class Account {
   _ethAddress!: string;
   _wallet!: DirectSecp256k1Wallet;
   _address!: string;
+  _publicKeyLaconic2!: string;
 
   /**
    * Generate bip39 mnemonic.
@@ -97,6 +98,10 @@ export class Account {
     return this._address;
   }
 
+  get publicKeyLaconic2 () {
+    return this._publicKeyLaconic2;
+  }
+
   get wallet () {
     return this._wallet;
   }
@@ -107,7 +112,9 @@ export class Account {
       ACCOUNT_PREFIX
     );
 
-    this._address = (await this._wallet.getAccounts())[0].address;
+    const [account] = await this._wallet.getAccounts();
+    this._address = account.address;
+    this._publicKeyLaconic2 = toHex(account.pubkey);
 
     // Generate public key.
     this._publicKey = secp256k1.publicKeyCreate(this._privateKey);
@@ -166,7 +173,7 @@ export class Account {
     assert(payload);
 
     const { record } = payload;
-    const messageToSign = record.getMessageToSign();
+    const messageToSign = RegistryRecord.getMessageToSign(record);
 
     const sig = await this.signRecord(messageToSign);
     assert(this.registryPublicKey);

@@ -48,8 +48,10 @@ export class Record {
   /**
    * Get message to calculate record signature.
    */
-  getMessageToSign () {
-    return Util.sortJSON(this._record);
+
+  // TODO: Replace any type for record
+  static getMessageToSign (record: any) {
+    return Util.sortJSON(record);
   }
 }
 

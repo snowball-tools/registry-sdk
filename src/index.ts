@@ -187,14 +187,20 @@ export class Registry {
    * @param transactionPrivateKey - private key in HEX to sign transaction.
    */
   async setRecord (
-    params: { privateKey: string, record: any, bondId: string },
+    { privateKey, record, bondId }: { privateKey: string, record: any, bondId: string },
     transactionPrivateKey: string,
-    fee: Fee
+    fee: StdFee
   ) {
-    let result;
-    result = await this._submitRecordTx(params, transactionPrivateKey, fee);
+    const account = new Account(Buffer.from(transactionPrivateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    return parseTxResponse(result, parseMsgSetRecordResponse);
+    const response: DeliverTxResponse = await laconicClient.setRecord({ privateKey, record, bondId },
+      account.address,
+      fee
+    );
+
+    return response;
   }
 
   /**

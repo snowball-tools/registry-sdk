@@ -23,13 +23,13 @@ describe('Querying', () => {
     await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
 
     // TODO: Implement set record
-    // const publishNewWatcherVersion = async () => {
-    //   watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
-    //   await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, fee);
-    //   return watcher.record.version;
-    // };
+    const publishNewWatcherVersion = async () => {
+      watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
+      await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, laconic2Fee);
+      return watcher.record.version;
+    };
 
-    // await publishNewWatcherVersion();
+    await publishNewWatcherVersion();
   });
 
   test('Endpoint and chain ID.', async () => {
@@ -45,7 +45,7 @@ describe('Querying', () => {
     expect(status.version).toBeDefined();
   });
 
-  xtest('List records.', async () => {
+  test('List records.', async () => {
     const records = await registry.queryRecords({}, true);
     expect(records.length).toBeGreaterThanOrEqual(1);
   });
