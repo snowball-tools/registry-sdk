@@ -42,8 +42,6 @@ import { Coin } from './proto2/cosmos/base/v1beta1/coin';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
-const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
-
 // Parse Tx response from cosmos-sdk.
 export const parseTxResponse = (result: any, parseResponse?: (data: string) => any) => {
   const { txhash: hash, height, ...txResponse } = result;
@@ -95,18 +93,6 @@ export class Registry {
   _chainID: string;
   _chain: Chain;
   _client: RegistryClient;
-
-  static processWriteError (error: string) {
-    // error string a stacktrace containing the message.
-    // https://gist.github.com/nikugogoi/de55d390574ded3466abad8bffd81952#file-txresponse-js-L7
-    const errorMessage = NAMESERVICE_ERRORS.find(message => error.includes(message));
-
-    if (!errorMessage) {
-      console.error(error);
-    }
-
-    return errorMessage || DEFAULT_WRITE_ERROR;
-  }
 
   constructor (gqlUrl: string, restUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
     this._endpoints = {
@@ -179,12 +165,10 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.setRecord({ privateKey, record, bondId },
+    return laconicClient.setRecord({ privateKey, record, bondId },
       account.address,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -251,14 +235,12 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.createBond(
+    return laconicClient.createBond(
       account.address,
       denom,
       amount,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -269,15 +251,13 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.refillBond(
+    return laconicClient.refillBond(
       account.address,
       denom,
       amount,
       id,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -288,15 +268,13 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.withdrawBond(
+    return laconicClient.withdrawBond(
       account.address,
       denom,
       amount,
       id,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -307,13 +285,11 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.cancelBond(
+    return laconicClient.cancelBond(
       account.address,
       id,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -324,14 +300,12 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.associateBond(
+    return laconicClient.associateBond(
       account.address,
       recordId,
       bondId,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -342,13 +316,11 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.dissociateBond(
+    return laconicClient.dissociateBond(
       account.address,
       recordId,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -359,13 +331,11 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.dissociateRecords(
+    return laconicClient.dissociateRecords(
       account.address,
       bondId,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -376,14 +346,12 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.reassociateRecords(
+    return laconicClient.reassociateRecords(
       account.address,
       oldBondId,
       newBondId,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -393,15 +361,13 @@ export class Registry {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
-    const response: DeliverTxResponse = await laconicClient.reserveAuthority(
+
+    return laconicClient.reserveAuthority(
       account.address,
       name,
       owner || account.address,
       fee
     );
-
-    // TODO: Parse error response
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -411,14 +377,13 @@ export class Registry {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
-    const response: DeliverTxResponse = await laconicClient.setAuthorityBond(
+
+    return laconicClient.setAuthorityBond(
       account.address,
       bondId,
       name,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -428,14 +393,13 @@ export class Registry {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
-    const response: DeliverTxResponse = await laconicClient.commitBid(
+
+    return laconicClient.commitBid(
       account.address,
       auctionId,
       commitHash,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -445,14 +409,12 @@ export class Registry {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
-    const response: DeliverTxResponse = await laconicClient.revealBid(
+    return laconicClient.revealBid(
       account.address,
       auctionId,
       reveal,
       fee
     );
-
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -477,15 +439,12 @@ export class Registry {
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
-    const response: DeliverTxResponse = await laconicClient.setName(
+    return laconicClient.setName(
       account.address,
       lrn,
       cid,
       fee
     );
-
-    // TODO: Parse error response
-    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -502,43 +461,11 @@ export class Registry {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
-    const response: DeliverTxResponse = await laconicClient.deleteName(
+    return laconicClient.deleteName(
       account.address,
       lrn,
       fee
     );
-
-    // TODO: Parse error response form delete name
-    return laconicClient.registry.decode(response.msgResponses[0]);
-  }
-
-  /**
-   * Submit a generic Tx to the chain.
-   */
-  async _submitTx (message: any, privateKey: string, sender: Sender) {
-    // Check private key.
-    if (!isKeyValid(privateKey)) {
-      throw new Error('Registry privateKey should be a hex string.');
-    }
-
-    // Check that the account exists on-chain.
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-
-    // Generate signed Tx.
-    const transaction = createTransaction(message, account, sender, this._chain);
-
-    const tx = generatePostBodyBroadcast(transaction, BroadcastMode.Block);
-
-    // Submit Tx to chain.
-    const { tx_response: response } = await this._client.submit(tx);
-
-    if (response.code !== 0) {
-      // Throw error when transaction is not successful.
-      // https://docs.starport.com/guide/nameservice/05-play.html#buy-name-transaction-details
-      throw new Error(Registry.processWriteError(response.raw_log));
-    }
-
-    return response;
   }
 
   /**
