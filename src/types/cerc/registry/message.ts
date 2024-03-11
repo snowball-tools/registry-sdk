@@ -12,6 +12,10 @@ export const typeUrlMsgSetName = '/cerc.registry.v1.MsgSetName';
 export const typeUrlMsgSetNameResponse = '/cerc.registry.v1.MsgSetNameResponse';
 export const typeUrlMsgDeleteNameAuthority = '/cerc.registry.v1.MsgDeleteNameAuthority';
 export const typeUrlMsgDeleteNameAuthorityResponse = '/cerc.registry.v1.MsgDeleteNameAuthorityResponse';
+export const typeUrlMsgAssociateBond = '/cerc.registry.v1.MsgAssociateBond';
+export const typeUrlMsgDissociateBond = '/cerc.registry.v1.MsgDissociateBond';
+export const typeUrlMsgAssociateBondResponse = '/cerc.registry.v1.MsgAssociateBondResponse';
+export const typeUrlMsgDissociateBondResponse = '/cerc.registry.v1.MsgDissociateBondResponse';
 
 export const registryTypes: ReadonlyArray<[string, GeneratedType]> = [
   [typeUrlMsgReserveAuthority, MsgReserveAuthority],
@@ -23,7 +27,11 @@ export const registryTypes: ReadonlyArray<[string, GeneratedType]> = [
   [typeUrlMsgSetName, MsgSetName],
   [typeUrlMsgSetNameResponse, MsgSetNameResponse],
   [typeUrlMsgDeleteNameAuthority, MsgDeleteNameAuthority],
-  [typeUrlMsgDeleteNameAuthorityResponse, MsgDeleteNameAuthorityResponse]
+  [typeUrlMsgDeleteNameAuthorityResponse, MsgDeleteNameAuthorityResponse],
+  [typeUrlMsgAssociateBond, MsgAssociateBond],
+  [typeUrlMsgAssociateBondResponse, MsgAssociateBondResponse],
+  [typeUrlMsgDissociateBond, MsgDissociateBond],
+  [typeUrlMsgDissociateBondResponse, MsgDissociateBondResponse],
 ];
 
 export interface MsgReserveAuthorityEncodeObject extends EncodeObject {
@@ -49,4 +57,14 @@ export interface MsgSetNameEncodeObject extends EncodeObject {
 export interface MsgDeleteNameAuthorityEncodeObject extends EncodeObject {
   readonly typeUrl: '/cerc.registry.v1.MsgDeleteNameAuthority';
   readonly value: Partial<MsgDeleteNameAuthority>;
+}
+
+export interface MsgAssociateBondEncodeObject extends EncodeObject {
+  readonly typeUrl: '/cerc.registry.v1.MsgAssociateBond';
+  readonly value: Partial<MsgAssociateBond>;
+}
+
+export interface MsgDissociateBondEncodeObject extends EncodeObject {
+  readonly typeUrl: '/cerc.registry.v1.MsgDissociateBond';
+  readonly value: Partial<MsgDissociateBond>;
 }

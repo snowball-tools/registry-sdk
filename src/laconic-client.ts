@@ -132,6 +132,42 @@ export class LaconicClient extends SigningStargateClient {
     return this.signAndBroadcast(signer, [createMsg], fee, memo);
   }
 
+  public async associateBond (
+    signer: string,
+    recordId: string,
+    bondId: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgAssociateBondEncodeObject = {
+      typeUrl: typeUrlMsgAssociateBond,
+      value: {
+        recordId,
+        bondId,
+        signer
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async dissociateBond (
+    signer: string,
+    recordId: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgDissociateBondEncodeObject = {
+      typeUrl: typeUrlMsgDissociateBond,
+      value: {
+        recordId,
+        signer
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
   public async reserveAuthority (
     signer: string,
     name: string,
