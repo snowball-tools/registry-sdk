@@ -7,7 +7,10 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "cerc.auction.v1";
 
-/** QueryParamsRequest is the format to query the parameters of the auction module */
+/**
+ * QueryParamsRequest is the format to query the parameters of the auction
+ * module
+ */
 export interface QueryParamsRequest {}
 
 /** QueryParamsResponse returns parameters of the auction module */
@@ -30,19 +33,19 @@ export interface QueryAuctionsResponse {
 }
 
 /** AuctionRequest is the format for querying a specific auction */
-export interface QueryAuctionRequest {
+export interface QueryGetAuctionRequest {
   /** Auction id */
   id: string;
 }
 
 /** AuctionResponse returns the details of the queried auction */
-export interface QueryAuctionResponse {
+export interface QueryGetAuctionResponse {
   /** Auction details */
   auction?: Auction;
 }
 
 /** BidRequest is the format for querying a specific bid in an auction */
-export interface QueryBidRequest {
+export interface QueryGetBidRequest {
   /** Auction id */
   auctionId: string;
   /** Bidder address */
@@ -50,24 +53,27 @@ export interface QueryBidRequest {
 }
 
 /** BidResponse returns the details of the queried bid */
-export interface QueryBidResponse {
+export interface QueryGetBidResponse {
   /** Bid details */
   bid?: Bid;
 }
 
 /** BidsRequest is the format for querying all bids in an auction */
-export interface QueryBidsRequest {
+export interface QueryGetBidsRequest {
   /** Auction id */
   auctionId: string;
 }
 
 /** BidsResponse returns details of all bids in an auction */
-export interface QueryBidsResponse {
+export interface QueryGetBidsResponse {
   /** List of bids in the auction */
   bids: Bid[];
 }
 
-/** AuctionsByBidderRequest is the format for querying all auctions containing a bidder address */
+/**
+ * AuctionsByBidderRequest is the format for querying all auctions containing a
+ * bidder address
+ */
 export interface QueryAuctionsByBidderRequest {
   /** Address of the bidder */
   bidderAddress: string;
@@ -79,7 +85,10 @@ export interface QueryAuctionsByBidderResponse {
   auctions?: Auctions;
 }
 
-/** AuctionsByOwnerRequest is the format for querying all auctions created by an owner */
+/**
+ * AuctionsByOwnerRequest is the format for querying all auctions created by an
+ * owner
+ */
 export interface QueryAuctionsByOwnerRequest {
   /** Address of the owner */
   ownerAddress: string;
@@ -94,6 +103,10 @@ export interface QueryAuctionsByOwnerResponse {
 /** BalanceRequest is the format to fetch all balances */
 export interface QueryGetAuctionModuleBalanceRequest {}
 
+/**
+ * QueryGetAuctionModuleBalanceResponse is the response type for auction module
+ * balance rpc method
+ */
 export interface QueryGetAuctionModuleBalanceResponse {
   /** Set of all balances within the auction */
   balance: Coin[];
@@ -348,13 +361,13 @@ export const QueryAuctionsResponse = {
   },
 };
 
-function createBaseQueryAuctionRequest(): QueryAuctionRequest {
+function createBaseQueryGetAuctionRequest(): QueryGetAuctionRequest {
   return { id: "" };
 }
 
-export const QueryAuctionRequest = {
+export const QueryGetAuctionRequest = {
   encode(
-    message: QueryAuctionRequest,
+    message: QueryGetAuctionRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.id !== "") {
@@ -363,10 +376,13 @@ export const QueryAuctionRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAuctionRequest {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetAuctionRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAuctionRequest();
+    const message = createBaseQueryGetAuctionRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -381,34 +397,34 @@ export const QueryAuctionRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAuctionRequest {
+  fromJSON(object: any): QueryGetAuctionRequest {
     return {
       id: isSet(object.id) ? String(object.id) : "",
     };
   },
 
-  toJSON(message: QueryAuctionRequest): unknown {
+  toJSON(message: QueryGetAuctionRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAuctionRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetAuctionRequest>, I>>(
     object: I
-  ): QueryAuctionRequest {
-    const message = createBaseQueryAuctionRequest();
+  ): QueryGetAuctionRequest {
+    const message = createBaseQueryGetAuctionRequest();
     message.id = object.id ?? "";
     return message;
   },
 };
 
-function createBaseQueryAuctionResponse(): QueryAuctionResponse {
+function createBaseQueryGetAuctionResponse(): QueryGetAuctionResponse {
   return { auction: undefined };
 }
 
-export const QueryAuctionResponse = {
+export const QueryGetAuctionResponse = {
   encode(
-    message: QueryAuctionResponse,
+    message: QueryGetAuctionResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.auction !== undefined) {
@@ -420,10 +436,10 @@ export const QueryAuctionResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAuctionResponse {
+  ): QueryGetAuctionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAuctionResponse();
+    const message = createBaseQueryGetAuctionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -438,7 +454,7 @@ export const QueryAuctionResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAuctionResponse {
+  fromJSON(object: any): QueryGetAuctionResponse {
     return {
       auction: isSet(object.auction)
         ? Auction.fromJSON(object.auction)
@@ -446,7 +462,7 @@ export const QueryAuctionResponse = {
     };
   },
 
-  toJSON(message: QueryAuctionResponse): unknown {
+  toJSON(message: QueryGetAuctionResponse): unknown {
     const obj: any = {};
     message.auction !== undefined &&
       (obj.auction = message.auction
@@ -455,10 +471,10 @@ export const QueryAuctionResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAuctionResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetAuctionResponse>, I>>(
     object: I
-  ): QueryAuctionResponse {
-    const message = createBaseQueryAuctionResponse();
+  ): QueryGetAuctionResponse {
+    const message = createBaseQueryGetAuctionResponse();
     message.auction =
       object.auction !== undefined && object.auction !== null
         ? Auction.fromPartial(object.auction)
@@ -467,13 +483,13 @@ export const QueryAuctionResponse = {
   },
 };
 
-function createBaseQueryBidRequest(): QueryBidRequest {
+function createBaseQueryGetBidRequest(): QueryGetBidRequest {
   return { auctionId: "", bidder: "" };
 }
 
-export const QueryBidRequest = {
+export const QueryGetBidRequest = {
   encode(
-    message: QueryBidRequest,
+    message: QueryGetBidRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.auctionId !== "") {
@@ -485,10 +501,10 @@ export const QueryBidRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBidRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBidRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryBidRequest();
+    const message = createBaseQueryGetBidRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -506,37 +522,37 @@ export const QueryBidRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryBidRequest {
+  fromJSON(object: any): QueryGetBidRequest {
     return {
       auctionId: isSet(object.auctionId) ? String(object.auctionId) : "",
       bidder: isSet(object.bidder) ? String(object.bidder) : "",
     };
   },
 
-  toJSON(message: QueryBidRequest): unknown {
+  toJSON(message: QueryGetBidRequest): unknown {
     const obj: any = {};
     message.auctionId !== undefined && (obj.auctionId = message.auctionId);
     message.bidder !== undefined && (obj.bidder = message.bidder);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBidRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetBidRequest>, I>>(
     object: I
-  ): QueryBidRequest {
-    const message = createBaseQueryBidRequest();
+  ): QueryGetBidRequest {
+    const message = createBaseQueryGetBidRequest();
     message.auctionId = object.auctionId ?? "";
     message.bidder = object.bidder ?? "";
     return message;
   },
 };
 
-function createBaseQueryBidResponse(): QueryBidResponse {
+function createBaseQueryGetBidResponse(): QueryGetBidResponse {
   return { bid: undefined };
 }
 
-export const QueryBidResponse = {
+export const QueryGetBidResponse = {
   encode(
-    message: QueryBidResponse,
+    message: QueryGetBidResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.bid !== undefined) {
@@ -545,10 +561,10 @@ export const QueryBidResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBidResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBidResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryBidResponse();
+    const message = createBaseQueryGetBidResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -563,23 +579,23 @@ export const QueryBidResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryBidResponse {
+  fromJSON(object: any): QueryGetBidResponse {
     return {
       bid: isSet(object.bid) ? Bid.fromJSON(object.bid) : undefined,
     };
   },
 
-  toJSON(message: QueryBidResponse): unknown {
+  toJSON(message: QueryGetBidResponse): unknown {
     const obj: any = {};
     message.bid !== undefined &&
       (obj.bid = message.bid ? Bid.toJSON(message.bid) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBidResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetBidResponse>, I>>(
     object: I
-  ): QueryBidResponse {
-    const message = createBaseQueryBidResponse();
+  ): QueryGetBidResponse {
+    const message = createBaseQueryGetBidResponse();
     message.bid =
       object.bid !== undefined && object.bid !== null
         ? Bid.fromPartial(object.bid)
@@ -588,13 +604,13 @@ export const QueryBidResponse = {
   },
 };
 
-function createBaseQueryBidsRequest(): QueryBidsRequest {
+function createBaseQueryGetBidsRequest(): QueryGetBidsRequest {
   return { auctionId: "" };
 }
 
-export const QueryBidsRequest = {
+export const QueryGetBidsRequest = {
   encode(
-    message: QueryBidsRequest,
+    message: QueryGetBidsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.auctionId !== "") {
@@ -603,10 +619,10 @@ export const QueryBidsRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBidsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBidsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryBidsRequest();
+    const message = createBaseQueryGetBidsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -621,34 +637,34 @@ export const QueryBidsRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryBidsRequest {
+  fromJSON(object: any): QueryGetBidsRequest {
     return {
       auctionId: isSet(object.auctionId) ? String(object.auctionId) : "",
     };
   },
 
-  toJSON(message: QueryBidsRequest): unknown {
+  toJSON(message: QueryGetBidsRequest): unknown {
     const obj: any = {};
     message.auctionId !== undefined && (obj.auctionId = message.auctionId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBidsRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetBidsRequest>, I>>(
     object: I
-  ): QueryBidsRequest {
-    const message = createBaseQueryBidsRequest();
+  ): QueryGetBidsRequest {
+    const message = createBaseQueryGetBidsRequest();
     message.auctionId = object.auctionId ?? "";
     return message;
   },
 };
 
-function createBaseQueryBidsResponse(): QueryBidsResponse {
+function createBaseQueryGetBidsResponse(): QueryGetBidsResponse {
   return { bids: [] };
 }
 
-export const QueryBidsResponse = {
+export const QueryGetBidsResponse = {
   encode(
-    message: QueryBidsResponse,
+    message: QueryGetBidsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.bids) {
@@ -657,10 +673,13 @@ export const QueryBidsResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBidsResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetBidsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryBidsResponse();
+    const message = createBaseQueryGetBidsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -675,7 +694,7 @@ export const QueryBidsResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryBidsResponse {
+  fromJSON(object: any): QueryGetBidsResponse {
     return {
       bids: Array.isArray(object?.bids)
         ? object.bids.map((e: any) => Bid.fromJSON(e))
@@ -683,7 +702,7 @@ export const QueryBidsResponse = {
     };
   },
 
-  toJSON(message: QueryBidsResponse): unknown {
+  toJSON(message: QueryGetBidsResponse): unknown {
     const obj: any = {};
     if (message.bids) {
       obj.bids = message.bids.map((e) => (e ? Bid.toJSON(e) : undefined));
@@ -693,10 +712,10 @@ export const QueryBidsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBidsResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetBidsResponse>, I>>(
     object: I
-  ): QueryBidsResponse {
-    const message = createBaseQueryBidsResponse();
+  ): QueryGetBidsResponse {
+    const message = createBaseQueryGetBidsResponse();
     message.bids = object.bids?.map((e) => Bid.fromPartial(e)) || [];
     return message;
   },
@@ -1071,11 +1090,11 @@ export interface Query {
   /** Auctions queries all auctions */
   Auctions(request: QueryAuctionsRequest): Promise<QueryAuctionsResponse>;
   /** GetAuction queries an auction */
-  GetAuction(request: QueryAuctionRequest): Promise<QueryAuctionResponse>;
+  GetAuction(request: QueryGetAuctionRequest): Promise<QueryGetAuctionResponse>;
   /** GetBid queries an auction bid */
-  GetBid(request: QueryBidRequest): Promise<QueryBidResponse>;
+  GetBid(request: QueryGetBidRequest): Promise<QueryGetBidResponse>;
   /** GetBids queries all auction bids */
-  GetBids(request: QueryBidsRequest): Promise<QueryBidsResponse>;
+  GetBids(request: QueryGetBidsRequest): Promise<QueryGetBidsResponse>;
   /** AuctionsByBidder queries auctions by bidder */
   AuctionsByBidder(
     request: QueryAuctionsByBidderRequest
@@ -1119,31 +1138,33 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  GetAuction(request: QueryAuctionRequest): Promise<QueryAuctionResponse> {
-    const data = QueryAuctionRequest.encode(request).finish();
+  GetAuction(
+    request: QueryGetAuctionRequest
+  ): Promise<QueryGetAuctionResponse> {
+    const data = QueryGetAuctionRequest.encode(request).finish();
     const promise = this.rpc.request(
       "cerc.auction.v1.Query",
       "GetAuction",
       data
     );
     return promise.then((data) =>
-      QueryAuctionResponse.decode(new _m0.Reader(data))
+      QueryGetAuctionResponse.decode(new _m0.Reader(data))
     );
   }
 
-  GetBid(request: QueryBidRequest): Promise<QueryBidResponse> {
-    const data = QueryBidRequest.encode(request).finish();
+  GetBid(request: QueryGetBidRequest): Promise<QueryGetBidResponse> {
+    const data = QueryGetBidRequest.encode(request).finish();
     const promise = this.rpc.request("cerc.auction.v1.Query", "GetBid", data);
     return promise.then((data) =>
-      QueryBidResponse.decode(new _m0.Reader(data))
+      QueryGetBidResponse.decode(new _m0.Reader(data))
     );
   }
 
-  GetBids(request: QueryBidsRequest): Promise<QueryBidsResponse> {
-    const data = QueryBidsRequest.encode(request).finish();
+  GetBids(request: QueryGetBidsRequest): Promise<QueryGetBidsResponse> {
+    const data = QueryGetBidsRequest.encode(request).finish();
     const promise = this.rpc.request("cerc.auction.v1.Query", "GetBids", data);
     return promise.then((data) =>
-      QueryBidsResponse.decode(new _m0.Reader(data))
+      QueryGetBidsResponse.decode(new _m0.Reader(data))
     );
   }
 
