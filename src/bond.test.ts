@@ -95,13 +95,12 @@ const bondTests = () => {
     });
   });
 
-  // TODO: Implement set record
-  xtest('Associate/Dissociate bond.', async () => {
+  test('Associate/Dissociate bond.', async () => {
     let bondId1: string;
 
     bondId1 = await registry.getNextBondId(privateKey);
     expect(bondId1).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
 
     // Create a new record.
     let watcher = await publishNewWatcherVersion(bondId1);
@@ -110,24 +109,23 @@ const bondTests = () => {
     expect(record1.bondId).toBe(bondId1);
 
     // Dissociate record, query and confirm.
-    await registry.dissociateBond({ recordId: record1.id }, privateKey, fee);
+    await registry.dissociateBond({ recordId: record1.id }, privateKey, laconic2Fee);
     [record1] = await registry.queryRecords(query, true);
     expect(record1.bondId).toBe('');
 
     // Associate record with bond, query and confirm.
-    await registry.associateBond({ recordId: record1.id, bondId: bondId1 }, privateKey, fee);
+    await registry.associateBond({ recordId: record1.id, bondId: bondId1 }, privateKey, laconic2Fee);
     [record1] = await registry.queryRecords(query, true);
     expect(record1.bondId).toBe(bondId1);
   });
 
-  // TODO: Implement set record
-  xtest('Reassociate/Dissociate records.', async () => {
+  test('Reassociate/Dissociate records.', async () => {
     let bondId1: string;
     let bondId2: string;
 
     bondId1 = await registry.getNextBondId(privateKey);
     expect(bondId1).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
 
     // Create a new record version.
     let watcher = await publishNewWatcherVersion(bondId1);
@@ -144,19 +142,19 @@ const bondTests = () => {
     // Create another bond.
     bondId2 = await registry.getNextBondId(privateKey);
     expect(bondId2).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
     const [bond] = await registry.getBondsByIds([bondId2]);
     expect(bond.id).toBe(bondId2);
 
     // Reassociate records from bondId1 to bondId2, verify change.
-    await registry.reassociateRecords({ oldBondId: bondId1, newBondId: bondId2 }, privateKey, fee);
+    await registry.reassociateRecords({ oldBondId: bondId1, newBondId: bondId2 }, privateKey, laconic2Fee);
     records = await registry.queryRecords(queryv1, true);
     expect(records[0].bondId).toBe(bondId2);
     records = await registry.queryRecords(queryv2, true);
     expect(records[0].bondId).toBe(bondId2);
 
     // Dissociate all records from bond, verify change.
-    await registry.dissociateRecords({ bondId: bondId2 }, privateKey, fee);
+    await registry.dissociateRecords({ bondId: bondId2 }, privateKey, laconic2Fee);
     records = await registry.queryRecords(queryv1, true);
     expect(records[0].bondId).toBe('');
     records = await registry.queryRecords(queryv2, true);

@@ -354,29 +354,36 @@ export class Registry {
   /**
    * Dissociate all records from bond.
    */
-  async dissociateRecords (params: MessageMsgDissociateRecords, privateKey: string, fee: Fee) {
-    let result;
+  async dissociateRecords ({ bondId }: MessageMsgDissociateRecords, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    const msg = createTxMsgDissociateRecords(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.dissociateRecords(
+      account.address,
+      bondId,
+      fee
+    );
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
    * Reassociate records (switch bond).
    */
-  async reassociateRecords (params: MessageMsgReAssociateRecords, privateKey: string, fee: Fee) {
-    let result;
+  async reassociateRecords ({ newBondId, oldBondId }: MessageMsgReAssociateRecords, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    const msg = createTxMsgReAssociateRecords(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.reassociateRecords(
+      account.address,
+      oldBondId,
+      newBondId,
+      fee
+    );
 
-    return parseTxResponse(result);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
