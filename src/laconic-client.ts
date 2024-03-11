@@ -11,7 +11,7 @@ import { Comet38Client } from '@cosmjs/tendermint-rpc';
 
 import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEncodeObject, MsgWithdrawBondEncodeObject, bondTypes, typeUrlMsgCancelBond, typeUrlMsgCreateBond, typeUrlMsgRefillBond, typeUrlMsgWithdrawBond } from './types/cerc/bond/message';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
-import { MsgDeleteNameAuthorityEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgDeleteNameAuthority, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
+import { MsgAssociateBondEncodeObject, MsgDeleteNameAuthorityEncodeObject, MsgDissociateBondEncodeObject, MsgDissociateRecordsEncodeObject, MsgReassociateRecordsEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgAssociateBond, typeUrlMsgDeleteNameAuthority, typeUrlMsgDissociateBond, typeUrlMsgDissociateRecords, typeUrlMsgReassociateRecords, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
 import { Payload } from './proto2/cerc/registry/v1/tx';
 import { Record, Signature } from './proto2/cerc/registry/v1/registry';
@@ -126,6 +126,78 @@ export class LaconicClient extends SigningStargateClient {
       value: {
         id,
         signer
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async associateBond (
+    signer: string,
+    recordId: string,
+    bondId: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgAssociateBondEncodeObject = {
+      typeUrl: typeUrlMsgAssociateBond,
+      value: {
+        recordId,
+        bondId,
+        signer
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async dissociateBond (
+    signer: string,
+    recordId: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgDissociateBondEncodeObject = {
+      typeUrl: typeUrlMsgDissociateBond,
+      value: {
+        recordId,
+        signer
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async dissociateRecords (
+    signer: string,
+    bondId: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgDissociateRecordsEncodeObject = {
+      typeUrl: typeUrlMsgDissociateRecords,
+      value: {
+        signer,
+        bondId
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async reassociateRecords (
+    signer: string,
+    oldBondId: string,
+    newBondId: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgReassociateRecordsEncodeObject = {
+      typeUrl: typeUrlMsgReassociateRecords,
+      value: {
+        signer,
+        oldBondId,
+        newBondId
       }
     };
 

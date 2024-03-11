@@ -3,11 +3,10 @@ import path from 'path';
 
 import { Account } from './account';
 import { Registry } from './index';
-import { ensureUpdatedConfig, getConfig, getLaconic2Config } from './testing/helper';
+import { ensureUpdatedConfig, getConfig } from './testing/helper';
 import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
-const { fee: laconic2Fee } = getLaconic2Config();
 
 jest.setTimeout(5 * 60 * 1000);
 
@@ -25,7 +24,7 @@ const namingTests = () => {
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);
-    await registry.createBond({ denom: DENOM, amount: '2000000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '2000000' }, privateKey, fee);
 
     // Create watcher.
     watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
@@ -36,7 +35,7 @@ const namingTests = () => {
         record: watcher.record
       },
       privateKey,
-      laconic2Fee
+      fee
     );
 
     watcherId = result.id;
@@ -45,7 +44,7 @@ const namingTests = () => {
   describe('Authority tests', () => {
     test('Reserve authority.', async () => {
       const authorityName = `laconic-${Date.now()}`;
-      await registry.reserveAuthority({ name: authorityName }, privateKey, laconic2Fee);
+      await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
     });
 
     describe('With authority reserved', () => {
@@ -56,7 +55,7 @@ const namingTests = () => {
         authorityName = `laconic-${Date.now()}`;
         lrn = `lrn://${authorityName}/app/test`;
 
-        await registry.reserveAuthority({ name: authorityName }, privateKey, laconic2Fee);
+        await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
       });
 
       test('Lookup authority.', async () => {
@@ -78,13 +77,13 @@ const namingTests = () => {
 
       // TODO: Implement parse error response
       xtest('Reserve already reserved authority', async () => {
-        await expect(registry.reserveAuthority({ name: authorityName }, privateKey, laconic2Fee))
+        await expect(registry.reserveAuthority({ name: authorityName }, privateKey, fee))
           .rejects.toThrow('Name already reserved.');
       });
 
       test('Reserve sub-authority.', async () => {
         const subAuthority = `echo.${authorityName}`;
-        await registry.reserveAuthority({ name: subAuthority }, privateKey, laconic2Fee);
+        await registry.reserveAuthority({ name: subAuthority }, privateKey, fee);
 
         const [record] = await registry.lookupAuthorities([subAuthority]);
         expect(record).toBeDefined();
@@ -98,15 +97,15 @@ const namingTests = () => {
         const mnenonic1 = Account.generateMnemonic();
         const otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
         await otherAccount1.init();
-        await registry.sendCoins({ denom: DENOM, amount: '10000', destinationAddress: otherAccount1.address }, privateKey, laconic2Fee);
+        await registry.sendCoins({ denom: DENOM, amount: '10000', destinationAddress: otherAccount1.address }, privateKey, fee);
 
         const mnenonic2 = Account.generateMnemonic();
         const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
         await otherAccount2.init();
-        await registry.sendCoins({ denom: DENOM, amount: '10000', destinationAddress: otherAccount2.address }, otherAccount1.getPrivateKey(), laconic2Fee);
+        await registry.sendCoins({ denom: DENOM, amount: '10000', destinationAddress: otherAccount2.address }, otherAccount1.getPrivateKey(), fee);
 
         const subAuthority = `halo.${authorityName}`;
-        await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.address }, privateKey, laconic2Fee);
+        await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.address }, privateKey, fee);
 
         const [record] = await registry.lookupAuthorities([subAuthority]);
         expect(record).toBeDefined();
@@ -119,12 +118,12 @@ const namingTests = () => {
       // TODO: Parse error response from set name
       xtest('Set name for unbonded authority', async () => {
         assert(watcherId);
-        await expect(registry.setName({ lrn, cid: watcherId }, privateKey, laconic2Fee))
+        await expect(registry.setName({ lrn, cid: watcherId }, privateKey, fee))
           .rejects.toThrow('Authority bond not found.');
       });
 
       test('Set authority bond', async () => {
-        await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, laconic2Fee);
+        await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
       });
     });
   });
@@ -137,14 +136,14 @@ const namingTests = () => {
 
     beforeAll(async () => {
       authorityName = `laconic-${Date.now()}`;
-      await registry.reserveAuthority({ name: authorityName }, privateKey, laconic2Fee);
-      await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, laconic2Fee);
+      await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+      await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
 
       // Create another account.
       const mnenonic = Account.generateMnemonic();
       otherAccount = await Account.generateFromMnemonic(mnenonic);
       await otherAccount.init();
-      await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, laconic2Fee);
+      await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, fee);
 
       otherAuthorityName = `other-${Date.now()}`;
       otherPrivateKey = otherAccount.privateKey.toString('hex');
@@ -153,14 +152,14 @@ const namingTests = () => {
     test('Set name', async () => {
       const lrn = `lrn://${authorityName}/app/test1`;
 
-      await registry.setName({ lrn, cid: watcherId }, privateKey, laconic2Fee);
+      await registry.setName({ lrn, cid: watcherId }, privateKey, fee);
 
       // Query records should return it (some lrn points to it).
       const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
       expect(record).toBeDefined();
       expect(record.names).toHaveLength(1);
 
-      await registry.deleteName({ lrn }, privateKey, laconic2Fee);
+      await registry.deleteName({ lrn }, privateKey, fee);
     });
 
     describe('With name set', () => {
@@ -168,11 +167,11 @@ const namingTests = () => {
 
       beforeAll(async () => {
         lrn = `lrn://${authorityName}/app/test2`;
-        await registry.setName({ lrn, cid: watcherId }, privateKey, laconic2Fee);
+        await registry.setName({ lrn, cid: watcherId }, privateKey, fee);
       });
 
       afterAll(async () => {
-        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
+        await registry.deleteName({ lrn }, privateKey, fee);
       });
 
       test('Lookup name', async () => {
@@ -206,11 +205,11 @@ const namingTests = () => {
             record: updatedWatcher.record
           },
           privateKey,
-          laconic2Fee
+          fee
         );
 
         const updatedWatcherId = result.id;
-        await registry.setName({ lrn, cid: updatedWatcherId }, privateKey, laconic2Fee);
+        await registry.setName({ lrn, cid: updatedWatcherId }, privateKey, fee);
 
         const records = await registry.lookupNames([lrn], true);
         expect(records).toHaveLength(1);
@@ -231,7 +230,7 @@ const namingTests = () => {
       });
 
       test('Delete name', async () => {
-        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
+        await registry.deleteName({ lrn }, privateKey, fee);
 
         let records = await registry.lookupNames([lrn], true);
         expect(records).toBeDefined();
@@ -255,8 +254,8 @@ const namingTests = () => {
       });
 
       test('Delete already deleted name', async () => {
-        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
-        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
+        await registry.deleteName({ lrn }, privateKey, fee);
+        await registry.deleteName({ lrn }, privateKey, fee);
 
         const records = await registry.lookupNames([lrn], true);
         expect(records).toBeDefined();
@@ -272,30 +271,30 @@ const namingTests = () => {
 
     // TODO: Parse error response form set name
     xtest('Set name without reserving authority', async () => {
-      await expect(registry.setName({ lrn: 'lrn://not-reserved/app/test', cid: watcherId }, privateKey, laconic2Fee))
+      await expect(registry.setName({ lrn: 'lrn://not-reserved/app/test', cid: watcherId }, privateKey, fee))
         .rejects.toThrow('Name authority not found.');
     });
 
     // TODO: Parse error response form set name
     xtest('Set name for non-owned authority', async () => {
-      await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, laconic2Fee);
+      await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, fee);
 
       // Other account reserves an authority.
-      await registry.reserveAuthority({ name: otherAuthorityName }, otherPrivateKey, laconic2Fee);
+      await registry.reserveAuthority({ name: otherAuthorityName }, otherPrivateKey, fee);
 
       // Try setting name under other authority.
-      await expect(registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, laconic2Fee)).rejects.toThrow('Access denied.');
+      await expect(registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, fee)).rejects.toThrow('Access denied.');
     });
 
     // TODO: Parse error response form set name
     xtest('Delete name for non-owned authority.', async () => {
       const otherBondId = await registry.getNextBondId(otherPrivateKey);
-      await registry.createBond({ denom: DENOM, amount: '1000000' }, otherPrivateKey, laconic2Fee);
-      await registry.setAuthorityBond({ name: otherAuthorityName, bondId: otherBondId }, otherPrivateKey, laconic2Fee);
-      await registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, otherPrivateKey, laconic2Fee);
+      await registry.createBond({ denom: DENOM, amount: '1000000' }, otherPrivateKey, fee);
+      await registry.setAuthorityBond({ name: otherAuthorityName, bondId: otherBondId }, otherPrivateKey, fee);
+      await registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, otherPrivateKey, fee);
 
       // Try deleting name under other authority.
-      await expect(registry.deleteName({ lrn: `lrn://${otherAuthorityName}/app/test` }, privateKey, laconic2Fee)).rejects.toThrow('Access denied.');
+      await expect(registry.deleteName({ lrn: `lrn://${otherAuthorityName}/app/test` }, privateKey, fee)).rejects.toThrow('Access denied.');
     });
 
     // TODO: Check later for empty records

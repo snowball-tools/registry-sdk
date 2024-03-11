@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { Registry } from './index';
-import { getConfig, ensureUpdatedConfig, getLaconic2Config } from './testing/helper';
+import { getConfig, ensureUpdatedConfig } from './testing/helper';
 import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
@@ -9,7 +9,6 @@ const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 jest.setTimeout(40 * 1000);
 
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
-const { fee: laconic2Fee } = getLaconic2Config();
 
 describe('Querying', () => {
   let watcher: any;
@@ -20,11 +19,11 @@ describe('Querying', () => {
     registry = new Registry(gqlEndpoint, restEndpoint, chainId);
 
     bondId = await registry.getNextBondId(privateKey);
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
 
     const publishNewWatcherVersion = async () => {
       watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
-      await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, laconic2Fee);
+      await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, fee);
       return watcher.record.version;
     };
 

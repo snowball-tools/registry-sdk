@@ -1,10 +1,9 @@
 import { Account } from './account';
 import { DENOM } from './constants';
 import { Registry } from './index';
-import { getConfig, getLaconic2Config } from './testing/helper';
+import { getConfig } from './testing/helper';
 
-const { chainId, restEndpoint, gqlEndpoint, privateKey } = getConfig();
-const { fee } = getLaconic2Config();
+const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
 
