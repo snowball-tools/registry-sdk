@@ -4,25 +4,19 @@ import {
   Chain,
   Sender,
   Fee,
-  createMessageSend,
   MessageSendParams
 } from '@tharsis/transactions';
-import { DeliverTxResponse, GasPrice, StdFee } from '@cosmjs/stargate';
+import { DeliverTxResponse, StdFee } from '@cosmjs/stargate';
 
 import { RegistryClient } from './registry-client';
 import { Account } from './account';
 import { createTransaction } from './txbuilder';
-import { Payload, Record } from './types';
 import { Util } from './util';
 import {
   createTxMsgAssociateBond,
-  createTxMsgCancelBond,
-  createTxMsgCreateBond,
   createTxMsgDissociateBond,
   createTxMsgDissociateRecords,
   createTxMsgReAssociateRecords,
-  createTxMsgRefillBond,
-  createTxMsgWithdrawBond,
   MessageMsgAssociateBond,
   MessageMsgCancelBond,
   MessageMsgCreateBond,
@@ -33,22 +27,12 @@ import {
   MessageMsgWithdrawBond
 } from './messages/bond';
 import {
-  createTxMsgDeleteName,
-  createTxMsgReserveAuthority,
-  createTxMsgSetAuthorityBond,
-  createTxMsgSetName,
-  createTxMsgSetRecord,
   MessageMsgDeleteName,
-  MessageMsgReserveAuthority,
   MessageMsgSetAuthorityBond,
   MessageMsgSetName,
-  MessageMsgSetRecord,
-  NAMESERVICE_ERRORS,
-  parseMsgSetRecordResponse
+  NAMESERVICE_ERRORS
 } from './messages/registry';
 import {
-  createTxMsgCommitBid,
-  createTxMsgRevealBid,
   MessageMsgCommitBid,
   MessageMsgRevealBid
 } from './messages/auction';
@@ -487,7 +471,7 @@ export class Registry {
     );
 
     // TODO: Parse error response
-    return response;
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -511,52 +495,7 @@ export class Registry {
     );
 
     // TODO: Parse error response form delete name
-    return response;
-  }
-
-  /**
-   * Submit record transaction.
-   * @param privateKey - private key in HEX to sign message.
-   * @param txPrivateKey - private key in HEX to sign transaction.
-   */
-  async _submitRecordTx (
-    { privateKey, record, bondId }: { privateKey: string, record: any, bondId: string },
-    txPrivateKey: string,
-    fee: Fee
-  ) {
-    if (!isKeyValid(privateKey)) {
-      throw new Error('Registry privateKey should be a hex string.');
-    }
-
-    if (!isKeyValid(bondId)) {
-      throw new Error(`Invalid bondId: ${bondId}.`);
-    }
-
-    // Sign record.
-    const recordSignerAccount = new Account(Buffer.from(privateKey, 'hex'));
-    const registryRecord = new Record(record);
-    const payload = new Payload(registryRecord);
-    await recordSignerAccount.signPayload(payload);
-
-    // Send record payload Tx.
-    txPrivateKey = txPrivateKey || recordSignerAccount.getPrivateKey();
-    return this._submitRecordPayloadTx({ payload, bondId }, txPrivateKey, fee);
-  }
-
-  async _submitRecordPayloadTx (params: MessageMsgSetRecord, privateKey: string, fee: Fee) {
-    if (!isKeyValid(privateKey)) {
-      throw new Error('Registry privateKey should be a hex string.');
-    }
-
-    if (!isKeyValid(params.bondId)) {
-      throw new Error(`Invalid bondId: ${params.bondId}.`);
-    }
-
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
-
-    const msg = createTxMsgSetRecord(this._chain, sender, fee, '', params);
-    return this._submitTx(msg, privateKey, sender);
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**

@@ -16,7 +16,7 @@ import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeU
 import { Payload } from './proto2/cerc/registry/v1/tx';
 import { Record, Signature } from './proto2/cerc/registry/v1/registry';
 import { Account } from './account';
-import { Record as RegistryRecord } from './types';
+import { Util } from './util';
 
 export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
@@ -200,10 +200,10 @@ export class LaconicClient extends SigningStargateClient {
     // Sign record.
     const recordSignerAccount = new Account(Buffer.from(params.privateKey, 'hex'));
     await recordSignerAccount.init();
-    const messageToSign = RegistryRecord.getMessageToSign(params.record);
+    const messageToSign = Util.sortJSON(params.record);
     const sig = await recordSignerAccount.signRecord(messageToSign);
 
-    const signature = Signature.fromJSON({ sig: sig.toString('base64'), pubKey: recordSignerAccount.publicKeyLaconic2 });
+    const signature = Signature.fromJSON({ sig: sig.toString('base64'), pubKey: recordSignerAccount.registryPublicKey });
 
     const payload = Payload.fromJSON({ record: registryRecord, signatures: [signature] });
 

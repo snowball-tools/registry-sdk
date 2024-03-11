@@ -95,7 +95,6 @@ const nameserviceExpiryTests = () => {
     expect(records).toHaveLength(0);
   });
 
-  // TODO: Check authority not expiring
   test('Check authority expired without bond balance', async () => {
     const [authority] = await registry.lookupAuthorities([authorityName]);
     expect(authority.status).toBe('expired');
