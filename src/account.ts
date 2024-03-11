@@ -13,8 +13,6 @@ import { ethToEthermint } from '@tharsis/address-converter';
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
-import { Payload, Signature } from './types';
-
 const AMINO_PREFIX = 'EB5AE98721';
 const HDPATH = "m/44'/60'/0'/0";
 const ACCOUNT_PREFIX = 'laconic';
@@ -107,7 +105,8 @@ export class Account {
       ACCOUNT_PREFIX
     );
 
-    this._address = (await this._wallet.getAccounts())[0].address;
+    const [account] = await this._wallet.getAccounts();
+    this._address = account.address;
 
     // Generate public key.
     this._publicKey = secp256k1.publicKeyCreate(this._privateKey);
@@ -120,7 +119,7 @@ export class Account {
     this._formattedCosmosAddress = ethToEthermint(this._ethAddress);
 
     // 4. Generate registry formatted public key.
-    const publicKeyInHex = AMINO_PREFIX + toHex(this._publicKey);
+    const publicKeyInHex = AMINO_PREFIX + toHex(account.pubkey);
     this._registryPublicKey = Buffer.from(publicKeyInHex, 'hex').toString('base64');
 
     // 5. Generate registry formatted address.
@@ -160,20 +159,6 @@ export class Account {
     const sigObj = secp256k1.ecdsaSign(messageToSignSha256InBytes, this.privateKey);
 
     return Buffer.from(sigObj.signature);
-  }
-
-  async signPayload (payload: Payload) {
-    assert(payload);
-
-    const { record } = payload;
-    const messageToSign = record.getMessageToSign();
-
-    const sig = await this.signRecord(messageToSign);
-    assert(this.registryPublicKey);
-    const signature = new Signature(this.registryPublicKey, sig.toString('base64'));
-    payload.addSignature(signature);
-
-    return signature;
   }
 
   /**

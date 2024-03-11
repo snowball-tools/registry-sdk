@@ -1,13 +1,15 @@
 import path from 'path';
 
 import { Registry } from './index';
-import { ensureUpdatedConfig, getConfig } from './testing/helper';
+import { ensureUpdatedConfig, getConfig, getLaconic2Config } from './testing/helper';
+import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 jest.setTimeout(120 * 1000);
 
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
+const { fee: laconic2Fee } = getLaconic2Config();
 
 const nameserviceExpiryTests = () => {
   let registry: Registry;
@@ -24,7 +26,7 @@ const nameserviceExpiryTests = () => {
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);
-    await registry.createBond({ denom: 'aphoton', amount: '3000000' }, privateKey, fee);
+    await registry.createBond({ denom: DENOM, amount: '3000000' }, privateKey, laconic2Fee);
   });
 
   test('Set record and check bond balance', async () => {
@@ -37,9 +39,9 @@ const nameserviceExpiryTests = () => {
         record: watcher.record
       },
       privateKey,
-      fee
+      laconic2Fee
     );
-    console.log('SetRecordResult: ' + result.data.id);
+    console.log('SetRecordResult: ' + result.id);
     const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     recordExpiryTime = new Date(record.expiryTime);
 
@@ -51,8 +53,8 @@ const nameserviceExpiryTests = () => {
 
   test('Reserve authority and set bond', async () => {
     authorityName = `laconic-${Date.now()}`;
-    await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
-    await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
+    await registry.reserveAuthority({ name: authorityName }, privateKey, laconic2Fee);
+    await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, laconic2Fee);
     const [authority] = await registry.lookupAuthorities([authorityName]);
     expect(authority.status).toBe('active');
     authorityExpiryTime = new Date(authority.expiryTime);
@@ -76,6 +78,7 @@ const nameserviceExpiryTests = () => {
     authorityExpiryTime = updatedExpiryTime;
   });
 
+  // TODO: Check bond balance not decreasing correctly
   test('Check bond balance', async () => {
     const [bond] = await registry.getBondsByIds([bondId]);
     console.log(bond);

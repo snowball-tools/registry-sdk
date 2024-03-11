@@ -11,8 +11,12 @@ import { Comet38Client } from '@cosmjs/tendermint-rpc';
 
 import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEncodeObject, MsgWithdrawBondEncodeObject, bondTypes, typeUrlMsgCancelBond, typeUrlMsgCreateBond, typeUrlMsgRefillBond, typeUrlMsgWithdrawBond } from './types/cerc/bond/message';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
-import { MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, registryTypes, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond } from './types/cerc/registry/message';
+import { MsgDeleteNameAuthorityEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgDeleteNameAuthority, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
+import { Payload } from './proto2/cerc/registry/v1/tx';
+import { Record, Signature } from './proto2/cerc/registry/v1/registry';
+import { Account } from './account';
+import { Util } from './util';
 
 export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
@@ -185,6 +189,36 @@ export class LaconicClient extends SigningStargateClient {
     return this.signAndBroadcast(signer, [createMsg], fee, memo);
   }
 
+  public async setRecord (
+    params: { privateKey: string, record: any, bondId: string },
+    signer: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const registryRecord = Record.fromPartial({ attributes: Buffer.from(JSON.stringify(params.record), 'binary') });
+
+    // Sign record.
+    const recordSignerAccount = new Account(Buffer.from(params.privateKey, 'hex'));
+    await recordSignerAccount.init();
+    const messageToSign = Util.sortJSON(params.record);
+    const sig = await recordSignerAccount.signRecord(messageToSign);
+
+    const signature = Signature.fromJSON({ sig: sig.toString('base64'), pubKey: recordSignerAccount.registryPublicKey });
+
+    const payload = Payload.fromJSON({ record: registryRecord, signatures: [signature] });
+
+    const createMsg: MsgSetRecordEncodeObject = {
+      typeUrl: typeUrlMsgSetRecord,
+      value: {
+        signer,
+        bondId: params.bondId,
+        payload
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
   public async setAuthorityBond (
     signer: string,
     bondId: string,
@@ -198,6 +232,42 @@ export class LaconicClient extends SigningStargateClient {
         signer,
         bondId,
         name
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async setName (
+    signer: string,
+    lrn: string,
+    cid: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgSetNameEncodeObject = {
+      typeUrl: typeUrlMsgSetName,
+      value: {
+        signer,
+        lrn,
+        cid
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async deleteName (
+    signer: string,
+    lrn: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgDeleteNameAuthorityEncodeObject = {
+      typeUrl: typeUrlMsgDeleteNameAuthority,
+      value: {
+        signer,
+        lrn
       }
     };
 

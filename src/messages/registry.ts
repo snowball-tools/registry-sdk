@@ -8,9 +8,7 @@ import {
 } from '@tharsis/transactions';
 
 import * as registryTx from '../proto/vulcanize/registry/v1beta1/tx';
-import * as registry from '../proto/vulcanize/registry/v1beta1/registry';
 import { createTx } from './util';
-import { Payload } from '../types';
 
 const MSG_RESERVE_AUTHORITY_TYPES = {
   MsgValue: [
@@ -93,13 +91,8 @@ export interface MessageMsgReserveAuthority {
 }
 
 export interface MessageMsgSetName {
-  crn: string
+  lrn: string
   cid: string
-}
-
-export interface MessageMsgSetRecord {
-  bondId: string
-  payload: Payload
 }
 
 export interface MessageMsgSetAuthorityBond {
@@ -108,7 +101,7 @@ export interface MessageMsgSetAuthorityBond {
 }
 
 export interface MessageMsgDeleteName {
-  crn: string
+  lrn: string
 }
 
 export function createTxMsgReserveAuthority (
@@ -145,38 +138,14 @@ export function createTxMsgSetName (
   const types = generateTypes(MSG_SET_NAME_TYPES);
 
   const msg = createMsgSetName(
-    params.crn,
+    params.lrn,
     params.cid,
     sender.accountAddress
   );
 
   const msgCosmos = protoCreateMsgSetName(
-    params.crn,
+    params.lrn,
     params.cid,
-    sender.accountAddress
-  );
-
-  return createTx(chain, sender, fee, memo, types, msg, msgCosmos);
-}
-
-export function createTxMsgSetRecord (
-  chain: Chain,
-  sender: Sender,
-  fee: Fee,
-  memo: string,
-  params: MessageMsgSetRecord
-) {
-  const types = generateTypes(MSG_SET_RECORD_TYPES);
-
-  const msg = createMsgSetRecord(
-    params.bondId,
-    params.payload,
-    sender.accountAddress
-  );
-
-  const msgCosmos = protoCreateMsgSetRecord(
-    params.bondId,
-    params.payload,
     sender.accountAddress
   );
 
@@ -217,12 +186,12 @@ export function createTxMsgDeleteName (
   const types = generateTypes(MSG_DELETE_NAME_TYPES);
 
   const msg = createMsgDeleteName(
-    params.crn,
+    params.lrn,
     sender.accountAddress
   );
 
   const msgCosmos = protoCreateMsgDeleteName(
-    params.crn,
+    params.lrn,
     sender.accountAddress
   );
 
@@ -290,51 +259,6 @@ const protoCreateMsgSetName = (
   return {
     message: setNameMessage,
     path: 'vulcanize.registry.v1beta1.MsgSetName'
-  };
-};
-
-function createMsgSetRecord (
-  bondId: string,
-  payload: Payload,
-  signer: string
-) {
-  return {
-    type: 'registry/SetRecord',
-    value: {
-      bond_id: bondId,
-      signer,
-      payload: payload.serialize()
-    }
-  };
-}
-
-const protoCreateMsgSetRecord = (
-  bondId: string,
-  payloadData: Payload,
-  signer: string
-) => {
-  const record = new registry.vulcanize.registry.v1beta1.Record(payloadData.record.serialize());
-
-  const signatures = payloadData.signatures.map(
-    signature => new registry.vulcanize.registry.v1beta1.Signature(
-      signature.serialize()
-    )
-  );
-
-  const payload = new registryTx.vulcanize.registry.v1beta1.Payload({
-    record,
-    signatures
-  });
-
-  const setNameMessage = new registryTx.vulcanize.registry.v1beta1.MsgSetRecord({
-    bond_id: bondId,
-    signer,
-    payload
-  });
-
-  return {
-    message: setNameMessage,
-    path: 'vulcanize.registry.v1beta1.MsgSetRecord'
   };
 };
 

@@ -25,22 +25,21 @@ const namingTests = () => {
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);
-    await registry.createBond({ denom: DENOM, amount: '20000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '2000000' }, privateKey, laconic2Fee);
 
-    // TODO: Implement set record
     // Create watcher.
-    // watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
-    // const result = await registry.setRecord(
-    //   {
-    //     privateKey,
-    //     bondId,
-    //     record: watcher.record
-    //   },
-    //   privateKey,
-    //   fee
-    // );
+    watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
+    const result = await registry.setRecord(
+      {
+        privateKey,
+        bondId,
+        record: watcher.record
+      },
+      privateKey,
+      laconic2Fee
+    );
 
-    // watcherId = result.data.id;
+    watcherId = result.id;
   });
 
   describe('Authority tests', () => {
@@ -51,11 +50,11 @@ const namingTests = () => {
 
     describe('With authority reserved', () => {
       let authorityName: string;
-      let crn: string;
+      let lrn: string;
 
       beforeAll(async () => {
         authorityName = `laconic-${Date.now()}`;
-        crn = `crn://${authorityName}/app/test`;
+        lrn = `lrn://${authorityName}/app/test`;
 
         await registry.reserveAuthority({ name: authorityName }, privateKey, laconic2Fee);
       });
@@ -117,10 +116,10 @@ const namingTests = () => {
         expect(Number(record.height)).toBeGreaterThan(0);
       });
 
-      // TODO: Implement set record
+      // TODO: Parse error response from set name
       xtest('Set name for unbonded authority', async () => {
         assert(watcherId);
-        await expect(registry.setName({ crn, cid: watcherId }, privateKey, fee))
+        await expect(registry.setName({ lrn, cid: watcherId }, privateKey, laconic2Fee))
           .rejects.toThrow('Authority bond not found.');
       });
 
@@ -130,8 +129,7 @@ const namingTests = () => {
     });
   });
 
-  // TODO: Implement set record
-  xdescribe('Naming tests', () => {
+  describe('Naming tests', () => {
     let authorityName: string;
     let otherAuthorityName: string;
     let otherPrivateKey: string;
@@ -145,39 +143,40 @@ const namingTests = () => {
       // Create another account.
       const mnenonic = Account.generateMnemonic();
       otherAccount = await Account.generateFromMnemonic(mnenonic);
-      await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, laconic2Fee);
+      await otherAccount.init();
+      await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, laconic2Fee);
 
       otherAuthorityName = `other-${Date.now()}`;
       otherPrivateKey = otherAccount.privateKey.toString('hex');
     });
 
     test('Set name', async () => {
-      const crn = `crn://${authorityName}/app/test1`;
+      const lrn = `lrn://${authorityName}/app/test1`;
 
-      await registry.setName({ crn, cid: watcherId }, privateKey, fee);
+      await registry.setName({ lrn, cid: watcherId }, privateKey, laconic2Fee);
 
-      // Query records should return it (some CRN points to it).
+      // Query records should return it (some lrn points to it).
       const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
       expect(record).toBeDefined();
       expect(record.names).toHaveLength(1);
 
-      await registry.deleteName({ crn }, privateKey, fee);
+      await registry.deleteName({ lrn }, privateKey, laconic2Fee);
     });
 
     describe('With name set', () => {
-      let crn: string;
+      let lrn: string;
 
       beforeAll(async () => {
-        crn = `crn://${authorityName}/app/test2`;
-        await registry.setName({ crn, cid: watcherId }, privateKey, fee);
+        lrn = `lrn://${authorityName}/app/test2`;
+        await registry.setName({ lrn, cid: watcherId }, privateKey, laconic2Fee);
       });
 
       afterAll(async () => {
-        await registry.deleteName({ crn }, privateKey, fee);
+        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
       });
 
       test('Lookup name', async () => {
-        const records = await registry.lookupNames([crn]);
+        const records = await registry.lookupNames([lrn]);
         expect(records).toBeDefined();
         expect(records).toHaveLength(1);
 
@@ -190,7 +189,7 @@ const namingTests = () => {
       });
 
       test('Resolve name', async () => {
-        const records = await registry.resolveNames([crn]);
+        const records = await registry.resolveNames([lrn]);
         expect(records).toBeDefined();
         expect(records).toHaveLength(1);
 
@@ -207,13 +206,13 @@ const namingTests = () => {
             record: updatedWatcher.record
           },
           privateKey,
-          fee
+          laconic2Fee
         );
 
-        const updatedWatcherId = result.data.id;
-        await registry.setName({ crn, cid: updatedWatcherId }, privateKey, fee);
+        const updatedWatcherId = result.id;
+        await registry.setName({ lrn, cid: updatedWatcherId }, privateKey, laconic2Fee);
 
-        const records = await registry.lookupNames([crn], true);
+        const records = await registry.lookupNames([lrn], true);
         expect(records).toHaveLength(1);
 
         const [{ latest, history }] = records;
@@ -232,9 +231,9 @@ const namingTests = () => {
       });
 
       test('Delete name', async () => {
-        await registry.deleteName({ crn }, privateKey, fee);
+        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
 
-        let records = await registry.lookupNames([crn], true);
+        let records = await registry.lookupNames([lrn], true);
         expect(records).toBeDefined();
         expect(records).toHaveLength(1);
 
@@ -244,7 +243,7 @@ const namingTests = () => {
         expect(latest.id).toBe('');
         expect(latest.height).toBeDefined();
 
-        // Query records should NOT return it (no CRN points to it).
+        // Query records should NOT return it (no LRN points to it).
         records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version });
         expect(records).toBeDefined();
         expect(records).toHaveLength(0);
@@ -256,10 +255,10 @@ const namingTests = () => {
       });
 
       test('Delete already deleted name', async () => {
-        await registry.deleteName({ crn }, privateKey, fee);
-        await registry.deleteName({ crn }, privateKey, fee);
+        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
+        await registry.deleteName({ lrn }, privateKey, laconic2Fee);
 
-        const records = await registry.lookupNames([crn], true);
+        const records = await registry.lookupNames([lrn], true);
         expect(records).toBeDefined();
         expect(records).toHaveLength(1);
 
@@ -271,33 +270,37 @@ const namingTests = () => {
       });
     });
 
-    test('Set name without reserving authority', async () => {
-      await expect(registry.setName({ crn: 'crn://not-reserved/app/test', cid: watcherId }, privateKey, fee))
+    // TODO: Parse error response form set name
+    xtest('Set name without reserving authority', async () => {
+      await expect(registry.setName({ lrn: 'lrn://not-reserved/app/test', cid: watcherId }, privateKey, laconic2Fee))
         .rejects.toThrow('Name authority not found.');
     });
 
-    test('Set name for non-owned authority', async () => {
-      await registry.sendCoins({ denom: 'aphoton', amount: '1000000000', destinationAddress: otherAccount.formattedCosmosAddress }, privateKey, laconic2Fee);
+    // TODO: Parse error response form set name
+    xtest('Set name for non-owned authority', async () => {
+      await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, laconic2Fee);
 
       // Other account reserves an authority.
       await registry.reserveAuthority({ name: otherAuthorityName }, otherPrivateKey, laconic2Fee);
 
       // Try setting name under other authority.
-      await expect(registry.setName({ crn: `crn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, fee)).rejects.toThrow('Access denied.');
+      await expect(registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, laconic2Fee)).rejects.toThrow('Access denied.');
     });
 
-    test('Delete name for non-owned authority.', async () => {
+    // TODO: Parse error response form set name
+    xtest('Delete name for non-owned authority.', async () => {
       const otherBondId = await registry.getNextBondId(otherPrivateKey);
-      await registry.createBond({ denom: 'aphoton', amount: '10000' }, otherPrivateKey, laconic2Fee);
+      await registry.createBond({ denom: DENOM, amount: '1000000' }, otherPrivateKey, laconic2Fee);
       await registry.setAuthorityBond({ name: otherAuthorityName, bondId: otherBondId }, otherPrivateKey, laconic2Fee);
-      await registry.setName({ crn: `crn://${otherAuthorityName}/app/test`, cid: watcherId }, otherPrivateKey, fee);
+      await registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, otherPrivateKey, laconic2Fee);
 
       // Try deleting name under other authority.
-      await expect(registry.deleteName({ crn: `crn://${otherAuthorityName}/app/test` }, privateKey, fee)).rejects.toThrow('Access denied.');
+      await expect(registry.deleteName({ lrn: `lrn://${otherAuthorityName}/app/test` }, privateKey, laconic2Fee)).rejects.toThrow('Access denied.');
     });
 
+    // TODO: Check later for empty records
     test('Lookup non existing name', async () => {
-      const records = await registry.lookupNames(['crn://not-reserved/app/test']);
+      const records = await registry.lookupNames(['lrn://not-reserved/app/test']);
       expect(records).toBeDefined();
       expect(records).toHaveLength(1);
       const [record] = records;
@@ -305,7 +308,7 @@ const namingTests = () => {
     });
 
     test('Resolve non existing name', async () => {
-      const records = await registry.resolveNames(['crn://not-reserved/app/test']);
+      const records = await registry.resolveNames(['lrn://not-reserved/app/test']);
       expect(records).toBeDefined();
       expect(records).toHaveLength(1);
       const [record] = records;

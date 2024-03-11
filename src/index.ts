@@ -4,25 +4,19 @@ import {
   Chain,
   Sender,
   Fee,
-  createMessageSend,
   MessageSendParams
 } from '@tharsis/transactions';
-import { DeliverTxResponse, GasPrice, StdFee } from '@cosmjs/stargate';
+import { DeliverTxResponse, StdFee } from '@cosmjs/stargate';
 
 import { RegistryClient } from './registry-client';
 import { Account } from './account';
 import { createTransaction } from './txbuilder';
-import { Payload, Record } from './types';
 import { Util } from './util';
 import {
   createTxMsgAssociateBond,
-  createTxMsgCancelBond,
-  createTxMsgCreateBond,
   createTxMsgDissociateBond,
   createTxMsgDissociateRecords,
   createTxMsgReAssociateRecords,
-  createTxMsgRefillBond,
-  createTxMsgWithdrawBond,
   MessageMsgAssociateBond,
   MessageMsgCancelBond,
   MessageMsgCreateBond,
@@ -33,22 +27,12 @@ import {
   MessageMsgWithdrawBond
 } from './messages/bond';
 import {
-  createTxMsgDeleteName,
-  createTxMsgReserveAuthority,
-  createTxMsgSetAuthorityBond,
-  createTxMsgSetName,
-  createTxMsgSetRecord,
   MessageMsgDeleteName,
-  MessageMsgReserveAuthority,
   MessageMsgSetAuthorityBond,
   MessageMsgSetName,
-  MessageMsgSetRecord,
-  NAMESERVICE_ERRORS,
-  parseMsgSetRecordResponse
+  NAMESERVICE_ERRORS
 } from './messages/registry';
 import {
-  createTxMsgCommitBid,
-  createTxMsgRevealBid,
   MessageMsgCommitBid,
   MessageMsgRevealBid
 } from './messages/auction';
@@ -187,14 +171,20 @@ export class Registry {
    * @param transactionPrivateKey - private key in HEX to sign transaction.
    */
   async setRecord (
-    params: { privateKey: string, record: any, bondId: string },
+    { privateKey, record, bondId }: { privateKey: string, record: any, bondId: string },
     transactionPrivateKey: string,
-    fee: Fee
+    fee: StdFee
   ) {
-    let result;
-    result = await this._submitRecordTx(params, transactionPrivateKey, fee);
+    const account = new Account(Buffer.from(transactionPrivateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    return parseTxResponse(result, parseMsgSetRecordResponse);
+    const response: DeliverTxResponse = await laconicClient.setRecord({ privateKey, record, bondId },
+      account.address,
+      fee
+    );
+
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -466,17 +456,22 @@ export class Registry {
   }
 
   /**
-   * Set name (CRN) to record ID (CID).
+   * Set name (LRN) to record ID (CID).
    */
-  async setName (params: MessageMsgSetName, privateKey: string, fee: Fee) {
-    let result;
+  async setName ({ cid, lrn }: MessageMsgSetName, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    const msg = createTxMsgSetName(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.setName(
+      account.address,
+      lrn,
+      cid,
+      fee
+    );
 
-    return parseTxResponse(result);
+    // TODO: Parse error response
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -487,62 +482,20 @@ export class Registry {
   }
 
   /**
-   * Delete name (CRN) mapping.
+   * Delete name (LRN) mapping.
    */
-  async deleteName (params: MessageMsgDeleteName, privateKey: string, fee: Fee) {
-    let result;
+  async deleteName ({ lrn }: MessageMsgDeleteName, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+    const response: DeliverTxResponse = await laconicClient.deleteName(
+      account.address,
+      lrn,
+      fee
+    );
 
-    const msg = createTxMsgDeleteName(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
-
-    return parseTxResponse(result);
-  }
-
-  /**
-   * Submit record transaction.
-   * @param privateKey - private key in HEX to sign message.
-   * @param txPrivateKey - private key in HEX to sign transaction.
-   */
-  async _submitRecordTx (
-    { privateKey, record, bondId }: { privateKey: string, record: any, bondId: string },
-    txPrivateKey: string,
-    fee: Fee
-  ) {
-    if (!isKeyValid(privateKey)) {
-      throw new Error('Registry privateKey should be a hex string.');
-    }
-
-    if (!isKeyValid(bondId)) {
-      throw new Error(`Invalid bondId: ${bondId}.`);
-    }
-
-    // Sign record.
-    const recordSignerAccount = new Account(Buffer.from(privateKey, 'hex'));
-    const registryRecord = new Record(record);
-    const payload = new Payload(registryRecord);
-    await recordSignerAccount.signPayload(payload);
-
-    // Send record payload Tx.
-    txPrivateKey = txPrivateKey || recordSignerAccount.getPrivateKey();
-    return this._submitRecordPayloadTx({ payload, bondId }, txPrivateKey, fee);
-  }
-
-  async _submitRecordPayloadTx (params: MessageMsgSetRecord, privateKey: string, fee: Fee) {
-    if (!isKeyValid(privateKey)) {
-      throw new Error('Registry privateKey should be a hex string.');
-    }
-
-    if (!isKeyValid(params.bondId)) {
-      throw new Error(`Invalid bondId: ${params.bondId}.`);
-    }
-
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
-
-    const msg = createTxMsgSetRecord(this._chain, sender, fee, '', params);
-    return this._submitTx(msg, privateKey, sender);
+    // TODO: Parse error response form delete name
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
