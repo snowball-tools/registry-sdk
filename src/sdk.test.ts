@@ -22,7 +22,6 @@ describe('Querying', () => {
     bondId = await registry.getNextBondId(privateKey);
     await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
 
-    // TODO: Implement set record
     const publishNewWatcherVersion = async () => {
       watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
       await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, laconic2Fee);

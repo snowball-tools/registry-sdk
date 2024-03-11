@@ -11,7 +11,7 @@ import { Comet38Client } from '@cosmjs/tendermint-rpc';
 
 import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEncodeObject, MsgWithdrawBondEncodeObject, bondTypes, typeUrlMsgCancelBond, typeUrlMsgCreateBond, typeUrlMsgRefillBond, typeUrlMsgWithdrawBond } from './types/cerc/bond/message';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
-import { MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetRecord } from './types/cerc/registry/message';
+import { MsgDeleteNameAuthorityEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgDeleteNameAuthority, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
 import { Payload } from './proto2/cerc/registry/v1/tx';
 import { Record, Signature } from './proto2/cerc/registry/v1/registry';
@@ -232,6 +232,42 @@ export class LaconicClient extends SigningStargateClient {
         signer,
         bondId,
         name
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async setName (
+    signer: string,
+    lrn: string,
+    cid: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgSetNameEncodeObject = {
+      typeUrl: typeUrlMsgSetName,
+      value: {
+        signer,
+        lrn,
+        cid
+      }
+    };
+
+    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+  }
+
+  public async deleteName (
+    signer: string,
+    lrn: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const createMsg: MsgDeleteNameAuthorityEncodeObject = {
+      typeUrl: typeUrlMsgDeleteNameAuthority,
+      value: {
+        signer,
+        lrn
       }
     };
 

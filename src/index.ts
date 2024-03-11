@@ -200,7 +200,7 @@ export class Registry {
       fee
     );
 
-    return response;
+    return laconicClient.registry.decode(response.msgResponses[0]);
   }
 
   /**
@@ -474,15 +474,20 @@ export class Registry {
   /**
    * Set name (CRN) to record ID (CID).
    */
-  async setName (params: MessageMsgSetName, privateKey: string, fee: Fee) {
-    let result;
+  async setName ({ cid, crn }: MessageMsgSetName, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
 
-    const msg = createTxMsgSetName(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
+    const response: DeliverTxResponse = await laconicClient.setName(
+      account.address,
+      crn,
+      cid,
+      fee
+    );
 
-    return parseTxResponse(result);
+    // TODO: Parse error response
+    return response;
   }
 
   /**
@@ -495,15 +500,18 @@ export class Registry {
   /**
    * Delete name (CRN) mapping.
    */
-  async deleteName (params: MessageMsgDeleteName, privateKey: string, fee: Fee) {
-    let result;
+  async deleteName ({ crn }: MessageMsgDeleteName, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
-    const sender = await this._getSender(account);
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+    const response: DeliverTxResponse = await laconicClient.deleteName(
+      account.address,
+      crn,
+      fee
+    );
 
-    const msg = createTxMsgDeleteName(this._chain, sender, fee, '', params);
-    result = await this._submitTx(msg, privateKey, sender);
-
-    return parseTxResponse(result);
+    // TODO: Parse error response form delete name
+    return response;
   }
 
   /**
