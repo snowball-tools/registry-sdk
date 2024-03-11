@@ -93,7 +93,7 @@ export interface MessageMsgReserveAuthority {
 }
 
 export interface MessageMsgSetName {
-  crn: string
+  lrn: string
   cid: string
 }
 
@@ -108,7 +108,7 @@ export interface MessageMsgSetAuthorityBond {
 }
 
 export interface MessageMsgDeleteName {
-  crn: string
+  lrn: string
 }
 
 export function createTxMsgReserveAuthority (
@@ -145,13 +145,13 @@ export function createTxMsgSetName (
   const types = generateTypes(MSG_SET_NAME_TYPES);
 
   const msg = createMsgSetName(
-    params.crn,
+    params.lrn,
     params.cid,
     sender.accountAddress
   );
 
   const msgCosmos = protoCreateMsgSetName(
-    params.crn,
+    params.lrn,
     params.cid,
     sender.accountAddress
   );
@@ -217,12 +217,12 @@ export function createTxMsgDeleteName (
   const types = generateTypes(MSG_DELETE_NAME_TYPES);
 
   const msg = createMsgDeleteName(
-    params.crn,
+    params.lrn,
     sender.accountAddress
   );
 
   const msgCosmos = protoCreateMsgDeleteName(
-    params.crn,
+    params.lrn,
     sender.accountAddress
   );
 

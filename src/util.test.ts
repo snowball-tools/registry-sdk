@@ -3,6 +3,7 @@ import path from 'path';
 import { Registry } from './index';
 import { getBaseConfig, getConfig, getLaconic2Config } from './testing/helper';
 import { Util } from './util';
+import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
@@ -23,7 +24,7 @@ const utilTests = () => {
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);
-    await registry.createBond({ denom: 'aphoton', amount: '1000000000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
 
     // Create watcher.
     watcher = await getBaseConfig(WATCHER_YML_PATH);
@@ -34,10 +35,10 @@ const utilTests = () => {
         record: watcher.record
       },
       privateKey,
-      fee
+      laconic2Fee
     );
 
-    watcherId = result.data.id;
+    watcherId = result.id;
   });
 
   test('Generate content id.', async () => {
@@ -46,4 +47,4 @@ const utilTests = () => {
   });
 };
 
-xdescribe('Util', utilTests);
+describe('Util', utilTests);

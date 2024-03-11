@@ -472,16 +472,16 @@ export class Registry {
   }
 
   /**
-   * Set name (CRN) to record ID (CID).
+   * Set name (LRN) to record ID (CID).
    */
-  async setName ({ cid, crn }: MessageMsgSetName, privateKey: string, fee: StdFee) {
+  async setName ({ cid, lrn }: MessageMsgSetName, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
 
     const response: DeliverTxResponse = await laconicClient.setName(
       account.address,
-      crn,
+      lrn,
       cid,
       fee
     );
@@ -498,15 +498,15 @@ export class Registry {
   }
 
   /**
-   * Delete name (CRN) mapping.
+   * Delete name (LRN) mapping.
    */
-  async deleteName ({ crn }: MessageMsgDeleteName, privateKey: string, fee: StdFee) {
+  async deleteName ({ lrn }: MessageMsgDeleteName, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
     const response: DeliverTxResponse = await laconicClient.deleteName(
       account.address,
-      crn,
+      lrn,
       fee
     );
 

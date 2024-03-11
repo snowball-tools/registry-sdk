@@ -17,7 +17,7 @@ const bondTests = () => {
 
   const publishNewWatcherVersion = async (bondId: string) => {
     let watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
-    await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, fee);
+    await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, laconic2Fee);
     return watcher;
   };
 

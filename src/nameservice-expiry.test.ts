@@ -39,9 +39,9 @@ const nameserviceExpiryTests = () => {
         record: watcher.record
       },
       privateKey,
-      fee
+      laconic2Fee
     );
-    console.log('SetRecordResult: ' + result.data.id);
+    console.log('SetRecordResult: ' + result.id);
     const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     recordExpiryTime = new Date(record.expiryTime);
 
