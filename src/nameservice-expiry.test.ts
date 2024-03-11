@@ -29,7 +29,7 @@ const nameserviceExpiryTests = () => {
     await registry.createBond({ denom: DENOM, amount: '3000000' }, privateKey, laconic2Fee);
   });
 
-  xtest('Set record and check bond balance', async () => {
+  test('Set record and check bond balance', async () => {
     // Create watcher.
     watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
     const result = await registry.setRecord(
@@ -64,7 +64,7 @@ const nameserviceExpiryTests = () => {
     setTimeout(done, 60 * 1000);
   });
 
-  xtest('Check record expiry time', async () => {
+  test('Check record expiry time', async () => {
     const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     const updatedExpiryTime = new Date();
     expect(updatedExpiryTime.getTime()).toBeGreaterThan(recordExpiryTime.getTime());
@@ -79,7 +79,7 @@ const nameserviceExpiryTests = () => {
   });
 
   // TODO: Check bond balance not decreasing correctly
-  xtest('Check bond balance', async () => {
+  test('Check bond balance', async () => {
     const [bond] = await registry.getBondsByIds([bondId]);
     console.log(bond);
     expect(bond).toBeDefined();
@@ -90,13 +90,13 @@ const nameserviceExpiryTests = () => {
     setTimeout(done, 60 * 1000);
   });
 
-  xtest('Check record deleted without bond balance', async () => {
+  test('Check record deleted without bond balance', async () => {
     const records = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     expect(records).toHaveLength(0);
   });
 
   // TODO: Check authority not expiring
-  xtest('Check authority expired without bond balance', async () => {
+  test('Check authority expired without bond balance', async () => {
     const [authority] = await registry.lookupAuthorities([authorityName]);
     expect(authority.status).toBe('expired');
   });
