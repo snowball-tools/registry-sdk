@@ -1,14 +1,13 @@
 import path from 'path';
 
 import { Registry } from './index';
-import { ensureUpdatedConfig, getConfig, getLaconic2Config } from './testing/helper';
+import { ensureUpdatedConfig, getConfig } from './testing/helper';
 import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 const BOND_AMOUNT = '10000';
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
-const { fee: laconic2Fee } = getLaconic2Config();
 
 jest.setTimeout(90 * 1000);
 
@@ -17,7 +16,7 @@ const bondTests = () => {
 
   const publishNewWatcherVersion = async (bondId: string) => {
     let watcher = await ensureUpdatedConfig(WATCHER_YML_PATH);
-    await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, laconic2Fee);
+    await registry.setRecord({ privateKey, record: watcher.record, bondId }, privateKey, fee);
     return watcher;
   };
 
@@ -28,7 +27,7 @@ const bondTests = () => {
   test('Create bond.', async () => {
     let bondId = await registry.getNextBondId(privateKey);
     expect(bondId).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, fee);
   });
 
   describe('With bond created', () => {
@@ -37,7 +36,7 @@ const bondTests = () => {
     beforeAll(async () => {
       let bondId1 = await registry.getNextBondId(privateKey);
       expect(bondId1).toBeDefined();
-      await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, laconic2Fee);
+      await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, fee);
 
       [bond1] = await registry.getBondsByIds([bondId1]);
       expect(bond1).toBeDefined();
@@ -69,7 +68,7 @@ const bondTests = () => {
     test('Refill bond.', async () => {
       const refillAmount = '500';
       const total = (parseInt(BOND_AMOUNT) + parseInt(refillAmount)).toString();
-      await registry.refillBond({ id: bond1.id, denom: DENOM, amount: refillAmount }, privateKey, laconic2Fee);
+      await registry.refillBond({ id: bond1.id, denom: DENOM, amount: refillAmount }, privateKey, fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
       expect(bond).toBeDefined();
       expect(bond.id).toBe(bond1.id);
@@ -78,7 +77,7 @@ const bondTests = () => {
     });
 
     test('Withdraw bond.', async () => {
-      await registry.withdrawBond({ id: bond1.id, denom: DENOM, amount: '500' }, privateKey, laconic2Fee);
+      await registry.withdrawBond({ id: bond1.id, denom: DENOM, amount: '500' }, privateKey, fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
       expect(bond).toBeDefined();
       expect(bond.id).toBe(bond1.id);
@@ -87,7 +86,7 @@ const bondTests = () => {
     });
 
     test('Cancel bond.', async () => {
-      await registry.cancelBond({ id: bond1.id }, privateKey, laconic2Fee);
+      await registry.cancelBond({ id: bond1.id }, privateKey, fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
       expect(bond.id).toBe('');
       expect(bond.owner).toBe('');
@@ -100,7 +99,7 @@ const bondTests = () => {
 
     bondId1 = await registry.getNextBondId(privateKey);
     expect(bondId1).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
 
     // Create a new record.
     let watcher = await publishNewWatcherVersion(bondId1);
@@ -109,12 +108,12 @@ const bondTests = () => {
     expect(record1.bondId).toBe(bondId1);
 
     // Dissociate record, query and confirm.
-    await registry.dissociateBond({ recordId: record1.id }, privateKey, laconic2Fee);
+    await registry.dissociateBond({ recordId: record1.id }, privateKey, fee);
     [record1] = await registry.queryRecords(query, true);
     expect(record1.bondId).toBe('');
 
     // Associate record with bond, query and confirm.
-    await registry.associateBond({ recordId: record1.id, bondId: bondId1 }, privateKey, laconic2Fee);
+    await registry.associateBond({ recordId: record1.id, bondId: bondId1 }, privateKey, fee);
     [record1] = await registry.queryRecords(query, true);
     expect(record1.bondId).toBe(bondId1);
   });
@@ -125,7 +124,7 @@ const bondTests = () => {
 
     bondId1 = await registry.getNextBondId(privateKey);
     expect(bondId1).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
 
     // Create a new record version.
     let watcher = await publishNewWatcherVersion(bondId1);
@@ -142,19 +141,19 @@ const bondTests = () => {
     // Create another bond.
     bondId2 = await registry.getNextBondId(privateKey);
     expect(bondId2).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, laconic2Fee);
+    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
     const [bond] = await registry.getBondsByIds([bondId2]);
     expect(bond.id).toBe(bondId2);
 
     // Reassociate records from bondId1 to bondId2, verify change.
-    await registry.reassociateRecords({ oldBondId: bondId1, newBondId: bondId2 }, privateKey, laconic2Fee);
+    await registry.reassociateRecords({ oldBondId: bondId1, newBondId: bondId2 }, privateKey, fee);
     records = await registry.queryRecords(queryv1, true);
     expect(records[0].bondId).toBe(bondId2);
     records = await registry.queryRecords(queryv2, true);
     expect(records[0].bondId).toBe(bondId2);
 
     // Dissociate all records from bond, verify change.
-    await registry.dissociateRecords({ bondId: bondId2 }, privateKey, laconic2Fee);
+    await registry.dissociateRecords({ bondId: bondId2 }, privateKey, fee);
     records = await registry.queryRecords(queryv1, true);
     expect(records[0].bondId).toBe('');
     records = await registry.queryRecords(queryv2, true);

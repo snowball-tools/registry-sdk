@@ -29,17 +29,6 @@ export const getConfig = () => {
     restEndpoint: process.env.LACONICD_REST_ENDPOINT || 'http://localhost:1317',
     gqlEndpoint: process.env.LACONICD_GQL_ENDPOINT || 'http://localhost:9473/api',
     fee: {
-      amount: '40',
-      denom: 'aphoton',
-      gas: '400000'
-    }
-  };
-};
-
-// TODO: Merge both config
-export const getLaconic2Config = () => {
-  return {
-    fee: {
       amount: [{ denom: 'photon', amount: '40' }],
       gas: '400000'
     }
