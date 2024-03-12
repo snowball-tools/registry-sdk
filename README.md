@@ -14,14 +14,18 @@ Follow these steps to run the tests:
 
 - Copy [.env.example](./.env.example) file and create a `.env` file.
 
-- Clone the [laconicd repo](https://github.com/cerc-io/laconicd) and change to repo directory.
+  ```bash
+  cp .env.example .env
+  ```
 
-- Run the chain using `./init.sh`.
+- Clone the [laconic2d repo](https://git.vdb.to/deep-stack/laconic2d) and change to repo directory.
+
+- Run the chain using `./scripts/init.sh`.
 
 - Export the private key using:
 
   ```bash
-  laconicd keys export mykey --unarmored-hex --unsafe
+  laconic2d keys export alice --keyring-backend test  --unarmored-hex --unsafe
   ```
 
 - Copy the private key and assign it to variable `PRIVATE_KEY` in the `.env` file.
@@ -34,22 +38,16 @@ Follow these steps to run the tests:
 
 - Run the tests with auctions enabled
 
-  - Remove laconicd data from previous run
-
-    ```bash
-    rm -rf ~/.laconicd
-    ```
-
   - In laconicd repo run:
 
     ```bash
-    TEST_AUCTION_ENABLED=true ./init.sh
+    TEST_AUCTION_ENABLED=true ./scripts/init.sh clean
     ```
 
   - Export the private key and change it in `.env` file again using:
 
     ```bash
-    laconicd keys export mykey --unarmored-hex --unsafe
+    laconic2d keys export alice --keyring-backend test  --unarmored-hex --unsafe
     ```
 
   - Run tests:
@@ -60,22 +58,16 @@ Follow these steps to run the tests:
 
 - Run the tests for record and authority expiry
 
-  - Remove laconicd data from previous run
-
-    ```bash
-    rm -rf ~/.laconicd
-    ```
-
   - In laconicd repo run:
 
     ```bash
-    TEST_REGISTRY_EXPIRY=true ./init.sh
+    TEST_REGISTRY_EXPIRY=true ./scripts/init.sh clean
     ```
 
   - Export the private key and change it in `.env` file again using:
 
     ```bash
-    laconicd keys export mykey --unarmored-hex --unsafe
+    laconic2d keys export alice --keyring-backend test  --unarmored-hex --unsafe
     ```
 
   - Run tests:
