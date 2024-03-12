@@ -49,6 +49,7 @@ export interface Auction {
   winningPrice?: Coin;
 }
 
+/** Auctions represent all the auctions in the module */
 export interface Auctions {
   auctions: Auction[];
 }

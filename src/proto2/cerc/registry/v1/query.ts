@@ -32,10 +32,12 @@ export interface QueryRecordsRequest {
   pagination?: PageRequest;
 }
 
+/** Array type attribute */
 export interface QueryRecordsRequest_ArrayInput {
   values: QueryRecordsRequest_ValueInput[];
 }
 
+/** Map type attribute */
 export interface QueryRecordsRequest_MapInput {
   values: { [key: string]: QueryRecordsRequest_ValueInput };
 }
@@ -45,6 +47,7 @@ export interface QueryRecordsRequest_MapInput_ValuesEntry {
   value?: QueryRecordsRequest_ValueInput;
 }
 
+/** Type for record attribute value */
 export interface QueryRecordsRequest_ValueInput {
   string: string | undefined;
   int: Long | undefined;
@@ -55,6 +58,7 @@ export interface QueryRecordsRequest_ValueInput {
   map?: QueryRecordsRequest_MapInput | undefined;
 }
 
+/** Type for record attribute key */
 export interface QueryRecordsRequest_KeyValueInput {
   key: string;
   value?: QueryRecordsRequest_ValueInput;
@@ -67,25 +71,25 @@ export interface QueryRecordsResponse {
   pagination?: PageResponse;
 }
 
-/** QueryRecordByIdRequest is request type for registry records by id */
-export interface QueryRecordByIdRequest {
+/** QueryGetRecordRequest is request type for registry records by id */
+export interface QueryGetRecordRequest {
   id: string;
 }
 
-/** QueryRecordByIdResponse is response type for registry records by id */
-export interface QueryRecordByIdResponse {
+/** QueryGetRecordResponse is response type for registry records by id */
+export interface QueryGetRecordResponse {
   record?: Record;
 }
 
-/** QueryRecordsByBondIdRequest is request type for get the records by bond-id */
-export interface QueryRecordsByBondIdRequest {
+/** QueryGetRecordsByBondIdRequest is request type for get the records by bond-id */
+export interface QueryGetRecordsByBondIdRequest {
   id: string;
   /** pagination defines an optional pagination for the request. */
   pagination?: PageRequest;
 }
 
-/** QueryRecordsByBondIdResponse is response type for records list by bond-id */
-export interface QueryRecordsByBondIdResponse {
+/** QueryGetRecordsByBondIdResponse is response type for records list by bond-id */
+export interface QueryGetRecordsByBondIdResponse {
   records: Record[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -134,10 +138,16 @@ export interface QueryResolveLrnResponse {
   record?: Record;
 }
 
-/** QueryGetRegistryModuleBalanceRequest is request type for registry module accounts balance */
+/**
+ * QueryGetRegistryModuleBalanceRequest is request type for registry module
+ * accounts balance
+ */
 export interface QueryGetRegistryModuleBalanceRequest {}
 
-/** QueryGetRegistryModuleBalanceResponse is response type for registry module accounts balance */
+/**
+ * QueryGetRegistryModuleBalanceResponse is response type for registry module
+ * accounts balance
+ */
 export interface QueryGetRegistryModuleBalanceResponse {
   balances: AccountBalance[];
 }
@@ -904,13 +914,13 @@ export const QueryRecordsResponse = {
   },
 };
 
-function createBaseQueryRecordByIdRequest(): QueryRecordByIdRequest {
+function createBaseQueryGetRecordRequest(): QueryGetRecordRequest {
   return { id: "" };
 }
 
-export const QueryRecordByIdRequest = {
+export const QueryGetRecordRequest = {
   encode(
-    message: QueryRecordByIdRequest,
+    message: QueryGetRecordRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.id !== "") {
@@ -922,10 +932,10 @@ export const QueryRecordByIdRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryRecordByIdRequest {
+  ): QueryGetRecordRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryRecordByIdRequest();
+    const message = createBaseQueryGetRecordRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -940,34 +950,34 @@ export const QueryRecordByIdRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryRecordByIdRequest {
+  fromJSON(object: any): QueryGetRecordRequest {
     return {
       id: isSet(object.id) ? String(object.id) : "",
     };
   },
 
-  toJSON(message: QueryRecordByIdRequest): unknown {
+  toJSON(message: QueryGetRecordRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryRecordByIdRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetRecordRequest>, I>>(
     object: I
-  ): QueryRecordByIdRequest {
-    const message = createBaseQueryRecordByIdRequest();
+  ): QueryGetRecordRequest {
+    const message = createBaseQueryGetRecordRequest();
     message.id = object.id ?? "";
     return message;
   },
 };
 
-function createBaseQueryRecordByIdResponse(): QueryRecordByIdResponse {
+function createBaseQueryGetRecordResponse(): QueryGetRecordResponse {
   return { record: undefined };
 }
 
-export const QueryRecordByIdResponse = {
+export const QueryGetRecordResponse = {
   encode(
-    message: QueryRecordByIdResponse,
+    message: QueryGetRecordResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.record !== undefined) {
@@ -979,10 +989,10 @@ export const QueryRecordByIdResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryRecordByIdResponse {
+  ): QueryGetRecordResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryRecordByIdResponse();
+    const message = createBaseQueryGetRecordResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -997,23 +1007,23 @@ export const QueryRecordByIdResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryRecordByIdResponse {
+  fromJSON(object: any): QueryGetRecordResponse {
     return {
       record: isSet(object.record) ? Record.fromJSON(object.record) : undefined,
     };
   },
 
-  toJSON(message: QueryRecordByIdResponse): unknown {
+  toJSON(message: QueryGetRecordResponse): unknown {
     const obj: any = {};
     message.record !== undefined &&
       (obj.record = message.record ? Record.toJSON(message.record) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryRecordByIdResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetRecordResponse>, I>>(
     object: I
-  ): QueryRecordByIdResponse {
-    const message = createBaseQueryRecordByIdResponse();
+  ): QueryGetRecordResponse {
+    const message = createBaseQueryGetRecordResponse();
     message.record =
       object.record !== undefined && object.record !== null
         ? Record.fromPartial(object.record)
@@ -1022,13 +1032,13 @@ export const QueryRecordByIdResponse = {
   },
 };
 
-function createBaseQueryRecordsByBondIdRequest(): QueryRecordsByBondIdRequest {
+function createBaseQueryGetRecordsByBondIdRequest(): QueryGetRecordsByBondIdRequest {
   return { id: "", pagination: undefined };
 }
 
-export const QueryRecordsByBondIdRequest = {
+export const QueryGetRecordsByBondIdRequest = {
   encode(
-    message: QueryRecordsByBondIdRequest,
+    message: QueryGetRecordsByBondIdRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.id !== "") {
@@ -1043,10 +1053,10 @@ export const QueryRecordsByBondIdRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryRecordsByBondIdRequest {
+  ): QueryGetRecordsByBondIdRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryRecordsByBondIdRequest();
+    const message = createBaseQueryGetRecordsByBondIdRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1064,7 +1074,7 @@ export const QueryRecordsByBondIdRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryRecordsByBondIdRequest {
+  fromJSON(object: any): QueryGetRecordsByBondIdRequest {
     return {
       id: isSet(object.id) ? String(object.id) : "",
       pagination: isSet(object.pagination)
@@ -1073,7 +1083,7 @@ export const QueryRecordsByBondIdRequest = {
     };
   },
 
-  toJSON(message: QueryRecordsByBondIdRequest): unknown {
+  toJSON(message: QueryGetRecordsByBondIdRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.pagination !== undefined &&
@@ -1083,10 +1093,10 @@ export const QueryRecordsByBondIdRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryRecordsByBondIdRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetRecordsByBondIdRequest>, I>>(
     object: I
-  ): QueryRecordsByBondIdRequest {
-    const message = createBaseQueryRecordsByBondIdRequest();
+  ): QueryGetRecordsByBondIdRequest {
+    const message = createBaseQueryGetRecordsByBondIdRequest();
     message.id = object.id ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1096,13 +1106,13 @@ export const QueryRecordsByBondIdRequest = {
   },
 };
 
-function createBaseQueryRecordsByBondIdResponse(): QueryRecordsByBondIdResponse {
+function createBaseQueryGetRecordsByBondIdResponse(): QueryGetRecordsByBondIdResponse {
   return { records: [], pagination: undefined };
 }
 
-export const QueryRecordsByBondIdResponse = {
+export const QueryGetRecordsByBondIdResponse = {
   encode(
-    message: QueryRecordsByBondIdResponse,
+    message: QueryGetRecordsByBondIdResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.records) {
@@ -1120,10 +1130,10 @@ export const QueryRecordsByBondIdResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryRecordsByBondIdResponse {
+  ): QueryGetRecordsByBondIdResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryRecordsByBondIdResponse();
+    const message = createBaseQueryGetRecordsByBondIdResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1141,7 +1151,7 @@ export const QueryRecordsByBondIdResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryRecordsByBondIdResponse {
+  fromJSON(object: any): QueryGetRecordsByBondIdResponse {
     return {
       records: Array.isArray(object?.records)
         ? object.records.map((e: any) => Record.fromJSON(e))
@@ -1152,7 +1162,7 @@ export const QueryRecordsByBondIdResponse = {
     };
   },
 
-  toJSON(message: QueryRecordsByBondIdResponse): unknown {
+  toJSON(message: QueryGetRecordsByBondIdResponse): unknown {
     const obj: any = {};
     if (message.records) {
       obj.records = message.records.map((e) =>
@@ -1168,10 +1178,10 @@ export const QueryRecordsByBondIdResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryRecordsByBondIdResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryGetRecordsByBondIdResponse>, I>>(
     object: I
-  ): QueryRecordsByBondIdResponse {
-    const message = createBaseQueryRecordsByBondIdResponse();
+  ): QueryGetRecordsByBondIdResponse {
+    const message = createBaseQueryGetRecordsByBondIdResponse();
     message.records = object.records?.map((e) => Record.fromPartial(e)) || [];
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1878,11 +1888,11 @@ export interface Query {
   /** Records queries all records */
   Records(request: QueryRecordsRequest): Promise<QueryRecordsResponse>;
   /** Get record by id */
-  GetRecord(request: QueryRecordByIdRequest): Promise<QueryRecordByIdResponse>;
+  GetRecord(request: QueryGetRecordRequest): Promise<QueryGetRecordResponse>;
   /** Get records by bond id */
   GetRecordsByBondId(
-    request: QueryRecordsByBondIdRequest
-  ): Promise<QueryRecordsByBondIdResponse>;
+    request: QueryGetRecordsByBondIdRequest
+  ): Promise<QueryGetRecordsByBondIdResponse>;
   /** NameRecords queries all name records */
   NameRecords(
     request: QueryNameRecordsRequest
@@ -1929,29 +1939,29 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  GetRecord(request: QueryRecordByIdRequest): Promise<QueryRecordByIdResponse> {
-    const data = QueryRecordByIdRequest.encode(request).finish();
+  GetRecord(request: QueryGetRecordRequest): Promise<QueryGetRecordResponse> {
+    const data = QueryGetRecordRequest.encode(request).finish();
     const promise = this.rpc.request(
       "cerc.registry.v1.Query",
       "GetRecord",
       data
     );
     return promise.then((data) =>
-      QueryRecordByIdResponse.decode(new _m0.Reader(data))
+      QueryGetRecordResponse.decode(new _m0.Reader(data))
     );
   }
 
   GetRecordsByBondId(
-    request: QueryRecordsByBondIdRequest
-  ): Promise<QueryRecordsByBondIdResponse> {
-    const data = QueryRecordsByBondIdRequest.encode(request).finish();
+    request: QueryGetRecordsByBondIdRequest
+  ): Promise<QueryGetRecordsByBondIdResponse> {
+    const data = QueryGetRecordsByBondIdRequest.encode(request).finish();
     const promise = this.rpc.request(
       "cerc.registry.v1.Query",
       "GetRecordsByBondId",
       data
     );
     return promise.then((data) =>
-      QueryRecordsByBondIdResponse.decode(new _m0.Reader(data))
+      QueryGetRecordsByBondIdResponse.decode(new _m0.Reader(data))
     );
   }
 

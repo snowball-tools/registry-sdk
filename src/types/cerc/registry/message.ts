@@ -1,6 +1,6 @@
 import { EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
 
-import { MsgReserveAuthority, MsgReserveAuthorityResponse, MsgSetAuthorityBond, MsgSetAuthorityBondResponse, MsgSetRecord, MsgSetRecordResponse, MsgSetName, MsgSetNameResponse, MsgDeleteNameAuthority, MsgDeleteNameAuthorityResponse, MsgAssociateBond, MsgAssociateBondResponse, MsgDissociateBond, MsgDissociateBondResponse, MsgDissociateRecords, MsgReassociateRecords, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse } from '../../../proto2/cerc/registry/v1/tx';
+import { MsgReserveAuthority, MsgReserveAuthorityResponse, MsgSetAuthorityBond, MsgSetAuthorityBondResponse, MsgSetRecord, MsgSetRecordResponse, MsgSetName, MsgSetNameResponse, MsgDeleteName, MsgDeleteNameResponse, MsgAssociateBond, MsgAssociateBondResponse, MsgDissociateBond, MsgDissociateBondResponse, MsgDissociateRecords, MsgReassociateRecords, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse } from '../../../proto2/cerc/registry/v1/tx';
 
 export const typeUrlMsgReserveAuthority = '/cerc.registry.v1.MsgReserveAuthority';
 export const typeUrlMsgSetRecord = '/cerc.registry.v1.MsgSetRecord';
@@ -10,8 +10,8 @@ export const typeUrlMsgSetRecordResponse = '/cerc.registry.v1.MsgSetRecordRespon
 export const typeUrlMsgSetAuthorityBondResponse = '/cerc.registry.v1.MsgSetAuthorityBondResponse';
 export const typeUrlMsgSetName = '/cerc.registry.v1.MsgSetName';
 export const typeUrlMsgSetNameResponse = '/cerc.registry.v1.MsgSetNameResponse';
-export const typeUrlMsgDeleteNameAuthority = '/cerc.registry.v1.MsgDeleteNameAuthority';
-export const typeUrlMsgDeleteNameAuthorityResponse = '/cerc.registry.v1.MsgDeleteNameAuthorityResponse';
+export const typeUrlMsgDeleteName = '/cerc.registry.v1.MsgDeleteName';
+export const typeUrlMsgDeleteNameResponse = '/cerc.registry.v1.MsgDeleteNameResponse';
 export const typeUrlMsgAssociateBond = '/cerc.registry.v1.MsgAssociateBond';
 export const typeUrlMsgDissociateBond = '/cerc.registry.v1.MsgDissociateBond';
 export const typeUrlMsgAssociateBondResponse = '/cerc.registry.v1.MsgAssociateBondResponse';
@@ -30,8 +30,8 @@ export const registryTypes: ReadonlyArray<[string, GeneratedType]> = [
   [typeUrlMsgSetAuthorityBondResponse, MsgSetAuthorityBondResponse],
   [typeUrlMsgSetName, MsgSetName],
   [typeUrlMsgSetNameResponse, MsgSetNameResponse],
-  [typeUrlMsgDeleteNameAuthority, MsgDeleteNameAuthority],
-  [typeUrlMsgDeleteNameAuthorityResponse, MsgDeleteNameAuthorityResponse],
+  [typeUrlMsgDeleteName, MsgDeleteName],
+  [typeUrlMsgDeleteNameResponse, MsgDeleteNameResponse],
   [typeUrlMsgAssociateBond, MsgAssociateBond],
   [typeUrlMsgAssociateBondResponse, MsgAssociateBondResponse],
   [typeUrlMsgDissociateBond, MsgDissociateBond],
@@ -62,9 +62,9 @@ export interface MsgSetNameEncodeObject extends EncodeObject {
   readonly value: Partial<MsgSetName>;
 }
 
-export interface MsgDeleteNameAuthorityEncodeObject extends EncodeObject {
-  readonly typeUrl: '/cerc.registry.v1.MsgDeleteNameAuthority';
-  readonly value: Partial<MsgDeleteNameAuthority>;
+export interface MsgDeleteNameEncodeObject extends EncodeObject {
+  readonly typeUrl: '/cerc.registry.v1.MsgDeleteName';
+  readonly value: Partial<MsgDeleteName>;
 }
 
 export interface MsgAssociateBondEncodeObject extends EncodeObject {

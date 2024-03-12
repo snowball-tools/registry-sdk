@@ -33,7 +33,7 @@ export interface MsgSetName {
 /** MsgSetNameResponse */
 export interface MsgSetNameResponse {}
 
-/** MsgReserveName */
+/** MsgReserveAuthority */
 export interface MsgReserveAuthority {
   name: string;
   signer: string;
@@ -41,7 +41,7 @@ export interface MsgReserveAuthority {
   owner: string;
 }
 
-/** MsgReserveNameResponse */
+/** MsgReserveAuthorityResponse */
 export interface MsgReserveAuthorityResponse {}
 
 /** MsgSetAuthorityBond */
@@ -54,14 +54,14 @@ export interface MsgSetAuthorityBond {
 /** MsgSetAuthorityBondResponse */
 export interface MsgSetAuthorityBondResponse {}
 
-/** MsgDeleteNameAuthority */
-export interface MsgDeleteNameAuthority {
+/** MsgDeleteName */
+export interface MsgDeleteName {
   lrn: string;
   signer: string;
 }
 
-/** MsgDeleteNameAuthorityResponse */
-export interface MsgDeleteNameAuthorityResponse {}
+/** MsgDeleteNameResponse */
+export interface MsgDeleteNameResponse {}
 
 /** MsgRenewRecord */
 export interface MsgRenewRecord {
@@ -675,13 +675,13 @@ export const MsgSetAuthorityBondResponse = {
   },
 };
 
-function createBaseMsgDeleteNameAuthority(): MsgDeleteNameAuthority {
+function createBaseMsgDeleteName(): MsgDeleteName {
   return { lrn: "", signer: "" };
 }
 
-export const MsgDeleteNameAuthority = {
+export const MsgDeleteName = {
   encode(
-    message: MsgDeleteNameAuthority,
+    message: MsgDeleteName,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.lrn !== "") {
@@ -693,13 +693,10 @@ export const MsgDeleteNameAuthority = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeleteNameAuthority {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteName {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgDeleteNameAuthority();
+    const message = createBaseMsgDeleteName();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -717,37 +714,37 @@ export const MsgDeleteNameAuthority = {
     return message;
   },
 
-  fromJSON(object: any): MsgDeleteNameAuthority {
+  fromJSON(object: any): MsgDeleteName {
     return {
       lrn: isSet(object.lrn) ? String(object.lrn) : "",
       signer: isSet(object.signer) ? String(object.signer) : "",
     };
   },
 
-  toJSON(message: MsgDeleteNameAuthority): unknown {
+  toJSON(message: MsgDeleteName): unknown {
     const obj: any = {};
     message.lrn !== undefined && (obj.lrn = message.lrn);
     message.signer !== undefined && (obj.signer = message.signer);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeleteNameAuthority>, I>>(
+  fromPartial<I extends Exact<DeepPartial<MsgDeleteName>, I>>(
     object: I
-  ): MsgDeleteNameAuthority {
-    const message = createBaseMsgDeleteNameAuthority();
+  ): MsgDeleteName {
+    const message = createBaseMsgDeleteName();
     message.lrn = object.lrn ?? "";
     message.signer = object.signer ?? "";
     return message;
   },
 };
 
-function createBaseMsgDeleteNameAuthorityResponse(): MsgDeleteNameAuthorityResponse {
+function createBaseMsgDeleteNameResponse(): MsgDeleteNameResponse {
   return {};
 }
 
-export const MsgDeleteNameAuthorityResponse = {
+export const MsgDeleteNameResponse = {
   encode(
-    _: MsgDeleteNameAuthorityResponse,
+    _: MsgDeleteNameResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -756,10 +753,10 @@ export const MsgDeleteNameAuthorityResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeleteNameAuthorityResponse {
+  ): MsgDeleteNameResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgDeleteNameAuthorityResponse();
+    const message = createBaseMsgDeleteNameResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -771,19 +768,19 @@ export const MsgDeleteNameAuthorityResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDeleteNameAuthorityResponse {
+  fromJSON(_: any): MsgDeleteNameResponse {
     return {};
   },
 
-  toJSON(_: MsgDeleteNameAuthorityResponse): unknown {
+  toJSON(_: MsgDeleteNameResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeleteNameAuthorityResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<MsgDeleteNameResponse>, I>>(
     _: I
-  ): MsgDeleteNameAuthorityResponse {
-    const message = createBaseMsgDeleteNameAuthorityResponse();
+  ): MsgDeleteNameResponse {
+    const message = createBaseMsgDeleteNameResponse();
     return message;
   },
 };
@@ -1384,14 +1381,12 @@ export interface Msg {
   ): Promise<MsgReassociateRecordsResponse>;
   /** SetName will store the name with given lrn and name */
   SetName(request: MsgSetName): Promise<MsgSetNameResponse>;
-  /** Reserve name */
-  ReserveName(
+  /** Delete Name method will remove authority name */
+  DeleteName(request: MsgDeleteName): Promise<MsgDeleteNameResponse>;
+  /** Reserve authority name */
+  ReserveAuthority(
     request: MsgReserveAuthority
   ): Promise<MsgReserveAuthorityResponse>;
-  /** Delete Name method will remove authority name */
-  DeleteName(
-    request: MsgDeleteNameAuthority
-  ): Promise<MsgDeleteNameAuthorityResponse>;
   /** SetAuthorityBond */
   SetAuthorityBond(
     request: MsgSetAuthorityBond
@@ -1409,8 +1404,8 @@ export class MsgClientImpl implements Msg {
     this.DissociateRecords = this.DissociateRecords.bind(this);
     this.ReassociateRecords = this.ReassociateRecords.bind(this);
     this.SetName = this.SetName.bind(this);
-    this.ReserveName = this.ReserveName.bind(this);
     this.DeleteName = this.DeleteName.bind(this);
+    this.ReserveAuthority = this.ReserveAuthority.bind(this);
     this.SetAuthorityBond = this.SetAuthorityBond.bind(this);
   }
   SetRecord(request: MsgSetRecord): Promise<MsgSetRecordResponse> {
@@ -1495,31 +1490,29 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  ReserveName(
-    request: MsgReserveAuthority
-  ): Promise<MsgReserveAuthorityResponse> {
-    const data = MsgReserveAuthority.encode(request).finish();
-    const promise = this.rpc.request(
-      "cerc.registry.v1.Msg",
-      "ReserveName",
-      data
-    );
-    return promise.then((data) =>
-      MsgReserveAuthorityResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  DeleteName(
-    request: MsgDeleteNameAuthority
-  ): Promise<MsgDeleteNameAuthorityResponse> {
-    const data = MsgDeleteNameAuthority.encode(request).finish();
+  DeleteName(request: MsgDeleteName): Promise<MsgDeleteNameResponse> {
+    const data = MsgDeleteName.encode(request).finish();
     const promise = this.rpc.request(
       "cerc.registry.v1.Msg",
       "DeleteName",
       data
     );
     return promise.then((data) =>
-      MsgDeleteNameAuthorityResponse.decode(new _m0.Reader(data))
+      MsgDeleteNameResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ReserveAuthority(
+    request: MsgReserveAuthority
+  ): Promise<MsgReserveAuthorityResponse> {
+    const data = MsgReserveAuthority.encode(request).finish();
+    const promise = this.rpc.request(
+      "cerc.registry.v1.Msg",
+      "ReserveAuthority",
+      data
+    );
+    return promise.then((data) =>
+      MsgReserveAuthorityResponse.decode(new _m0.Reader(data))
     );
   }
 

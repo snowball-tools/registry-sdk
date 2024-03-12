@@ -11,9 +11,9 @@ import { Comet38Client } from '@cosmjs/tendermint-rpc';
 
 import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEncodeObject, MsgWithdrawBondEncodeObject, bondTypes, typeUrlMsgCancelBond, typeUrlMsgCreateBond, typeUrlMsgRefillBond, typeUrlMsgWithdrawBond } from './types/cerc/bond/message';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
-import { MsgAssociateBondEncodeObject, MsgDeleteNameAuthorityEncodeObject, MsgDissociateBondEncodeObject, MsgDissociateRecordsEncodeObject, MsgReassociateRecordsEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgAssociateBond, typeUrlMsgDeleteNameAuthority, typeUrlMsgDissociateBond, typeUrlMsgDissociateRecords, typeUrlMsgReassociateRecords, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
+import { MsgAssociateBondEncodeObject, MsgDeleteNameEncodeObject, MsgDissociateBondEncodeObject, MsgDissociateRecordsEncodeObject, MsgReassociateRecordsEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgAssociateBond, typeUrlMsgDeleteName, typeUrlMsgDissociateBond, typeUrlMsgDissociateRecords, typeUrlMsgReassociateRecords, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
-import { MsgAssociateBondResponse, MsgDeleteNameAuthorityResponse, MsgDissociateBondResponse, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse, MsgReserveAuthorityResponse, MsgSetAuthorityBondResponse, MsgSetNameResponse, MsgSetRecordResponse, Payload } from './proto2/cerc/registry/v1/tx';
+import { MsgAssociateBondResponse, MsgDeleteNameResponse, MsgDissociateBondResponse, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse, MsgReserveAuthorityResponse, MsgSetAuthorityBondResponse, MsgSetNameResponse, MsgSetRecordResponse, Payload } from './proto2/cerc/registry/v1/tx';
 import { Record, Signature } from './proto2/cerc/registry/v1/registry';
 import { Account } from './account';
 import { Util } from './util';
@@ -354,8 +354,8 @@ export class LaconicClient extends SigningStargateClient {
     fee: StdFee | 'auto' | number,
     memo = ''
   ) {
-    const createMsg: MsgDeleteNameAuthorityEncodeObject = {
-      typeUrl: typeUrlMsgDeleteNameAuthority,
+    const createMsg: MsgDeleteNameEncodeObject = {
+      typeUrl: typeUrlMsgDeleteName,
       value: {
         signer,
         lrn
@@ -363,7 +363,7 @@ export class LaconicClient extends SigningStargateClient {
     };
 
     const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
-    return this.parseResponse<MsgDeleteNameAuthorityResponse>(response);
+    return this.parseResponse<MsgDeleteNameResponse>(response);
   }
 
   parseResponse<T> (response: DeliverTxResponse): T {
@@ -376,8 +376,6 @@ export class LaconicClient extends SigningStargateClient {
   }
 
   processWriteError (error: string) {
-    // error string a stacktrace containing the message.
-    // https://gist.github.com/nikugogoi/de55d390574ded3466abad8bffd81952#file-txresponse-js-L7
     const errorMessage = NAMESERVICE_ERRORS.find(message => error.includes(message));
 
     if (!errorMessage) {

@@ -18,20 +18,20 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-/** QueryGetBondById queries a bonds. */
-export interface QueryGetBondsRequest {
+/** QueryBondsRequest queries bonds */
+export interface QueryBondsRequest {
   /** pagination defines an optional pagination for the request. */
   pagination?: PageRequest;
 }
 
-/** QueryGetBondsResponse is response type for get the bonds by bond-id */
-export interface QueryGetBondsResponse {
+/** QueryBondsResponse is response type for get the bonds by bond-id */
+export interface QueryBondsResponse {
   bonds: Bond[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
 }
 
-/** QueryGetBondById */
+/** QueryGetBondById queries bond by bond id */
 export interface QueryGetBondByIdRequest {
   id: string;
 }
@@ -41,24 +41,36 @@ export interface QueryGetBondByIdResponse {
   bond?: Bond;
 }
 
-/** QueryGetBondsByOwnerRequest is request type for Query/GetBondsByOwner RPC Method */
+/**
+ * QueryGetBondsByOwnerRequest is request type for Query/GetBondsByOwner RPC
+ * Method
+ */
 export interface QueryGetBondsByOwnerRequest {
   owner: string;
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
 }
 
-/** QueryGetBondsByOwnerResponse is response type for Query/GetBondsByOwner RPC Method */
+/**
+ * QueryGetBondsByOwnerResponse is response type for Query/GetBondsByOwner RPC
+ * Method
+ */
 export interface QueryGetBondsByOwnerResponse {
   bonds: Bond[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
 }
 
-/** QueryGetBondModuleBalanceRequest is request type for bond module balance rpc method */
+/**
+ * QueryGetBondModuleBalanceRequest is request type for bond module balance rpc
+ * method
+ */
 export interface QueryGetBondModuleBalanceRequest {}
 
-/** QueryGetBondModuleBalanceResponse is the response type for bond module balance rpc method */
+/**
+ * QueryGetBondModuleBalanceResponse is the response type for bond module
+ * balance rpc method
+ */
 export interface QueryGetBondModuleBalanceResponse {
   balance: Coin[];
 }
@@ -165,13 +177,13 @@ export const QueryParamsResponse = {
   },
 };
 
-function createBaseQueryGetBondsRequest(): QueryGetBondsRequest {
+function createBaseQueryBondsRequest(): QueryBondsRequest {
   return { pagination: undefined };
 }
 
-export const QueryGetBondsRequest = {
+export const QueryBondsRequest = {
   encode(
-    message: QueryGetBondsRequest,
+    message: QueryBondsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -180,13 +192,10 @@ export const QueryGetBondsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetBondsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBondsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryGetBondsRequest();
+    const message = createBaseQueryBondsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -201,7 +210,7 @@ export const QueryGetBondsRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetBondsRequest {
+  fromJSON(object: any): QueryBondsRequest {
     return {
       pagination: isSet(object.pagination)
         ? PageRequest.fromJSON(object.pagination)
@@ -209,7 +218,7 @@ export const QueryGetBondsRequest = {
     };
   },
 
-  toJSON(message: QueryGetBondsRequest): unknown {
+  toJSON(message: QueryBondsRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -218,10 +227,10 @@ export const QueryGetBondsRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetBondsRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryBondsRequest>, I>>(
     object: I
-  ): QueryGetBondsRequest {
-    const message = createBaseQueryGetBondsRequest();
+  ): QueryBondsRequest {
+    const message = createBaseQueryBondsRequest();
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -230,13 +239,13 @@ export const QueryGetBondsRequest = {
   },
 };
 
-function createBaseQueryGetBondsResponse(): QueryGetBondsResponse {
+function createBaseQueryBondsResponse(): QueryBondsResponse {
   return { bonds: [], pagination: undefined };
 }
 
-export const QueryGetBondsResponse = {
+export const QueryBondsResponse = {
   encode(
-    message: QueryGetBondsResponse,
+    message: QueryBondsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.bonds) {
@@ -251,13 +260,10 @@ export const QueryGetBondsResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetBondsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBondsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryGetBondsResponse();
+    const message = createBaseQueryBondsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -275,7 +281,7 @@ export const QueryGetBondsResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetBondsResponse {
+  fromJSON(object: any): QueryBondsResponse {
     return {
       bonds: Array.isArray(object?.bonds)
         ? object.bonds.map((e: any) => Bond.fromJSON(e))
@@ -286,7 +292,7 @@ export const QueryGetBondsResponse = {
     };
   },
 
-  toJSON(message: QueryGetBondsResponse): unknown {
+  toJSON(message: QueryBondsResponse): unknown {
     const obj: any = {};
     if (message.bonds) {
       obj.bonds = message.bonds.map((e) => (e ? Bond.toJSON(e) : undefined));
@@ -300,10 +306,10 @@ export const QueryGetBondsResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetBondsResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryBondsResponse>, I>>(
     object: I
-  ): QueryGetBondsResponse {
-    const message = createBaseQueryGetBondsResponse();
+  ): QueryBondsResponse {
+    const message = createBaseQueryBondsResponse();
     message.bonds = object.bonds?.map((e) => Bond.fromPartial(e)) || [];
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -708,7 +714,7 @@ export interface Query {
   /** Params queries bonds module params. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Bonds queries bonds list */
-  Bonds(request: QueryGetBondsRequest): Promise<QueryGetBondsResponse>;
+  Bonds(request: QueryBondsRequest): Promise<QueryBondsResponse>;
   /** GetBondById */
   GetBondById(
     request: QueryGetBondByIdRequest
@@ -718,7 +724,7 @@ export interface Query {
     request: QueryGetBondsByOwnerRequest
   ): Promise<QueryGetBondsByOwnerResponse>;
   /** Get Bond module balance */
-  GetBondsModuleBalance(
+  GetBondModuleBalance(
     request: QueryGetBondModuleBalanceRequest
   ): Promise<QueryGetBondModuleBalanceResponse>;
 }
@@ -731,7 +737,7 @@ export class QueryClientImpl implements Query {
     this.Bonds = this.Bonds.bind(this);
     this.GetBondById = this.GetBondById.bind(this);
     this.GetBondsByOwner = this.GetBondsByOwner.bind(this);
-    this.GetBondsModuleBalance = this.GetBondsModuleBalance.bind(this);
+    this.GetBondModuleBalance = this.GetBondModuleBalance.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -741,11 +747,11 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  Bonds(request: QueryGetBondsRequest): Promise<QueryGetBondsResponse> {
-    const data = QueryGetBondsRequest.encode(request).finish();
+  Bonds(request: QueryBondsRequest): Promise<QueryBondsResponse> {
+    const data = QueryBondsRequest.encode(request).finish();
     const promise = this.rpc.request("cerc.bond.v1.Query", "Bonds", data);
     return promise.then((data) =>
-      QueryGetBondsResponse.decode(new _m0.Reader(data))
+      QueryBondsResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -773,13 +779,13 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  GetBondsModuleBalance(
+  GetBondModuleBalance(
     request: QueryGetBondModuleBalanceRequest
   ): Promise<QueryGetBondModuleBalanceResponse> {
     const data = QueryGetBondModuleBalanceRequest.encode(request).finish();
     const promise = this.rpc.request(
       "cerc.bond.v1.Query",
-      "GetBondsModuleBalance",
+      "GetBondModuleBalance",
       data
     );
     return promise.then((data) =>
