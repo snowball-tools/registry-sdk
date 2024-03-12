@@ -69,10 +69,7 @@ const namingTests = () => {
 
       test('Lookup non existing authority', async () => {
         const [record] = await registry.lookupAuthorities(['does-not-exist']);
-
-        expect(record.ownerAddress).toBe('');
-        expect(record.ownerPublicKey).toBe('');
-        expect(Number(record.height)).toBe(0);
+        expect(record).toBe(null);
       });
 
       test('Reserve already reserved authority', async () => {

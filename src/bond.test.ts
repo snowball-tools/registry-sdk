@@ -88,9 +88,7 @@ const bondTests = () => {
     test('Cancel bond.', async () => {
       await registry.cancelBond({ id: bond1.id }, privateKey, fee);
       const [bond] = await registry.getBondsByIds([bond1.id]);
-      expect(bond.id).toBe('');
-      expect(bond.owner).toBe('');
-      expect(bond.balance).toHaveLength(0);
+      expect(bond).toBe(null);
     });
   });
 
