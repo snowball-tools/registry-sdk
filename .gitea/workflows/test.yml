@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: "./laconic2d/"
-          repository: cerc-io/laconic2d
+          repository: deep-stack/laconic2d # TODO: Use cerc-io/laconic2d
           fetch-depth: 0
           ref: main
       - name: Environment
