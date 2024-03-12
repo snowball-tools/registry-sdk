@@ -105,7 +105,7 @@ export class RegistryClient {
    */
   static async getResult (query: any, key: string, modifier?: (rows: any[]) => {}) {
     const result = await query;
-    if (result && result[key] && result[key].length && result[key][0] !== null) {
+    if (result && result[key]) {
       if (modifier) {
         return modifier(result[key]);
       }
