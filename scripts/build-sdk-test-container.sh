@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker build -t cerc/laconic-sdk-tester:local -f Dockerfile .
+docker build -t cerc/registry-sdk-tester:local -f Dockerfile .

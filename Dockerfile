@@ -29,10 +29,10 @@ COPY entrypoint.sh .
 ENTRYPOINT ["/entrypoint.sh"]
 CMD node --version
 
-WORKDIR /app/laconic-sdk
+WORKDIR /app/registry-sdk
 
 COPY package*.json .
 RUN yarn install
 COPY . .
 
-WORKDIR /app/laconic-sdk
+WORKDIR /app/registry-sdk
