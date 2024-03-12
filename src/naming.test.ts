@@ -75,8 +75,7 @@ const namingTests = () => {
         expect(Number(record.height)).toBe(0);
       });
 
-      // TODO: Implement parse error response
-      xtest('Reserve already reserved authority', async () => {
+      test('Reserve already reserved authority', async () => {
         await expect(registry.reserveAuthority({ name: authorityName }, privateKey, fee))
           .rejects.toThrow('Name already reserved.');
       });
@@ -115,8 +114,7 @@ const namingTests = () => {
         expect(Number(record.height)).toBeGreaterThan(0);
       });
 
-      // TODO: Parse error response from set name
-      xtest('Set name for unbonded authority', async () => {
+      test('Set name for unbonded authority', async () => {
         assert(watcherId);
         await expect(registry.setName({ lrn, cid: watcherId }, privateKey, fee))
           .rejects.toThrow('Authority bond not found.');
@@ -269,14 +267,12 @@ const namingTests = () => {
       });
     });
 
-    // TODO: Parse error response form set name
-    xtest('Set name without reserving authority', async () => {
+    test('Set name without reserving authority', async () => {
       await expect(registry.setName({ lrn: 'lrn://not-reserved/app/test', cid: watcherId }, privateKey, fee))
         .rejects.toThrow('Name authority not found.');
     });
 
-    // TODO: Parse error response form set name
-    xtest('Set name for non-owned authority', async () => {
+    test('Set name for non-owned authority', async () => {
       await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount.address }, privateKey, fee);
 
       // Other account reserves an authority.
@@ -286,8 +282,7 @@ const namingTests = () => {
       await expect(registry.setName({ lrn: `lrn://${otherAuthorityName}/app/test`, cid: watcherId }, privateKey, fee)).rejects.toThrow('Access denied.');
     });
 
-    // TODO: Parse error response form set name
-    xtest('Delete name for non-owned authority.', async () => {
+    test('Delete name for non-owned authority.', async () => {
       const otherBondId = await registry.getNextBondId(otherPrivateKey);
       await registry.createBond({ denom: DENOM, amount: '1000000' }, otherPrivateKey, fee);
       await registry.setAuthorityBond({ name: otherAuthorityName, bondId: otherBondId }, otherPrivateKey, fee);

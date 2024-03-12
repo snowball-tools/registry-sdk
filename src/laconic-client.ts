@@ -13,10 +13,15 @@ import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEnco
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
 import { MsgAssociateBondEncodeObject, MsgDeleteNameAuthorityEncodeObject, MsgDissociateBondEncodeObject, MsgDissociateRecordsEncodeObject, MsgReassociateRecordsEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgAssociateBond, typeUrlMsgDeleteNameAuthority, typeUrlMsgDissociateBond, typeUrlMsgDissociateRecords, typeUrlMsgReassociateRecords, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
-import { Payload } from './proto2/cerc/registry/v1/tx';
+import { MsgAssociateBondResponse, MsgDeleteNameAuthorityResponse, MsgDissociateBondResponse, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse, MsgReserveAuthorityResponse, MsgSetAuthorityBondResponse, MsgSetNameResponse, MsgSetRecordResponse, Payload } from './proto2/cerc/registry/v1/tx';
 import { Record, Signature } from './proto2/cerc/registry/v1/registry';
 import { Account } from './account';
 import { Util } from './util';
+import { NAMESERVICE_ERRORS } from './messages/registry';
+import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto2/cerc/auction/v1/tx';
+import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
+
+const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
 export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
@@ -48,7 +53,7 @@ export class LaconicClient extends SigningStargateClient {
     amount: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgCreateBondEncodeObject = {
       typeUrl: typeUrlMsgCreateBond,
       value: {
@@ -62,7 +67,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgCreateBondResponse>(response);
   }
 
   public async refillBond (
@@ -72,7 +78,7 @@ export class LaconicClient extends SigningStargateClient {
     id: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgRefillBondEncodeObject = {
       typeUrl: typeUrlMsgRefillBond,
       value: {
@@ -87,7 +93,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgRefillBondResponse>(response);
   }
 
   public async withdrawBond (
@@ -97,7 +104,7 @@ export class LaconicClient extends SigningStargateClient {
     id: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgWithdrawBondEncodeObject = {
       typeUrl: typeUrlMsgWithdrawBond,
       value: {
@@ -112,7 +119,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgWithdrawBondResponse>(response);
   }
 
   public async cancelBond (
@@ -120,7 +128,7 @@ export class LaconicClient extends SigningStargateClient {
     id: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgCancelBondEncodeObject = {
       typeUrl: typeUrlMsgCancelBond,
       value: {
@@ -129,7 +137,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgCancelBondResponse>(response);
   }
 
   public async associateBond (
@@ -138,7 +147,7 @@ export class LaconicClient extends SigningStargateClient {
     bondId: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgAssociateBondEncodeObject = {
       typeUrl: typeUrlMsgAssociateBond,
       value: {
@@ -148,7 +157,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgAssociateBondResponse>(response);
   }
 
   public async dissociateBond (
@@ -156,7 +166,7 @@ export class LaconicClient extends SigningStargateClient {
     recordId: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgDissociateBondEncodeObject = {
       typeUrl: typeUrlMsgDissociateBond,
       value: {
@@ -165,7 +175,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgDissociateBondResponse>(response);
   }
 
   public async dissociateRecords (
@@ -173,7 +184,7 @@ export class LaconicClient extends SigningStargateClient {
     bondId: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgDissociateRecordsEncodeObject = {
       typeUrl: typeUrlMsgDissociateRecords,
       value: {
@@ -182,7 +193,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgDissociateRecordsResponse>(response);
   }
 
   public async reassociateRecords (
@@ -191,7 +203,7 @@ export class LaconicClient extends SigningStargateClient {
     newBondId: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgReassociateRecordsEncodeObject = {
       typeUrl: typeUrlMsgReassociateRecords,
       value: {
@@ -201,7 +213,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgReassociateRecordsResponse>(response);
   }
 
   public async reserveAuthority (
@@ -210,7 +223,7 @@ export class LaconicClient extends SigningStargateClient {
     owner: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgReserveAuthorityEncodeObject = {
       typeUrl: typeUrlMsgReserveAuthority,
       value: {
@@ -220,7 +233,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgReserveAuthorityResponse>(response);
   }
 
   public async commitBid (
@@ -229,7 +243,7 @@ export class LaconicClient extends SigningStargateClient {
     commitHash: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgCommitBidEncodeObject = {
       typeUrl: typeUrlMsgCommitBid,
       value: {
@@ -239,7 +253,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgCommitBidResponse>(response);
   }
 
   public async revealBid (
@@ -248,7 +263,7 @@ export class LaconicClient extends SigningStargateClient {
     reveal: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgRevealBidEncodeObject = {
       typeUrl: typeUrlMsgRevealBid,
       value: {
@@ -258,7 +273,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgRevealBidResponse>(response);
   }
 
   public async setRecord (
@@ -266,7 +282,7 @@ export class LaconicClient extends SigningStargateClient {
     signer: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const registryRecord = Record.fromPartial({ attributes: Buffer.from(JSON.stringify(params.record), 'binary') });
 
     // Sign record.
@@ -288,7 +304,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgSetRecordResponse>(response);
   }
 
   public async setAuthorityBond (
@@ -297,7 +314,7 @@ export class LaconicClient extends SigningStargateClient {
     name: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgSetAuthorityBondEncodeObject = {
       typeUrl: typeUrlMsgSetAuthorityBond,
       value: {
@@ -307,7 +324,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgSetAuthorityBondResponse>(response);
   }
 
   public async setName (
@@ -316,7 +334,7 @@ export class LaconicClient extends SigningStargateClient {
     cid: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgSetNameEncodeObject = {
       typeUrl: typeUrlMsgSetName,
       value: {
@@ -326,7 +344,8 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgSetNameResponse>(response);
   }
 
   public async deleteName (
@@ -334,7 +353,7 @@ export class LaconicClient extends SigningStargateClient {
     lrn: string,
     fee: StdFee | 'auto' | number,
     memo = ''
-  ): Promise<DeliverTxResponse> {
+  ) {
     const createMsg: MsgDeleteNameAuthorityEncodeObject = {
       typeUrl: typeUrlMsgDeleteNameAuthority,
       value: {
@@ -343,6 +362,28 @@ export class LaconicClient extends SigningStargateClient {
       }
     };
 
-    return this.signAndBroadcast(signer, [createMsg], fee, memo);
+    const response = await this.signAndBroadcast(signer, [createMsg], fee, memo);
+    return this.parseResponse<MsgDeleteNameAuthorityResponse>(response);
+  }
+
+  parseResponse<T> (response: DeliverTxResponse): T {
+    if (response.code !== 0) {
+      // Throw error when transaction is not successful.
+      throw new Error(this.processWriteError(response.rawLog || 'No raw log in response'));
+    }
+
+    return this.registry.decode(response.msgResponses[0]) as T;
+  }
+
+  processWriteError (error: string) {
+    // error string a stacktrace containing the message.
+    // https://gist.github.com/nikugogoi/de55d390574ded3466abad8bffd81952#file-txresponse-js-L7
+    const errorMessage = NAMESERVICE_ERRORS.find(message => error.includes(message));
+
+    if (!errorMessage) {
+      console.error(error);
+    }
+
+    return errorMessage || DEFAULT_WRITE_ERROR;
   }
 }

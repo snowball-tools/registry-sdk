@@ -6,7 +6,7 @@ import { DENOM } from './constants';
 
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
-const BOND_AMOUNT = '10000';
+const BOND_AMOUNT = '1000000000';
 const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
@@ -99,7 +99,7 @@ const bondTests = () => {
 
     bondId1 = await registry.getNextBondId(privateKey);
     expect(bondId1).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
+    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, fee);
 
     // Create a new record.
     let watcher = await publishNewWatcherVersion(bondId1);
@@ -124,7 +124,7 @@ const bondTests = () => {
 
     bondId1 = await registry.getNextBondId(privateKey);
     expect(bondId1).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
+    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, fee);
 
     // Create a new record version.
     let watcher = await publishNewWatcherVersion(bondId1);
@@ -141,7 +141,7 @@ const bondTests = () => {
     // Create another bond.
     bondId2 = await registry.getNextBondId(privateKey);
     expect(bondId2).toBeDefined();
-    await registry.createBond({ denom: DENOM, amount: '1000000000' }, privateKey, fee);
+    await registry.createBond({ denom: DENOM, amount: BOND_AMOUNT }, privateKey, fee);
     const [bond] = await registry.getBondsByIds([bondId2]);
     expect(bond.id).toBe(bondId2);
 
