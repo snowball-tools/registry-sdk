@@ -20,6 +20,7 @@ import { Util } from './util';
 import { NAMESERVICE_ERRORS } from './messages/registry';
 import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto2/cerc/auction/v1/tx';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
+import { bankTypes } from './types/cosmos/bank/message';
 
 const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
@@ -27,7 +28,8 @@ export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]>
   ...defaultRegistryTypes,
   ...bondTypes,
   ...registryTypes,
-  ...auctionTypes
+  ...auctionTypes,
+  ...bankTypes
 ];
 
 function createDefaultRegistry (): Registry {

@@ -16,4 +16,5 @@ protoc \
   --ts_proto_out=$DEST_TS \
   --proto_path=$I \
   --ts_proto_opt="esModuleInterop=true,forceLong=long,useOptionals=messages" \
-  $(find $REPO_ROOT/proto/cerc -iname "*.proto")
+  $(find $REPO_ROOT/proto/cerc $REPO_ROOT/proto/cosmos/bank -type f -iname "*.proto"
+)
