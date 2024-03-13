@@ -1,7 +1,4 @@
 import { sha256 } from 'js-sha256';
-import {
-  MessageSendParams
-} from '@tharsis/transactions';
 import { DeliverTxResponse, StdFee } from '@cosmjs/stargate';
 
 import { RegistryClient } from './registry-client';
@@ -30,6 +27,7 @@ import { LaconicClient } from './laconic-client';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
 import { MsgSendResponse } from './proto2/cosmos/bank/v1beta1/tx';
+import { MessageMsgSendCoins } from './types/cosmos/bank/message';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
@@ -139,7 +137,7 @@ export class Registry {
   /**
    * Send coins.
    */
-  async sendCoins ({ amount, denom, destinationAddress }: MessageSendParams, privateKey: string, fee: StdFee) {
+  async sendCoins ({ amount, denom, destinationAddress }: MessageMsgSendCoins, privateKey: string, fee: StdFee) {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
