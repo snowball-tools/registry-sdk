@@ -40,7 +40,7 @@ const nameserviceExpiryTests = () => {
       privateKey,
       fee
     );
-    console.log('SetRecordResult: ' + result.id);
+    expect(result.id).toBeDefined();
     const [record] = await registry.queryRecords({ type: 'WebsiteRegistrationRecord', version: watcher.record.version }, true);
     recordExpiryTime = new Date(record.expiryTime);
 
@@ -77,10 +77,8 @@ const nameserviceExpiryTests = () => {
     authorityExpiryTime = updatedExpiryTime;
   });
 
-  // TODO: Check bond balance not decreasing correctly
   test('Check bond balance', async () => {
     const [bond] = await registry.getBondsByIds([bondId]);
-    console.log(bond);
     expect(bond).toBeDefined();
     expect(bond.balance).toHaveLength(0);
   });

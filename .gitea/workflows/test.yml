@@ -16,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Checkout laconicd
+      - name: Checkout laconic2d
         uses: actions/checkout@v3
         with:
-          path: "./laconicd/"
-          repository: cerc-io/laconicd
+          path: "./laconic2d/"
+          repository: deep-stack/laconic2d # TODO: Use cerc-io/laconic2d
           fetch-depth: 0
           ref: main
       - name: Environment
@@ -31,33 +31,33 @@ jobs:
           dockerd -H $DOCKER_HOST --userland-proxy=false &
           sleep 5
 
-      - name: Build laconicd container
-        working-directory: laconicd/tests/sdk_tests
-        run: ./build-laconicd-container.sh
-      - name: Build laconic-sdk container
+      - name: Build laconic2d container
+        working-directory: laconic2d/tests/sdk_tests
+        run: ./build-laconic2d-container.sh
+      - name: Build sdk container
         run: ./scripts/build-sdk-test-container.sh
 
       - name: Start containers
-        working-directory: laconicd/tests/sdk_tests
+        working-directory: laconic2d/tests/sdk_tests
         run: docker compose up -d
       - name: Run tests
-        working-directory: laconicd/tests/sdk_tests
+        working-directory: laconic2d/tests/sdk_tests
         run: ./run-tests.sh
 
       - name: Start containers (auctions enabled)
-        working-directory: laconicd/tests/sdk_tests
+        working-directory: laconic2d/tests/sdk_tests
         env:
           TEST_AUCTION_ENABLED: true
         run: docker compose up -d
       - name: Run auction tests
-        working-directory: laconicd/tests/sdk_tests
+        working-directory: laconic2d/tests/sdk_tests
         run: ./run-tests.sh test:auctions
 
       - name: Start containers (expiry enabled)
-        working-directory: laconicd/tests/sdk_tests
+        working-directory: laconic2d/tests/sdk_tests
         env:
           TEST_REGISTRY_EXPIRY: true
         run: docker compose up -d
       - name: Run nameservice expiry tests
-        working-directory: laconicd/tests/sdk_tests
+        working-directory: laconic2d/tests/sdk_tests
         run: ./run-tests.sh test:nameservice-expiry
