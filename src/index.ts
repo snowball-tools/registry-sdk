@@ -39,6 +39,7 @@ import {
 import { LaconicClient } from './laconic-client';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
+import { MsgSendResponse } from './proto2/cosmos/bank/v1beta1/tx';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
@@ -190,8 +191,7 @@ export class Registry {
       ],
       fee);
 
-    // TODO: Register type /cosmos.bank.v1beta1.MsgSendResponse for decoding response
-    return response;
+    return laconicClient.parseResponse<MsgSendResponse>(response);
   }
 
   /**

@@ -289,7 +289,6 @@ const namingTests = () => {
       await expect(registry.deleteName({ lrn: `lrn://${otherAuthorityName}/app/test` }, privateKey, fee)).rejects.toThrow('Access denied.');
     });
 
-    // TODO: Check later for empty records
     test('Lookup non existing name', async () => {
       const records = await registry.lookupNames(['lrn://not-reserved/app/test']);
       expect(records).toBeDefined();
