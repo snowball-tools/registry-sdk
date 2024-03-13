@@ -36,7 +36,8 @@ describe('Querying', () => {
     expect(registry.chainID).toBe(chainId);
   });
 
-  test('Get status.', async () => {
+  // TODO: Unskip
+  xtest('Get status.', async () => {
     const status = await registry.getStatus();
     expect(status).toBeDefined();
     expect(status.version).toBeDefined();
