@@ -4,12 +4,8 @@ import * as ecc from 'tiny-secp256k1';
 import * as bip39 from 'bip39';
 import canonicalStringify from 'canonical-json';
 import secp256k1 from 'secp256k1';
-import { utils } from 'ethers';
 import { sha256 } from 'js-sha256';
-import { MessageTypes, signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { Ripemd160 } from '@cosmjs/crypto';
-import { fromHex, toHex } from '@cosmjs/encoding';
-import { ethToEthermint } from '@tharsis/address-converter';
+import { toHex } from '@cosmjs/encoding';
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
@@ -19,14 +15,6 @@ const ACCOUNT_PREFIX = 'laconic';
 
 const bip32 = BIP32Factory(ecc);
 
-interface TypedMessageDomain {
-  name?: string;
-  version?: string;
-  chainId?: number;
-  verifyingContract?: string;
-  salt?: ArrayBuffer;
-}
-
 /**
  * Registry account.
  */
@@ -34,10 +22,7 @@ export class Account {
   _privateKey: Buffer;
   _publicKey!: Uint8Array;
   _encodedPubkey!: string;
-  _formattedCosmosAddress!: string;
   _registryPublicKey!: string;
-  _registryAddress!: string;
-  _ethAddress!: string;
   _wallet!: DirectSecp256k1Wallet;
   _address!: string;
 
@@ -79,16 +64,8 @@ export class Account {
     return this._encodedPubkey;
   }
 
-  get formattedCosmosAddress () {
-    return this._formattedCosmosAddress;
-  }
-
   get registryPublicKey () {
     return this._registryPublicKey;
-  }
-
-  get registryAddress () {
-    return this._registryAddress;
   }
 
   get address () {
@@ -112,19 +89,9 @@ export class Account {
     this._publicKey = secp256k1.publicKeyCreate(this._privateKey);
     this._encodedPubkey = encodeSecp256k1Pubkey(this._publicKey).value;
 
-    // 2. Generate eth address.
-    this._ethAddress = utils.computeAddress(this._publicKey);
-
-    // 3. Generate cosmos-sdk formatted address.
-    this._formattedCosmosAddress = ethToEthermint(this._ethAddress);
-
-    // 4. Generate registry formatted public key.
+    // Generate registry formatted public key.
     const publicKeyInHex = AMINO_PREFIX + toHex(account.pubkey);
     this._registryPublicKey = Buffer.from(publicKeyInHex, 'hex').toString('base64');
-
-    // 5. Generate registry formatted address.
-    let publicKeySha256 = sha256(Buffer.from(publicKeyInHex, 'hex'));
-    this._registryAddress = new Ripemd160().update(fromHex(publicKeySha256)).digest().toString();
   }
 
   /**
@@ -132,13 +99,6 @@ export class Account {
    */
   getPrivateKey () {
     return this._privateKey.toString('hex');
-  }
-
-  /**
-   * Get cosmos address.
-   */
-  getCosmosAddress () {
-    return this._formattedCosmosAddress;
   }
 
   /**
@@ -159,26 +119,5 @@ export class Account {
     const sigObj = secp256k1.ecdsaSign(messageToSignSha256InBytes, this.privateKey);
 
     return Buffer.from(sigObj.signature);
-  }
-
-  /**
-   * Sign message.
-   */
-  sign (message: any) {
-    assert(message);
-    const eipMessageDomain: any = message.eipToSign.domain;
-
-    const signature = signTypedData({
-      data: {
-        types: message.eipToSign.types as MessageTypes,
-        primaryType: message.eipToSign.primaryType,
-        domain: eipMessageDomain as TypedMessageDomain,
-        message: message.eipToSign.message as Record<string, unknown>
-      },
-      privateKey: this._privateKey,
-      version: SignTypedDataVersion.V4
-    });
-
-    return signature;
   }
 }

@@ -1,9 +1,8 @@
 import assert from 'assert';
 import yaml from 'node-yaml';
 import semver from 'semver';
-import { Fee } from '@tharsis/transactions';
 
-import { DEFAULT_CHAIN_ID, Registry } from '../index';
+import { DEFAULT_CHAIN_ID } from '../index';
 
 export const ensureUpdatedConfig = async (path: string) => {
   const conf = await yaml.read(path);

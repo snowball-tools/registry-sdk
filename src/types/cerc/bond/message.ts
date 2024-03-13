@@ -50,3 +50,42 @@ export interface MsgCancelBondEncodeObject extends EncodeObject {
   readonly typeUrl: '/cerc.bond.v1.MsgCancelBond';
   readonly value: Partial<MsgCancelBond>;
 }
+
+export interface MessageMsgCreateBond {
+  amount: string
+  denom: string
+}
+
+export interface MessageMsgRefillBond {
+  id: string,
+  amount: string
+  denom: string
+}
+
+export interface MessageMsgWithdrawBond {
+  id: string
+  amount: string
+  denom: string
+}
+
+export interface MessageMsgCancelBond {
+  id: string
+}
+
+export interface MessageMsgAssociateBond {
+  bondId: string,
+  recordId: string
+}
+
+export interface MessageMsgDissociateBond {
+  recordId: string
+}
+
+export interface MessageMsgDissociateRecords {
+  bondId: string
+}
+
+export interface MessageMsgReAssociateRecords {
+  newBondId: string
+  oldBondId: string
+}

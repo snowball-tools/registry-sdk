@@ -86,3 +86,29 @@ export interface MsgReassociateRecordsEncodeObject extends EncodeObject {
   readonly typeUrl: '/cerc.registry.v1.MsgReassociateRecords';
   readonly value: Partial<MsgReassociateRecords>;
 }
+
+export const NAMESERVICE_ERRORS = [
+  'Name already reserved.',
+  'Authority bond not found.',
+  'Name authority not found.',
+  'Access denied.'
+];
+
+export interface MessageMsgReserveAuthority {
+  name: string
+  owner: string
+}
+
+export interface MessageMsgSetName {
+  lrn: string
+  cid: string
+}
+
+export interface MessageMsgSetAuthorityBond {
+  name: string
+  bondId: string
+}
+
+export interface MessageMsgDeleteName {
+  lrn: string
+}

@@ -1,22 +1,13 @@
 import { sha256 } from 'js-sha256';
-import { generatePostBodyBroadcast, BroadcastMode } from '@tharsis/provider';
 import {
-  Chain,
-  Sender,
-  Fee,
   MessageSendParams
 } from '@tharsis/transactions';
 import { DeliverTxResponse, StdFee } from '@cosmjs/stargate';
 
 import { RegistryClient } from './registry-client';
 import { Account } from './account';
-import { createTransaction } from './txbuilder';
 import { Util } from './util';
 import {
-  createTxMsgAssociateBond,
-  createTxMsgDissociateBond,
-  createTxMsgDissociateRecords,
-  createTxMsgReAssociateRecords,
   MessageMsgAssociateBond,
   MessageMsgCancelBond,
   MessageMsgCreateBond,
@@ -25,41 +16,22 @@ import {
   MessageMsgReAssociateRecords,
   MessageMsgRefillBond,
   MessageMsgWithdrawBond
-} from './messages/bond';
+} from './types/cerc/bond/message';
 import {
   MessageMsgDeleteName,
   MessageMsgSetAuthorityBond,
-  MessageMsgSetName,
-  NAMESERVICE_ERRORS
-} from './messages/registry';
+  MessageMsgSetName
+} from './types/cerc/registry/message';
 import {
   MessageMsgCommitBid,
   MessageMsgRevealBid
-} from './messages/auction';
+} from './types/cerc/auction/message';
 import { LaconicClient } from './laconic-client';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
 import { Coin } from './proto2/cosmos/base/v1beta1/coin';
 import { MsgSendResponse } from './proto2/cosmos/bank/v1beta1/tx';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
-
-// Parse Tx response from cosmos-sdk.
-export const parseTxResponse = (result: any, parseResponse?: (data: string) => any) => {
-  const { txhash: hash, height, ...txResponse } = result;
-
-  if (parseResponse) {
-    txResponse.data = parseResponse(txResponse.data);
-  }
-
-  txResponse.events.forEach((event:any) => {
-    event.attributes = event.attributes.map(({ key, value }: { key: string, value: string }) => ({
-      key: Buffer.from(key, 'base64').toString('utf8'),
-      value: Buffer.from(value, 'base64').toString('utf8')
-    }));
-  });
-
-  return { hash, height, ...txResponse };
-};
 
 /**
  * Create an auction bid.
@@ -87,12 +59,9 @@ export const createBid = async (chainId: string, auctionId: string, bidderAddres
   };
 };
 
-export const isKeyValid = (key: string) => key && key.match(/^[0-9a-fA-F]{64}$/);
-
 export class Registry {
   _endpoints: {[key: string]: string};
   _chainID: string;
-  _chain: Chain;
   _client: RegistryClient;
 
   constructor (gqlUrl: string, restUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
@@ -103,11 +72,6 @@ export class Registry {
 
     this._client = new RegistryClient(gqlUrl, restUrl);
     this._chainID = chainId;
-
-    this._chain = {
-      cosmosChainId: chainId,
-      chainId: this._parseEthChainId(chainId)
-    };
   }
 
   /**
@@ -466,35 +430,6 @@ export class Registry {
       lrn,
       fee
     );
-  }
-
-  /**
-   * https://evmos.dev/basics/chain_id.html
-   */
-  _parseEthChainId (chainId: string) {
-    const [idWithChainNumber] = chainId.split('-');
-    const [_, ethChainId] = idWithChainNumber.split('_');
-
-    return Number(ethChainId);
-  }
-
-  /**
-   * Get sender used for creating message.
-   */
-  async _getSender (account: Account) {
-    const accounts = await this.getAccounts([account.formattedCosmosAddress]);
-    if (!accounts.length) {
-      throw new Error('Account does not exist.');
-    }
-
-    const [{ number, sequence }] = accounts;
-
-    return {
-      accountAddress: account.formattedCosmosAddress,
-      sequence: sequence,
-      accountNumber: number,
-      pubkey: account.encodedPubkey
-    };
   }
 
   async getLaconicClient (account: Account) {
