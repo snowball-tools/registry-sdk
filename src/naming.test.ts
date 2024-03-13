@@ -98,7 +98,7 @@ const namingTests = () => {
         const mnenonic2 = Account.generateMnemonic();
         const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
         await otherAccount2.init();
-        await registry.sendCoins({ denom: DENOM, amount: '10000', destinationAddress: otherAccount2.address }, otherAccount1.getPrivateKey(), fee);
+        await registry.sendCoins({ denom: DENOM, amount: '1000', destinationAddress: otherAccount2.address }, otherAccount1.getPrivateKey(), fee);
 
         const subAuthority = `halo.${authorityName}`;
         await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.address }, privateKey, fee);
