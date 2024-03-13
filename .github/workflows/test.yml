@@ -24,7 +24,7 @@ jobs:
       - name: Build laconicd container
         working-directory: laconicd/tests/sdk_tests
         run: ./build-laconicd-container.sh
-      - name: Build laconic-sdk container
+      - name: Build registry-sdk container
         run: ./scripts/build-sdk-test-container.sh
 
       - name: Start containers
