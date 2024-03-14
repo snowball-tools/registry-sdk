@@ -23,3 +23,13 @@ export interface MsgRevealBidEncodeObject extends EncodeObject {
   readonly typeUrl: '/cerc.auction.v1.MsgRevealBid';
   readonly value: Partial<MsgRevealBid>;
 }
+
+export interface MessageMsgCommitBid {
+  auctionId: string,
+  commitHash: string,
+}
+
+export interface MessageMsgRevealBid {
+  auctionId: string,
+  reveal: string,
+}

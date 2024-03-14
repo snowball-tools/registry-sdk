@@ -1,8 +1,6 @@
 import assert from 'assert';
-import axios from 'axios';
 import graphqlClient from 'graphql.js';
 import { get, set } from 'lodash';
-import { generateEndpointAccount, generateEndpointBroadcast } from '@tharsis/provider';
 
 import { Util } from './util';
 
@@ -418,20 +416,5 @@ export class RegistryClient {
     };
 
     return RegistryClient.getResult(this._graph(query)(variables), 'queryBonds');
-  }
-
-  /**
-   * Submit transaction.
-   */
-  async submit (tx: string) {
-    assert(tx);
-
-    // Broadcast transaction.
-    const { data } = await axios.post(
-      `${this._restEndpoint}${generateEndpointBroadcast()}`,
-      tx
-    );
-
-    return data;
   }
 }

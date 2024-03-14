@@ -1,5 +1,6 @@
 import * as Block from 'multiformats/block';
 import { sha256 as hasher } from 'multiformats/hashes/sha2';
+
 import * as dagCBOR from '@ipld/dag-cbor';
 import * as dagJSON from '@ipld/dag-json';
 
