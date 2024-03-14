@@ -21,7 +21,7 @@ import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto2/cerc/auctio
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
 import { bankTypes } from './types/cosmos/bank/message';
 
-const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
+const DEFAULT_WRITE_ERROR = 'Unable to write to laconic2d.';
 
 export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,

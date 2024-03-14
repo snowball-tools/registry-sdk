@@ -5,6 +5,7 @@ import * as bip39 from 'bip39';
 import canonicalStringify from 'canonical-json';
 import secp256k1 from 'secp256k1';
 import { sha256 } from 'js-sha256';
+
 import { toHex } from '@cosmjs/encoding';
 import { encodeSecp256k1Pubkey } from '@cosmjs/amino';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';

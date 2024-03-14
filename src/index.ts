@@ -1,4 +1,5 @@
 import { sha256 } from 'js-sha256';
+
 import { DeliverTxResponse, StdFee } from '@cosmjs/stargate';
 
 import { RegistryClient } from './registry-client';
