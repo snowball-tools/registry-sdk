@@ -22,7 +22,7 @@ jobs:
           path: "./laconicd/"
           repository: cerc-io/laconic2d # TODO: Update to laconicd on repo renaming
           fetch-depth: 0
-          ref: main
+          ref: nv-rename-rpc-endpoint
       - name: Environment
         run: ls -tlh && env
 
