@@ -63,13 +63,13 @@ export class Registry {
   _chainID: string;
   _client: RegistryClient;
 
-  constructor (gqlUrl: string, restUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
+  constructor (gqlUrl: string, rpcUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
     this._endpoints = {
-      rest: restUrl,
+      rpc: rpcUrl,
       gql: gqlUrl
     };
 
-    this._client = new RegistryClient(gqlUrl, restUrl);
+    this._client = new RegistryClient(gqlUrl, rpcUrl);
     this._chainID = chainId;
   }
 
@@ -432,7 +432,7 @@ export class Registry {
   }
 
   async getLaconicClient (account: Account) {
-    return LaconicClient.connectWithSigner(this._endpoints.rest, account.wallet);
+    return LaconicClient.connectWithSigner(this._endpoints.rpc, account.wallet);
   }
 }
 

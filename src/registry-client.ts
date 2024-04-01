@@ -95,7 +95,7 @@ const auctionFields = `
  * Registry
  */
 export class RegistryClient {
-  _restEndpoint: string;
+  _rpcEndpoint: string;
   _graph: any;
 
   /**
@@ -128,14 +128,14 @@ export class RegistryClient {
   /**
    * New Client.
    */
-  constructor (gqlEndpoint: string, restEndpoint: string) {
+  constructor (gqlEndpoint: string, rpcEndpoint: string) {
     assert(gqlEndpoint);
     this._graph = graphqlClient(gqlEndpoint, {
       method: 'POST',
       asJSON: true
     });
 
-    this._restEndpoint = restEndpoint;
+    this._rpcEndpoint = rpcEndpoint;
   }
 
   /**

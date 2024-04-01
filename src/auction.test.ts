@@ -3,7 +3,7 @@ import { getConfig } from './testing/helper';
 import { DENOM } from './constants';
 
 jest.setTimeout(30 * 60 * 1000);
-const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
+const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 const auctionTests = (numBidders = 3) => {
   let registry: Registry;
@@ -16,7 +16,7 @@ const auctionTests = (numBidders = 3) => {
   beforeAll(async () => {
     console.log('Running auction tests with num bidders', numBidders);
 
-    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
   });
 
   test('Setup bidder accounts', async () => {
