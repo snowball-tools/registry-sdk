@@ -9,7 +9,7 @@ const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 jest.setTimeout(90 * 1000);
 
-const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
+const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 const utilTests = () => {
   let registry: Registry;
@@ -19,7 +19,7 @@ const utilTests = () => {
   let watcherId: string;
 
   beforeAll(async () => {
-    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
 
     // Create bond.
     bondId = await registry.getNextBondId(privateKey);

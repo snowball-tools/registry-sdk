@@ -25,7 +25,7 @@ export const getConfig = () => {
   return {
     chainId: process.env.COSMOS_CHAIN_ID || DEFAULT_CHAIN_ID,
     privateKey: process.env.PRIVATE_KEY,
-    restEndpoint: process.env.LACONICD_REST_ENDPOINT || 'http://localhost:26657',
+    rpcEndpoint: process.env.LACONICD_RPC_ENDPOINT || 'http://localhost:26657',
     gqlEndpoint: process.env.LACONICD_GQL_ENDPOINT || 'http://localhost:9473/api',
     fee: {
       amount: [{ denom: 'photon', amount: '40' }],

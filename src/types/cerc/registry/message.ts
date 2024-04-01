@@ -1,6 +1,6 @@
 import { EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
 
-import { MsgReserveAuthority, MsgReserveAuthorityResponse, MsgSetAuthorityBond, MsgSetAuthorityBondResponse, MsgSetRecord, MsgSetRecordResponse, MsgSetName, MsgSetNameResponse, MsgDeleteName, MsgDeleteNameResponse, MsgAssociateBond, MsgAssociateBondResponse, MsgDissociateBond, MsgDissociateBondResponse, MsgDissociateRecords, MsgReassociateRecords, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse } from '../../../proto2/cerc/registry/v1/tx';
+import { MsgReserveAuthority, MsgReserveAuthorityResponse, MsgSetAuthorityBond, MsgSetAuthorityBondResponse, MsgSetRecord, MsgSetRecordResponse, MsgSetName, MsgSetNameResponse, MsgDeleteName, MsgDeleteNameResponse, MsgAssociateBond, MsgAssociateBondResponse, MsgDissociateBond, MsgDissociateBondResponse, MsgDissociateRecords, MsgReassociateRecords, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse } from '../../../proto/cerc/registry/v1/tx';
 
 export const typeUrlMsgReserveAuthority = '/cerc.registry.v1.MsgReserveAuthority';
 export const typeUrlMsgSetRecord = '/cerc.registry.v1.MsgSetRecord';

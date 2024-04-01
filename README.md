@@ -1,6 +1,6 @@
 # registry-sdk
 
-Client library used by TS/JS applications to communicate with laconic2d.
+Client library used by TS/JS applications to communicate with laconicd.
 
 ## Tests
 
@@ -18,14 +18,14 @@ Follow these steps to run the tests:
   cp .env.example .env
   ```
 
-- Clone the [laconic2d repo](https://git.vdb.to/cerc-io/laconic2d) and change to repo directory.
+- Clone the [laconicd repo](https://git.vdb.to/cerc-io/laconic2d) and change to repo directory.
 
 - Run the chain using `./scripts/init.sh`.
 
 - Export the private key using:
 
   ```bash
-  laconic2d keys export alice --keyring-backend test  --unarmored-hex --unsafe
+  laconicd keys export alice --keyring-backend test  --unarmored-hex --unsafe
   ```
 
 - Copy the private key and assign it to variable `PRIVATE_KEY` in the `.env` file.
@@ -38,7 +38,7 @@ Follow these steps to run the tests:
 
 - Run the tests with auctions enabled
 
-  - In laconic2d repo run:
+  - In laconicd repo run:
 
     ```bash
     TEST_AUCTION_ENABLED=true ./scripts/init.sh clean
@@ -47,7 +47,7 @@ Follow these steps to run the tests:
   - Export the private key and change it in `.env` file again using:
 
     ```bash
-    laconic2d keys export alice --keyring-backend test  --unarmored-hex --unsafe
+    laconicd keys export alice --keyring-backend test  --unarmored-hex --unsafe
     ```
 
   - Run tests:
@@ -58,7 +58,7 @@ Follow these steps to run the tests:
 
 - Run the tests for record and authority expiry
 
-  - In laconic2d repo run:
+  - In laconicd repo run:
 
     ```bash
     TEST_REGISTRY_EXPIRY=true ./scripts/init.sh clean
@@ -67,7 +67,7 @@ Follow these steps to run the tests:
   - Export the private key and change it in `.env` file again using:
 
     ```bash
-    laconic2d keys export alice --keyring-backend test  --unarmored-hex --unsafe
+    laconicd keys export alice --keyring-backend test  --unarmored-hex --unsafe
     ```
 
   - Run tests:
@@ -87,7 +87,7 @@ Follow these steps to run the tests:
   failed to execute message; message index: 0: Invalid signature.: unauthorized
   ```
 
-- When sending `setRecord` message, an integer value passed in watcher attributes is parsed as float type in laconic2d while [unmarshalling json](https://pkg.go.dev/encoding/json#Unmarshal).
+- When sending `setRecord` message, an integer value passed in watcher attributes is parsed as float type in laconicd while [unmarshalling json](https://pkg.go.dev/encoding/json#Unmarshal).
 
 - `setRecord` message throws error when fileds in [Record](./src/types.ts) message are not assigned.
   ```

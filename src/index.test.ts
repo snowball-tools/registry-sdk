@@ -3,7 +3,7 @@ import { DENOM } from './constants';
 import { Registry } from './index';
 import { getConfig } from './testing/helper';
 
-const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
+const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
 
@@ -11,7 +11,7 @@ const registryTests = () => {
   let registry: Registry;
 
   beforeAll(async () => {
-    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
   });
 
   test('Get account info.', async () => {

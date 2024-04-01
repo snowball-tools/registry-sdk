@@ -7,7 +7,7 @@ import { DENOM } from './constants';
 const WATCHER_YML_PATH = path.join(__dirname, './testing/data/watcher.yml');
 
 const BOND_AMOUNT = '1000000000';
-const { chainId, restEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
+const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
 
@@ -21,7 +21,7 @@ const bondTests = () => {
   };
 
   beforeAll(async () => {
-    registry = new Registry(gqlEndpoint, restEndpoint, chainId);
+    registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
   });
 
   test('Create bond.', async () => {

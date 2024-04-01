@@ -25,9 +25,9 @@ import {
   MessageMsgRevealBid
 } from './types/cerc/auction/message';
 import { LaconicClient } from './laconic-client';
-import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
-import { Coin } from './proto2/cosmos/base/v1beta1/coin';
-import { MsgSendResponse } from './proto2/cosmos/bank/v1beta1/tx';
+import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
+import { Coin } from './proto/cosmos/base/v1beta1/coin';
+import { MsgSendResponse } from './proto/cosmos/bank/v1beta1/tx';
 import { MessageMsgSendCoins } from './types/cosmos/bank/message';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
@@ -63,13 +63,13 @@ export class Registry {
   _chainID: string;
   _client: RegistryClient;
 
-  constructor (gqlUrl: string, restUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
+  constructor (gqlUrl: string, rpcUrl = '', chainId: string = DEFAULT_CHAIN_ID) {
     this._endpoints = {
-      rest: restUrl,
+      rpc: rpcUrl,
       gql: gqlUrl
     };
 
-    this._client = new RegistryClient(gqlUrl, restUrl);
+    this._client = new RegistryClient(gqlUrl, rpcUrl);
     this._chainID = chainId;
   }
 
@@ -432,7 +432,7 @@ export class Registry {
   }
 
   async getLaconicClient (account: Account) {
-    return LaconicClient.connectWithSigner(this._endpoints.rest, account.wallet);
+    return LaconicClient.connectWithSigner(this._endpoints.rpc, account.wallet);
   }
 }
 
