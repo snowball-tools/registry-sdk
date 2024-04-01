@@ -1,6 +1,6 @@
 import { EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
 
-import { MsgCommitBidResponse, MsgCommitBid, MsgRevealBid, MsgRevealBidResponse } from '../../../proto2/cerc/auction/v1/tx';
+import { MsgCommitBidResponse, MsgCommitBid, MsgRevealBid, MsgRevealBidResponse } from '../../../proto/cerc/auction/v1/tx';
 
 export const typeUrlMsgCommitBid = '/cerc.auction.v1.MsgCommitBid';
 export const typeUrlMsgCommitBidResponse = '/cerc.auction.v1.MsgCommitBidResponse';

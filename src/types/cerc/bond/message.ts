@@ -9,7 +9,7 @@ import {
   MsgRefillBondResponse,
   MsgWithdrawBondResponse,
   MsgCancelBondResponse
-} from '../../../proto2/cerc/bond/v1/tx';
+} from '../../../proto/cerc/bond/v1/tx';
 
 export const typeUrlMsgCreateBond = '/cerc.bond.v1.MsgCreateBond';
 export const typeUrlMsgRefillBond = '/cerc.bond.v1.MsgRefillBond';

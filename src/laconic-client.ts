@@ -10,15 +10,15 @@ import {
 import { Comet38Client } from '@cosmjs/tendermint-rpc';
 
 import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEncodeObject, MsgWithdrawBondEncodeObject, bondTypes, typeUrlMsgCancelBond, typeUrlMsgCreateBond, typeUrlMsgRefillBond, typeUrlMsgWithdrawBond } from './types/cerc/bond/message';
-import { Coin } from './proto2/cosmos/base/v1beta1/coin';
+import { Coin } from './proto/cosmos/base/v1beta1/coin';
 import { MsgAssociateBondEncodeObject, MsgDeleteNameEncodeObject, MsgDissociateBondEncodeObject, MsgDissociateRecordsEncodeObject, MsgReassociateRecordsEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgAssociateBond, typeUrlMsgDeleteName, typeUrlMsgDissociateBond, typeUrlMsgDissociateRecords, typeUrlMsgReassociateRecords, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord, NAMESERVICE_ERRORS } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
-import { MsgAssociateBondResponse, MsgDeleteNameResponse, MsgDissociateBondResponse, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse, MsgReserveAuthorityResponse, MsgSetAuthorityBondResponse, MsgSetNameResponse, MsgSetRecordResponse, Payload } from './proto2/cerc/registry/v1/tx';
-import { Record, Signature } from './proto2/cerc/registry/v1/registry';
+import { MsgAssociateBondResponse, MsgDeleteNameResponse, MsgDissociateBondResponse, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse, MsgReserveAuthorityResponse, MsgSetAuthorityBondResponse, MsgSetNameResponse, MsgSetRecordResponse, Payload } from './proto/cerc/registry/v1/tx';
+import { Record, Signature } from './proto/cerc/registry/v1/registry';
 import { Account } from './account';
 import { Util } from './util';
-import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto2/cerc/auction/v1/tx';
-import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto2/cerc/bond/v1/tx';
+import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto/cerc/auction/v1/tx';
+import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
 import { bankTypes } from './types/cosmos/bank/message';
 
 const DEFAULT_WRITE_ERROR = 'Unable to write to laconic2d.';

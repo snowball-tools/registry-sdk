@@ -5,7 +5,7 @@ set -e
 
 REPO_ROOT=$(pwd)
 I=$REPO_ROOT/proto
-DEST_TS=$REPO_ROOT/src/proto2/
+DEST_TS=$REPO_ROOT/src/proto/
 
 echo "Generating protobuf files"
 
