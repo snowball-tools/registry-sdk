@@ -383,6 +383,6 @@ export class LaconicClient extends SigningStargateClient {
       console.error(error);
     }
 
-    return errorMessage || DEFAULT_WRITE_ERROR;
+    return `${errorMessage || DEFAULT_WRITE_ERROR}: ${error}`;
   }
 }
