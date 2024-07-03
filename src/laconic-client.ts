@@ -13,13 +13,16 @@ import { MsgCancelBondEncodeObject, MsgCreateBondEncodeObject, MsgRefillBondEnco
 import { Coin } from './proto/cosmos/base/v1beta1/coin';
 import { MsgAssociateBondEncodeObject, MsgDeleteNameEncodeObject, MsgDissociateBondEncodeObject, MsgDissociateRecordsEncodeObject, MsgReassociateRecordsEncodeObject, MsgReserveAuthorityEncodeObject, MsgSetAuthorityBondEncodeObject, MsgSetNameEncodeObject, MsgSetRecordEncodeObject, registryTypes, typeUrlMsgAssociateBond, typeUrlMsgDeleteName, typeUrlMsgDissociateBond, typeUrlMsgDissociateRecords, typeUrlMsgReassociateRecords, typeUrlMsgReserveAuthority, typeUrlMsgSetAuthorityBond, typeUrlMsgSetName, typeUrlMsgSetRecord, NAMESERVICE_ERRORS } from './types/cerc/registry/message';
 import { MsgCommitBidEncodeObject, MsgRevealBidEncodeObject, auctionTypes, typeUrlMsgCommitBid, typeUrlMsgRevealBid } from './types/cerc/auction/message';
+import { MsgOnboardParticipantEncodeObject, onboardingTypes, typeUrlMsgOnboardParticipant } from './types/cerc/onboarding/message';
 import { MsgAssociateBondResponse, MsgDeleteNameResponse, MsgDissociateBondResponse, MsgDissociateRecordsResponse, MsgReassociateRecordsResponse, MsgReserveAuthorityResponse, MsgSetAuthorityBondResponse, MsgSetNameResponse, MsgSetRecordResponse, Payload } from './proto/cerc/registry/v1/tx';
 import { Record, Signature } from './proto/cerc/registry/v1/registry';
 import { Account } from './account';
 import { Util } from './util';
 import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto/cerc/auction/v1/tx';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
+import { MsgOnboardParticipantResponse } from './proto/cerc/onboarding/v1/tx';
 import { bankTypes } from './types/cosmos/bank/message';
+import { EthPayload } from './proto/cerc/onboarding/v1/onboarding';
 
 const DEFAULT_WRITE_ERROR = 'Unable to write to laconic2d.';
 
@@ -28,7 +31,8 @@ export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]>
   ...bondTypes,
   ...registryTypes,
   ...auctionTypes,
-  ...bankTypes
+  ...bankTypes,
+  ...onboardingTypes
 ];
 
 function createDefaultRegistry (): Registry {
@@ -384,5 +388,27 @@ export class LaconicClient extends SigningStargateClient {
     }
 
     return `${errorMessage || DEFAULT_WRITE_ERROR}: ${error}`;
+  }
+
+  public async onboardParticipant (
+    signer: string,
+    ethPayload: EthPayload,
+    ethSignature: string,
+    message: string,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ) {
+    const onboardParticipantMsg: MsgOnboardParticipantEncodeObject = {
+      typeUrl: typeUrlMsgOnboardParticipant,
+      value: {
+        participant: signer,
+        ethPayload,
+        ethSignature,
+        message
+      }
+    };
+
+    const response = await this.signAndBroadcast(signer, [onboardParticipantMsg], fee, memo);
+    return this.parseResponse<MsgOnboardParticipantResponse>(response);
   }
 }
