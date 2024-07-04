@@ -241,7 +241,7 @@ export class RegistryClient {
   /**
    * Get records by attributes.
    */
-  async queryRecords (attributes: {[key: string]: any}, all = false, refs = false) {
+  async queryRecords (attributes: { [key: string]: any }, all = false, refs = false) {
     if (!attributes) {
       attributes = {};
     }
@@ -397,7 +397,7 @@ export class RegistryClient {
   }
 
   /**
-   * Get records by attributes.
+   * Get bonds by attributes.
    */
   async queryBonds (attributes = {}) {
     const query = `query ($attributes: [KeyValueInput!]) {
@@ -416,5 +416,21 @@ export class RegistryClient {
     };
 
     return RegistryClient.getResult(this._graph(query)(variables), 'queryBonds');
+  }
+
+  /**
+  * Get participants.
+  */
+  async getParticipants () {
+    const query = `query {
+      getParticipants {
+        cosmos_address
+        ethereum_address
+      }
+    }`;
+
+    const variables = {};
+
+    return RegistryClient.getResult(this._graph(query)(variables), 'getParticipants');
   }
 }

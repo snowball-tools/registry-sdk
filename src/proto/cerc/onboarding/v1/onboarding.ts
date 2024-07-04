@@ -5,7 +5,9 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "cerc.onboarding.v1";
 
 /** Params defines the parameters of the onboarding module. */
-export interface Params {}
+export interface Params {
+  onboardingEnabled: boolean;
+}
 
 /** Participant defines the data that will be stored for each enrolled participant */
 export interface Participant {
@@ -20,11 +22,17 @@ export interface EthPayload {
 }
 
 function createBaseParams(): Params {
-  return {};
+  return { onboardingEnabled: false };
 }
 
 export const Params = {
-  encode(_: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: Params,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.onboardingEnabled === true) {
+      writer.uint32(8).bool(message.onboardingEnabled);
+    }
     return writer;
   },
 
@@ -35,6 +43,9 @@ export const Params = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.onboardingEnabled = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -43,17 +54,24 @@ export const Params = {
     return message;
   },
 
-  fromJSON(_: any): Params {
-    return {};
+  fromJSON(object: any): Params {
+    return {
+      onboardingEnabled: isSet(object.onboardingEnabled)
+        ? Boolean(object.onboardingEnabled)
+        : false,
+    };
   },
 
-  toJSON(_: Params): unknown {
+  toJSON(message: Params): unknown {
     const obj: any = {};
+    message.onboardingEnabled !== undefined &&
+      (obj.onboardingEnabled = message.onboardingEnabled);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Params>, I>>(_: I): Params {
+  fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = createBaseParams();
+    message.onboardingEnabled = object.onboardingEnabled ?? false;
     return message;
   },
 };

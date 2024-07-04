@@ -1,5 +1,7 @@
 import { Wallet } from 'ethers';
 
+import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
+
 import { Registry, Account } from './index';
 import { getConfig } from './testing/helper';
 
@@ -9,31 +11,46 @@ jest.setTimeout(90 * 1000);
 
 const onboardingTests = () => {
   let registry: Registry;
+  let ethWallet: Wallet;
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
   });
 
   test('Onboard participant.', async () => {
-    const mnenonic = Account.generateMnemonic();
-    let wallet = Wallet.fromMnemonic(mnenonic);
+    const mnemonic = Account.generateMnemonic();
+    ethWallet = Wallet.fromMnemonic(mnemonic);
 
     const ethPayload = {
-      address: wallet.address,
+      address: ethWallet.address,
       msg: 'Message signed by ethereum private key'
     };
 
     const message = JSON.stringify(ethPayload);
-
-    const ethSignature = await wallet.signMessage(message);
+    const ethSignature = await ethWallet.signMessage(message);
 
     await registry.onboardParticipant({
       ethPayload,
       ethSignature,
       message: 'Message signed by cosmos private key'
     }, privateKey, fee);
+  });
 
-    // TODO: Verify participant getting stored in state
+  describe('With participants enrolled', () => {
+    test('Query participants.', async () => {
+      const account = new Account(Buffer.from(privateKey, 'hex'));
+      const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
+      const [cosmosWallet] = await cosmosAccount.getAccounts();
+
+      const expectedParticipants = [
+        {
+          cosmos_address: cosmosWallet.address,
+          ethereum_address: ethWallet.address
+        }
+      ];
+      const participants = await registry.getParticipants();
+      expect(participants).toEqual(expectedParticipants);
+    });
   });
 };
 

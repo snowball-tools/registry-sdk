@@ -453,6 +453,13 @@ export class Registry {
       fee
     );
   }
+
+  /**
+ * Query participants.
+ */
+  async getParticipants () {
+    return this._client.getParticipants();
+  }
 }
 
 export { Account };
