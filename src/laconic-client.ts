@@ -394,7 +394,6 @@ export class LaconicClient extends SigningStargateClient {
     signer: string,
     ethPayload: EthPayload,
     ethSignature: string,
-    message: string,
     fee: StdFee | 'auto' | number,
     memo = ''
   ) {
@@ -403,8 +402,7 @@ export class LaconicClient extends SigningStargateClient {
       value: {
         participant: signer,
         ethPayload,
-        ethSignature,
-        message
+        ethSignature
       }
     };
 

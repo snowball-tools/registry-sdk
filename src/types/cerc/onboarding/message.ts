@@ -23,5 +23,4 @@ interface ethPayload {
 export interface MessageMsgOnboardParticipant {
   ethPayload: ethPayload
   ethSignature: string
-  message: string
 }

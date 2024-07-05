@@ -31,8 +31,7 @@ const onboardingTests = () => {
 
     await registry.onboardParticipant({
       ethPayload,
-      ethSignature,
-      message: 'Message signed by cosmos private key'
+      ethSignature
     }, privateKey, fee);
   });
 
