@@ -64,6 +64,7 @@
     "test": "jest --runInBand --verbose --testPathPattern=src",
     "test:auctions": "TEST_AUCTIONS_ENABLED=1 jest --runInBand --verbose src/auction.test.ts",
     "test:nameservice-expiry": "TEST_NAMESERVICE_EXPIRY=1 jest --runInBand --verbose src/nameservice-expiry.test.ts",
+    "test:onboarding": "ONBOARDING_ENABLED=1 jest --runInBand --verbose src/onboarding.test.ts",
     "build": "tsc",
     "lint": "eslint .",
     "prepare": "husky"

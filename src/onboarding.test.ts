@@ -53,4 +53,17 @@ const onboardingTests = () => {
   });
 };
 
-describe('Onboarding', onboardingTests);
+if (!process.env.ONBOARDING_ENABLED) {
+  // Required as jest complains if file has no tests.
+  test('skipping onboarding tests', () => {});
+} else {
+  /**
+    In laconic2d repo run:
+    TEST_REGISTRY_EXPIRY=true ./init.sh
+
+    Run tests:
+    yarn test:onboarding
+  */
+
+  describe('Onboarding', onboardingTests);
+}
