@@ -4,12 +4,13 @@ import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
 import { Registry, Account } from './index';
 import { getConfig } from './testing/helper';
+import { Participant } from './proto/cerc/onboarding/v1/onboarding';
 
 const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
 
-const onboardingTests = () => {
+const onboardingEnabledTests = () => {
   let registry: Registry;
   let ethWallet: Wallet;
 
@@ -35,35 +36,71 @@ const onboardingTests = () => {
     }, privateKey, fee);
   });
 
-  describe('With participants enrolled', () => {
-    test('Query participants.', async () => {
-      const account = new Account(Buffer.from(privateKey, 'hex'));
-      const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
-      const [cosmosWallet] = await cosmosAccount.getAccounts();
+  test('Query participants.', async () => {
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
+    const [cosmosWallet] = await cosmosAccount.getAccounts();
 
-      const expectedParticipants = [
-        {
-          cosmos_address: cosmosWallet.address,
-          ethereum_address: ethWallet.address
-        }
-      ];
-      const participants = await registry.getParticipants();
-      expect(participants).toEqual(expectedParticipants);
-    });
+    const expectedParticipants = [
+      {
+        cosmos_address: cosmosWallet.address,
+        ethereum_address: ethWallet.address
+      }
+    ];
+    const participants = await registry.getParticipants();
+    expect(participants).toEqual(expectedParticipants);
   });
 };
 
-if (!process.env.ONBOARDING_ENABLED) {
-  // Required as jest complains if file has no tests.
-  test('skipping onboarding tests', () => {});
+const onboardingDisabledTests = () => {
+  let registry: Registry;
+  let ethWallet: Wallet;
+
+  beforeAll(async () => {
+    registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
+  });
+
+  test('Error on onboarding attempt.', async () => {
+    const errorMsg = 'Validator onboarding is disabled: invalid request';
+    const mnemonic = Account.generateMnemonic();
+    ethWallet = Wallet.fromMnemonic(mnemonic);
+
+    const ethPayload = {
+      address: ethWallet.address,
+      msg: 'Message signed by ethereum private key'
+    };
+
+    const message = JSON.stringify(ethPayload);
+    const ethSignature = await ethWallet.signMessage(message);
+
+    try {
+      await registry.onboardParticipant({
+        ethPayload,
+        ethSignature
+      }, privateKey, fee);
+    } catch (error: any) {
+      expect(error.toString()).toContain(errorMsg);
+    }
+  });
+
+  test('No participants onboarded.', async () => {
+    const expectedParticipants: Participant[] = [];
+    const participants = await registry.getParticipants();
+    expect(participants).toMatchObject(expectedParticipants);
+  });
+};
+
+if (process.env.ONBOARDING_ENABLED !== '1') {
+  describe('Onboarding disabled', onboardingDisabledTests);
 } else {
   /**
-    In laconic2d repo run:
-    TEST_REGISTRY_EXPIRY=true ./init.sh
+    Running this test requires participants onboarding enabled. In laconic2d repo run:
 
-    Run tests:
+    ONBOARDING_ENABLED=true ./init.sh
+
+    Run test:
+
     yarn test:onboarding
-  */
-
-  describe('Onboarding', onboardingTests);
+    */
+  describe('Onboarding enabled', onboardingEnabledTests);
 }
