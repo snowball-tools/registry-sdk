@@ -43,8 +43,8 @@ const onboardingEnabledTests = () => {
 
     const expectedParticipants = [
       {
-        cosmos_address: cosmosWallet.address,
-        ethereum_address: ethWallet.address
+        cosmosAddress: cosmosWallet.address,
+        nitroAddress: ethWallet.address
       }
     ];
     const participants = await registry.getParticipants();

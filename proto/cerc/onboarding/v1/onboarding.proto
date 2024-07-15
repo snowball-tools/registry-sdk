@@ -19,8 +19,8 @@ message Participant {
     (gogoproto.moretags) = "json:\"cosmos_address\" yaml:\"cosmos_address\""
   ];
 
-  string ethereum_address = 2 [
-    (gogoproto.moretags) = "json:\"ethereum_address\" yaml:\"ethereum_address\""
+  string nitro_address = 2 [
+    (gogoproto.moretags) = "json:\"nitro_address\" yaml:\"nitro_address\""
   ];
 }
 // EthPayload defines the payload that is signed by the ethereum private key

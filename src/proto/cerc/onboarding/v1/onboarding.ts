@@ -12,7 +12,7 @@ export interface Params {
 /** Participant defines the data that will be stored for each enrolled participant */
 export interface Participant {
   cosmosAddress: string;
-  ethereumAddress: string;
+  nitroAddress: string;
 }
 
 /** EthPayload defines the payload that is signed by the ethereum private key */
@@ -77,7 +77,7 @@ export const Params = {
 };
 
 function createBaseParticipant(): Participant {
-  return { cosmosAddress: "", ethereumAddress: "" };
+  return { cosmosAddress: "", nitroAddress: "" };
 }
 
 export const Participant = {
@@ -88,8 +88,8 @@ export const Participant = {
     if (message.cosmosAddress !== "") {
       writer.uint32(10).string(message.cosmosAddress);
     }
-    if (message.ethereumAddress !== "") {
-      writer.uint32(18).string(message.ethereumAddress);
+    if (message.nitroAddress !== "") {
+      writer.uint32(18).string(message.nitroAddress);
     }
     return writer;
   },
@@ -105,7 +105,7 @@ export const Participant = {
           message.cosmosAddress = reader.string();
           break;
         case 2:
-          message.ethereumAddress = reader.string();
+          message.nitroAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -120,8 +120,8 @@ export const Participant = {
       cosmosAddress: isSet(object.cosmosAddress)
         ? String(object.cosmosAddress)
         : "",
-      ethereumAddress: isSet(object.ethereumAddress)
-        ? String(object.ethereumAddress)
+      nitroAddress: isSet(object.nitroAddress)
+        ? String(object.nitroAddress)
         : "",
     };
   },
@@ -130,8 +130,8 @@ export const Participant = {
     const obj: any = {};
     message.cosmosAddress !== undefined &&
       (obj.cosmosAddress = message.cosmosAddress);
-    message.ethereumAddress !== undefined &&
-      (obj.ethereumAddress = message.ethereumAddress);
+    message.nitroAddress !== undefined &&
+      (obj.nitroAddress = message.nitroAddress);
     return obj;
   },
 
@@ -140,7 +140,7 @@ export const Participant = {
   ): Participant {
     const message = createBaseParticipant();
     message.cosmosAddress = object.cosmosAddress ?? "";
-    message.ethereumAddress = object.ethereumAddress ?? "";
+    message.nitroAddress = object.nitroAddress ?? "";
     return message;
   },
 };

@@ -151,31 +151,31 @@ export class RegistryClient {
           moniker
         }
         sync {
-          latest_block_hash
-          latest_block_height
-          latest_block_time
-          catching_up
+          latestBlockHash
+          latestBlockHeight
+          latestBlockTime
+          catchingUp
         }
         validator {
           address
-          voting_power
+          votingPower
         }
         validators {
           address
-          voting_power
-          proposer_priority
+          votingPower
+          proposerPriority
         }
-        num_peers
+        numPeers
         peers {
           node {
             id
             network
             moniker
           }
-          is_outbound
-          remote_ip
+          isOutbound
+          remoteIp
         }
-        disk_usage
+        diskUsage
       }
     }`;
 
@@ -424,8 +424,8 @@ export class RegistryClient {
   async getParticipants () {
     const query = `query {
       getParticipants {
-        cosmos_address
-        ethereum_address
+        cosmosAddress
+        nitroAddress
       }
     }`;
 
