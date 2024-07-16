@@ -24,11 +24,13 @@ import {
   MessageMsgCommitBid,
   MessageMsgRevealBid
 } from './types/cerc/auction/message';
-import { LaconicClient } from './laconic-client';
-import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
-import { Coin } from './proto/cosmos/base/v1beta1/coin';
-import { MsgSendResponse } from './proto/cosmos/bank/v1beta1/tx';
 import { MessageMsgSendCoins } from './types/cosmos/bank/message';
+import { MessageMsgOnboardParticipant } from './types/cerc/onboarding/message';
+import { LaconicClient } from './laconic-client';
+import { Coin } from './proto/cosmos/base/v1beta1/coin';
+import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
+import { MsgOnboardParticipantResponse } from './proto/cerc/onboarding/v1/tx';
+import { MsgSendResponse } from './proto/cosmos/bank/v1beta1/tx';
 
 export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
 
@@ -59,7 +61,7 @@ export const createBid = async (chainId: string, auctionId: string, bidderAddres
 };
 
 export class Registry {
-  _endpoints: {[key: string]: string};
+  _endpoints: { [key: string]: string };
   _chainID: string;
   _client: RegistryClient;
 
@@ -105,7 +107,7 @@ export class Registry {
   /**
    * Get records by attributes.
    */
-  async queryRecords (attributes: {[key: string]: any}, all = false, refs = false) {
+  async queryRecords (attributes: { [key: string]: any }, all = false, refs = false) {
     return this._client.queryRecords(attributes, all, refs);
   }
 
@@ -434,6 +436,32 @@ export class Registry {
   async getLaconicClient (account: Account) {
     return LaconicClient.connectWithSigner(this._endpoints.rpc, account.wallet);
   }
+
+  /**
+   * Onboard participant.
+  */
+  async onboardParticipant ({ ethPayload, ethSignature }: MessageMsgOnboardParticipant, privateKey: string, fee: StdFee): Promise<MsgOnboardParticipantResponse> {
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    await account.init();
+    const laconicClient = await this.getLaconicClient(account);
+
+    return laconicClient.onboardParticipant(
+      account.address,
+      ethPayload,
+      ethSignature,
+      fee
+    );
+  }
+
+  /**
+ * Query participants.
+ */
+  async getParticipants () {
+    return this._client.getParticipants();
+  }
 }
 
 export { Account };
+export { LaconicClient };
+export * from './types/cerc/bond/message';
+export * from './types/cerc/onboarding/message';

@@ -151,31 +151,31 @@ export class RegistryClient {
           moniker
         }
         sync {
-          latest_block_hash
-          latest_block_height
-          latest_block_time
-          catching_up
+          latestBlockHash
+          latestBlockHeight
+          latestBlockTime
+          catchingUp
         }
         validator {
           address
-          voting_power
+          votingPower
         }
         validators {
           address
-          voting_power
-          proposer_priority
+          votingPower
+          proposerPriority
         }
-        num_peers
+        numPeers
         peers {
           node {
             id
             network
             moniker
           }
-          is_outbound
-          remote_ip
+          isOutbound
+          remoteIp
         }
-        disk_usage
+        diskUsage
       }
     }`;
 
@@ -241,7 +241,7 @@ export class RegistryClient {
   /**
    * Get records by attributes.
    */
-  async queryRecords (attributes: {[key: string]: any}, all = false, refs = false) {
+  async queryRecords (attributes: { [key: string]: any }, all = false, refs = false) {
     if (!attributes) {
       attributes = {};
     }
@@ -397,7 +397,7 @@ export class RegistryClient {
   }
 
   /**
-   * Get records by attributes.
+   * Get bonds by attributes.
    */
   async queryBonds (attributes = {}) {
     const query = `query ($attributes: [KeyValueInput!]) {
@@ -416,5 +416,21 @@ export class RegistryClient {
     };
 
     return RegistryClient.getResult(this._graph(query)(variables), 'queryBonds');
+  }
+
+  /**
+  * Get participants.
+  */
+  async getParticipants () {
+    const query = `query {
+      getParticipants {
+        cosmosAddress
+        nitroAddress
+      }
+    }`;
+
+    const variables = {};
+
+    return RegistryClient.getResult(this._graph(query)(variables), 'getParticipants');
   }
 }
