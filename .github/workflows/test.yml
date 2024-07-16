@@ -15,10 +15,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: "./laconicd/"
-          repository: deep-stack/laconic2d
-          token: ${{ secrets.GH_PAT }} # PAT for accessing private laconic2d
+          repository: cerc-io/laconic2d
           fetch-depth: 0
-          ref: testnet-onboarding
+          ref: main
       - name: Environment
         run: ls -tlh && env
 
@@ -58,6 +57,6 @@ jobs:
         env:
           ONBOARDING_ENABLED: true
         run: docker compose up -d
-      - name: Run nameservice expiry tests
+      - name: Run participants onboarding tests
         working-directory: laconicd/tests/sdk_tests
         run: ./run-tests.sh test:onboarding

@@ -22,7 +22,7 @@ jobs:
           path: "./laconicd/"
           repository: cerc-io/laconic2d # TODO: Update to laconicd on repo renaming
           fetch-depth: 0
-          ref: main
+          ref: testnet-onboarding
       - name: Environment
         run: ls -tlh && env
 
@@ -61,3 +61,12 @@ jobs:
       - name: Run nameservice expiry tests
         working-directory: laconicd/tests/sdk_tests
         run: ./run-tests.sh test:nameservice-expiry
+
+      - name: Start containers (onboarding enabled)
+        working-directory: laconicd/tests/sdk_tests
+        env:
+          ONBOARDING_ENABLED: true
+        run: docker compose up -d
+      - name: Run participants onboarding tests
+        working-directory: laconicd/tests/sdk_tests
+        run: ./run-tests.sh test:onboarding
