@@ -115,7 +115,7 @@ if (!process.env.TEST_AUCTIONS_ENABLED) {
   test('skipping auction tests', () => {});
 } else {
   /**
-    Running these tests requires name auctions enabled. In laconic2d repo run:
+    Running these tests requires name auctions enabled. In laconicd repo run:
 
     TEST_AUCTION_ENABLED=true ./init.sh
 

@@ -24,7 +24,7 @@ import { MsgOnboardParticipantResponse } from './proto/cerc/onboarding/v1/tx';
 import { bankTypes } from './types/cosmos/bank/message';
 import { EthPayload } from './proto/cerc/onboarding/v1/onboarding';
 
-const DEFAULT_WRITE_ERROR = 'Unable to write to laconic2d.';
+const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
 export const laconicDefaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
