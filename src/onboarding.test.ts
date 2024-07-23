@@ -94,7 +94,7 @@ if (process.env.ONBOARDING_ENABLED !== '1') {
   describe('Onboarding disabled', onboardingDisabledTests);
 } else {
   /**
-    Running this test requires participants onboarding enabled. In laconic2d repo run:
+    Running this test requires participants onboarding enabled. In laconicd repo run:
 
     ONBOARDING_ENABLED=true ./init.sh
 

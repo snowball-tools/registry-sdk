@@ -103,7 +103,7 @@ if (!process.env.TEST_NAMESERVICE_EXPIRY) {
   test('skipping nameservice expiry tests', () => {});
 } else {
   /**
-    Running these tests requires timers to be set. In laconic2d repo run:
+    Running these tests requires timers to be set. In laconicd repo run:
 
     TEST_REGISTRY_EXPIRY=true ./init.sh
 

@@ -18,7 +18,7 @@ Follow these steps to run the tests:
   cp .env.example .env
   ```
 
-- Clone the [laconicd repo](https://git.vdb.to/cerc-io/laconic2d) and change to repo directory.
+- Clone the [laconicd repo](https://git.vdb.to/cerc-io/laconicd) and change to repo directory.
 
 - Run the chain using `./scripts/init.sh`.
 
