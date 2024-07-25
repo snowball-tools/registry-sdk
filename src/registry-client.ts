@@ -426,6 +426,8 @@ export class RegistryClient {
       getParticipants {
         cosmosAddress
         nitroAddress
+        role
+        kycId
       }
     }`;
 

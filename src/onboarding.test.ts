@@ -4,11 +4,14 @@ import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
 import { Registry, Account } from './index';
 import { getConfig } from './testing/helper';
-import { Participant } from './proto/cerc/onboarding/v1/onboarding';
+import { Participant, Role } from './proto/cerc/onboarding/v1/onboarding';
 
 const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
+
+const DUMMY_ROLE = Role.ROLE_VALIDATOR;
+const DUMMY_KYC_ID = 'dummyKycId';
 
 const onboardingEnabledTests = () => {
   let registry: Registry;
@@ -32,7 +35,9 @@ const onboardingEnabledTests = () => {
 
     await registry.onboardParticipant({
       ethPayload,
-      ethSignature
+      ethSignature,
+      role: DUMMY_ROLE,
+      kycId: DUMMY_KYC_ID
     }, privateKey, fee);
   });
 
@@ -41,10 +46,12 @@ const onboardingEnabledTests = () => {
     const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
     const [cosmosWallet] = await cosmosAccount.getAccounts();
 
-    const expectedParticipants = [
+    const expectedParticipants: Participant[] = [
       {
         cosmosAddress: cosmosWallet.address,
-        nitroAddress: ethWallet.address
+        nitroAddress: ethWallet.address,
+        role: DUMMY_ROLE,
+        kycId: DUMMY_KYC_ID
       }
     ];
     const participants = await registry.getParticipants();
@@ -76,7 +83,9 @@ const onboardingDisabledTests = () => {
     try {
       await registry.onboardParticipant({
         ethPayload,
-        ethSignature
+        ethSignature,
+        role: DUMMY_ROLE,
+        kycId: DUMMY_KYC_ID
       }, privateKey, fee);
     } catch (error: any) {
       expect(error.toString()).toContain(errorMsg);
