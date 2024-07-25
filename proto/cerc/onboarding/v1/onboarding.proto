@@ -8,28 +8,50 @@ option go_package = "git.vdb.to/cerc-io/laconicd/x/onboarding";
 
 // Params defines the parameters of the onboarding module.
 message Params {
-  bool onboarding_enabled = 1 [
-    (gogoproto.moretags) = "json:\"onboarding_enabled\" yaml:\"onboarding_enabled\""
-  ];
+  bool onboarding_enabled = 1
+      [ (gogoproto.moretags) =
+            "json:\"onboarding_enabled\" yaml:\"onboarding_enabled\"" ];
 }
 
-// Participant defines the data that will be stored for each enrolled participant
+// Participant defines the data that will be stored for each enrolled
+// participant
 message Participant {
-  string cosmos_address = 1 [
-    (gogoproto.moretags) = "json:\"cosmos_address\" yaml:\"cosmos_address\""
-  ];
+  // participant's cosmos (laconic) address
+  string cosmos_address = 1
+      [ (gogoproto.moretags) =
+            "json:\"cosmos_address\" yaml:\"cosmos_address\"" ];
 
-  string nitro_address = 2 [
-    (gogoproto.moretags) = "json:\"nitro_address\" yaml:\"nitro_address\""
-  ];
+  // participant's Nitro address
+  string nitro_address = 2
+      [ (gogoproto.moretags) =
+            "json:\"nitro_address\" yaml:\"nitro_address\"" ];
+
+  // participant's role (participant | validator)
+  Role role = 3 [ (gogoproto.moretags) = "json:\"role\" yaml:\"role\"" ];
+
+  // participant's KYC receipt ID
+  string kyc_id = 4
+      [ (gogoproto.moretags) = "json:\"kyc_id\" yaml:\"kyc_id\"" ];
 }
+
 // EthPayload defines the payload that is signed by the ethereum private key
 message EthPayload {
-  string address = 1 [
-    (gogoproto.moretags) = "json:\"address\" yaml:\"address\""
-  ];
+  string address = 1
+      [ (gogoproto.moretags) = "json:\"address\" yaml:\"address\"" ];
 
-  string msg = 2 [
-    (gogoproto.moretags) = "json:\"msg\" yaml:\"msg\""
-  ];
+  string msg = 2 [ (gogoproto.moretags) = "json:\"msg\" yaml:\"msg\"" ];
+}
+
+// Participant Role
+enum Role {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // ROLE_UNSPECIFIED indicates unknown role.
+  ROLE_UNSPECIFIED = 0;
+
+  // ROLE_PARTICIPANT indicates the participant role.
+  ROLE_PARTICIPANT = 1;
+
+  // ROLE_VALIDATOR indicates user participating as a validator.
+  ROLE_VALIDATOR = 2;
 }

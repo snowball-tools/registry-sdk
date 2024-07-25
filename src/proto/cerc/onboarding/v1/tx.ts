@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { EthPayload } from "./onboarding";
+import { EthPayload, Role, roleFromJSON, roleToJSON } from "./onboarding";
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
@@ -11,13 +11,24 @@ export interface MsgOnboardParticipant {
   participant: string;
   ethPayload?: EthPayload;
   ethSignature: string;
+  role: Role;
+  kycId: string;
 }
 
-/** MsgOnboardParticipantResponse defines the Msg/OnboardParticipant response type. */
+/**
+ * MsgOnboardParticipantResponse defines the Msg/OnboardParticipant response
+ * type.
+ */
 export interface MsgOnboardParticipantResponse {}
 
 function createBaseMsgOnboardParticipant(): MsgOnboardParticipant {
-  return { participant: "", ethPayload: undefined, ethSignature: "" };
+  return {
+    participant: "",
+    ethPayload: undefined,
+    ethSignature: "",
+    role: 0,
+    kycId: "",
+  };
 }
 
 export const MsgOnboardParticipant = {
@@ -33,6 +44,12 @@ export const MsgOnboardParticipant = {
     }
     if (message.ethSignature !== "") {
       writer.uint32(26).string(message.ethSignature);
+    }
+    if (message.role !== 0) {
+      writer.uint32(32).int32(message.role);
+    }
+    if (message.kycId !== "") {
+      writer.uint32(42).string(message.kycId);
     }
     return writer;
   },
@@ -56,6 +73,12 @@ export const MsgOnboardParticipant = {
         case 3:
           message.ethSignature = reader.string();
           break;
+        case 4:
+          message.role = reader.int32() as any;
+          break;
+        case 5:
+          message.kycId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -73,6 +96,8 @@ export const MsgOnboardParticipant = {
       ethSignature: isSet(object.ethSignature)
         ? String(object.ethSignature)
         : "",
+      role: isSet(object.role) ? roleFromJSON(object.role) : 0,
+      kycId: isSet(object.kycId) ? String(object.kycId) : "",
     };
   },
 
@@ -86,6 +111,8 @@ export const MsgOnboardParticipant = {
         : undefined);
     message.ethSignature !== undefined &&
       (obj.ethSignature = message.ethSignature);
+    message.role !== undefined && (obj.role = roleToJSON(message.role));
+    message.kycId !== undefined && (obj.kycId = message.kycId);
     return obj;
   },
 
@@ -99,6 +126,8 @@ export const MsgOnboardParticipant = {
         ? EthPayload.fromPartial(object.ethPayload)
         : undefined;
     message.ethSignature = object.ethSignature ?? "";
+    message.role = object.role ?? 0;
+    message.kycId = object.kycId ?? "";
     return message;
   },
 };

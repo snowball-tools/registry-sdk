@@ -4,15 +4,67 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "cerc.onboarding.v1";
 
+/** Participant Role */
+export enum Role {
+  /** ROLE_UNSPECIFIED - ROLE_UNSPECIFIED indicates unknown role. */
+  ROLE_UNSPECIFIED = 0,
+  /** ROLE_PARTICIPANT - ROLE_PARTICIPANT indicates the participant role. */
+  ROLE_PARTICIPANT = 1,
+  /** ROLE_VALIDATOR - ROLE_VALIDATOR indicates user participating as a validator. */
+  ROLE_VALIDATOR = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function roleFromJSON(object: any): Role {
+  switch (object) {
+    case 0:
+    case "ROLE_UNSPECIFIED":
+      return Role.ROLE_UNSPECIFIED;
+    case 1:
+    case "ROLE_PARTICIPANT":
+      return Role.ROLE_PARTICIPANT;
+    case 2:
+    case "ROLE_VALIDATOR":
+      return Role.ROLE_VALIDATOR;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Role.UNRECOGNIZED;
+  }
+}
+
+export function roleToJSON(object: Role): string {
+  switch (object) {
+    case Role.ROLE_UNSPECIFIED:
+      return "ROLE_UNSPECIFIED";
+    case Role.ROLE_PARTICIPANT:
+      return "ROLE_PARTICIPANT";
+    case Role.ROLE_VALIDATOR:
+      return "ROLE_VALIDATOR";
+    case Role.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 /** Params defines the parameters of the onboarding module. */
 export interface Params {
   onboardingEnabled: boolean;
 }
 
-/** Participant defines the data that will be stored for each enrolled participant */
+/**
+ * Participant defines the data that will be stored for each enrolled
+ * participant
+ */
 export interface Participant {
+  /** participant's cosmos (laconic) address */
   cosmosAddress: string;
+  /** participant's Nitro address */
   nitroAddress: string;
+  /** participant's role (participant | validator) */
+  role: Role;
+  /** participant's KYC receipt ID */
+  kycId: string;
 }
 
 /** EthPayload defines the payload that is signed by the ethereum private key */
@@ -77,7 +129,7 @@ export const Params = {
 };
 
 function createBaseParticipant(): Participant {
-  return { cosmosAddress: "", nitroAddress: "" };
+  return { cosmosAddress: "", nitroAddress: "", role: 0, kycId: "" };
 }
 
 export const Participant = {
@@ -90,6 +142,12 @@ export const Participant = {
     }
     if (message.nitroAddress !== "") {
       writer.uint32(18).string(message.nitroAddress);
+    }
+    if (message.role !== 0) {
+      writer.uint32(24).int32(message.role);
+    }
+    if (message.kycId !== "") {
+      writer.uint32(34).string(message.kycId);
     }
     return writer;
   },
@@ -107,6 +165,12 @@ export const Participant = {
         case 2:
           message.nitroAddress = reader.string();
           break;
+        case 3:
+          message.role = reader.int32() as any;
+          break;
+        case 4:
+          message.kycId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -123,6 +187,8 @@ export const Participant = {
       nitroAddress: isSet(object.nitroAddress)
         ? String(object.nitroAddress)
         : "",
+      role: isSet(object.role) ? roleFromJSON(object.role) : 0,
+      kycId: isSet(object.kycId) ? String(object.kycId) : "",
     };
   },
 
@@ -132,6 +198,8 @@ export const Participant = {
       (obj.cosmosAddress = message.cosmosAddress);
     message.nitroAddress !== undefined &&
       (obj.nitroAddress = message.nitroAddress);
+    message.role !== undefined && (obj.role = roleToJSON(message.role));
+    message.kycId !== undefined && (obj.kycId = message.kycId);
     return obj;
   },
 
@@ -141,6 +209,8 @@ export const Participant = {
     const message = createBaseParticipant();
     message.cosmosAddress = object.cosmosAddress ?? "";
     message.nitroAddress = object.nitroAddress ?? "";
+    message.role = object.role ?? 0;
+    message.kycId = object.kycId ?? "";
     return message;
   },
 };
