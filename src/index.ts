@@ -440,7 +440,7 @@ export class Registry {
   /**
    * Onboard participant.
   */
-  async onboardParticipant ({ ethPayload, ethSignature }: MessageMsgOnboardParticipant, privateKey: string, fee: StdFee): Promise<MsgOnboardParticipantResponse> {
+  async onboardParticipant ({ ethPayload, ethSignature, role, kycId }: MessageMsgOnboardParticipant, privateKey: string, fee: StdFee): Promise<MsgOnboardParticipantResponse> {
     const account = new Account(Buffer.from(privateKey, 'hex'));
     await account.init();
     const laconicClient = await this.getLaconicClient(account);
@@ -449,6 +449,8 @@ export class Registry {
       account.address,
       ethPayload,
       ethSignature,
+      role,
+      kycId,
       fee
     );
   }

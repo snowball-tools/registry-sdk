@@ -9,10 +9,19 @@ export interface Params {
   onboardingEnabled: boolean;
 }
 
-/** Participant defines the data that will be stored for each enrolled participant */
+/**
+ * Participant defines the data that will be stored for each enrolled
+ * participant
+ */
 export interface Participant {
+  /** participant's cosmos (laconic) address */
   cosmosAddress: string;
+  /** participant's Nitro address */
   nitroAddress: string;
+  /** participant's role (participant | validator) */
+  role: string;
+  /** participant's KYC receipt ID */
+  kycId: string;
 }
 
 /** EthPayload defines the payload that is signed by the ethereum private key */
@@ -77,7 +86,7 @@ export const Params = {
 };
 
 function createBaseParticipant(): Participant {
-  return { cosmosAddress: "", nitroAddress: "" };
+  return { cosmosAddress: "", nitroAddress: "", role: "", kycId: "" };
 }
 
 export const Participant = {
@@ -90,6 +99,12 @@ export const Participant = {
     }
     if (message.nitroAddress !== "") {
       writer.uint32(18).string(message.nitroAddress);
+    }
+    if (message.role !== "") {
+      writer.uint32(26).string(message.role);
+    }
+    if (message.kycId !== "") {
+      writer.uint32(34).string(message.kycId);
     }
     return writer;
   },
@@ -107,6 +122,12 @@ export const Participant = {
         case 2:
           message.nitroAddress = reader.string();
           break;
+        case 3:
+          message.role = reader.string();
+          break;
+        case 4:
+          message.kycId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -123,6 +144,8 @@ export const Participant = {
       nitroAddress: isSet(object.nitroAddress)
         ? String(object.nitroAddress)
         : "",
+      role: isSet(object.role) ? String(object.role) : "",
+      kycId: isSet(object.kycId) ? String(object.kycId) : "",
     };
   },
 
@@ -132,6 +155,8 @@ export const Participant = {
       (obj.cosmosAddress = message.cosmosAddress);
     message.nitroAddress !== undefined &&
       (obj.nitroAddress = message.nitroAddress);
+    message.role !== undefined && (obj.role = message.role);
+    message.kycId !== undefined && (obj.kycId = message.kycId);
     return obj;
   },
 
@@ -141,6 +166,8 @@ export const Participant = {
     const message = createBaseParticipant();
     message.cosmosAddress = object.cosmosAddress ?? "";
     message.nitroAddress = object.nitroAddress ?? "";
+    message.role = object.role ?? "";
+    message.kycId = object.kycId ?? "";
     return message;
   },
 };
