@@ -28,7 +28,7 @@ message MsgOnboardParticipant {
   string participant = 1;
   EthPayload eth_payload = 2 [ (gogoproto.nullable) = false ];
   string eth_signature = 3;
-  Role role = 4;
+  string role = 4;
   string kyc_id = 5;
 }
 

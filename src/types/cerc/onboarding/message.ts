@@ -1,7 +1,6 @@
 import { EncodeObject, GeneratedType } from '@cosmjs/proto-signing';
 
 import { MsgOnboardParticipantResponse, MsgOnboardParticipant } from '../../../proto/cerc/onboarding/v1/tx';
-import { Role } from '../../../proto/cerc/onboarding/v1/onboarding';
 
 export const typeUrlMsgOnboardParticipant = '/cerc.onboarding.v1.MsgOnboardParticipant';
 export const typeUrlMsgOnboardParticipantResponse = '/cerc.onboarding.v1.MsgOnboardParticipantResponse';
@@ -24,6 +23,6 @@ interface ethPayload {
 export interface MessageMsgOnboardParticipant {
   ethPayload: ethPayload
   ethSignature: string
-  role: Role
+  role: string
   kycId: string
 }

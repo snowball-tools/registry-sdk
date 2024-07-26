@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { EthPayload, Role, roleFromJSON, roleToJSON } from "./onboarding";
+import { EthPayload } from "./onboarding";
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
@@ -11,7 +11,7 @@ export interface MsgOnboardParticipant {
   participant: string;
   ethPayload?: EthPayload;
   ethSignature: string;
-  role: Role;
+  role: string;
   kycId: string;
 }
 
@@ -26,7 +26,7 @@ function createBaseMsgOnboardParticipant(): MsgOnboardParticipant {
     participant: "",
     ethPayload: undefined,
     ethSignature: "",
-    role: 0,
+    role: "",
     kycId: "",
   };
 }
@@ -45,8 +45,8 @@ export const MsgOnboardParticipant = {
     if (message.ethSignature !== "") {
       writer.uint32(26).string(message.ethSignature);
     }
-    if (message.role !== 0) {
-      writer.uint32(32).int32(message.role);
+    if (message.role !== "") {
+      writer.uint32(34).string(message.role);
     }
     if (message.kycId !== "") {
       writer.uint32(42).string(message.kycId);
@@ -74,7 +74,7 @@ export const MsgOnboardParticipant = {
           message.ethSignature = reader.string();
           break;
         case 4:
-          message.role = reader.int32() as any;
+          message.role = reader.string();
           break;
         case 5:
           message.kycId = reader.string();
@@ -96,7 +96,7 @@ export const MsgOnboardParticipant = {
       ethSignature: isSet(object.ethSignature)
         ? String(object.ethSignature)
         : "",
-      role: isSet(object.role) ? roleFromJSON(object.role) : 0,
+      role: isSet(object.role) ? String(object.role) : "",
       kycId: isSet(object.kycId) ? String(object.kycId) : "",
     };
   },
@@ -111,7 +111,7 @@ export const MsgOnboardParticipant = {
         : undefined);
     message.ethSignature !== undefined &&
       (obj.ethSignature = message.ethSignature);
-    message.role !== undefined && (obj.role = roleToJSON(message.role));
+    message.role !== undefined && (obj.role = message.role);
     message.kycId !== undefined && (obj.kycId = message.kycId);
     return obj;
   },
@@ -126,7 +126,7 @@ export const MsgOnboardParticipant = {
         ? EthPayload.fromPartial(object.ethPayload)
         : undefined;
     message.ethSignature = object.ethSignature ?? "";
-    message.role = object.role ?? 0;
+    message.role = object.role ?? "";
     message.kycId = object.kycId ?? "";
     return message;
   },

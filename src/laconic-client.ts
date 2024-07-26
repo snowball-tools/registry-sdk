@@ -22,7 +22,7 @@ import { MsgCommitBidResponse, MsgRevealBidResponse } from './proto/cerc/auction
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
 import { MsgOnboardParticipantResponse } from './proto/cerc/onboarding/v1/tx';
 import { bankTypes } from './types/cosmos/bank/message';
-import { EthPayload, Role } from './proto/cerc/onboarding/v1/onboarding';
+import { EthPayload } from './proto/cerc/onboarding/v1/onboarding';
 
 const DEFAULT_WRITE_ERROR = 'Unable to write to laconicd.';
 
@@ -394,7 +394,7 @@ export class LaconicClient extends SigningStargateClient {
     signer: string,
     ethPayload: EthPayload,
     ethSignature: string,
-    role: Role,
+    role: string,
     kycId: string,
     fee: StdFee | 'auto' | number,
     memo = ''

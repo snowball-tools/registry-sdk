@@ -27,7 +27,7 @@ message Participant {
             "json:\"nitro_address\" yaml:\"nitro_address\"" ];
 
   // participant's role (participant | validator)
-  Role role = 3 [ (gogoproto.moretags) = "json:\"role\" yaml:\"role\"" ];
+  string role = 3 [ (gogoproto.moretags) = "json:\"role\" yaml:\"role\"" ];
 
   // participant's KYC receipt ID
   string kyc_id = 4
@@ -40,18 +40,4 @@ message EthPayload {
       [ (gogoproto.moretags) = "json:\"address\" yaml:\"address\"" ];
 
   string msg = 2 [ (gogoproto.moretags) = "json:\"msg\" yaml:\"msg\"" ];
-}
-
-// Participant Role
-enum Role {
-  option (gogoproto.goproto_enum_prefix) = false;
-
-  // ROLE_UNSPECIFIED indicates unknown role.
-  ROLE_UNSPECIFIED = 0;
-
-  // ROLE_PARTICIPANT indicates the participant role.
-  ROLE_PARTICIPANT = 1;
-
-  // ROLE_VALIDATOR indicates user participating as a validator.
-  ROLE_VALIDATOR = 2;
 }

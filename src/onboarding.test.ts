@@ -4,13 +4,13 @@ import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 
 import { Registry, Account } from './index';
 import { getConfig } from './testing/helper';
-import { Participant, Role } from './proto/cerc/onboarding/v1/onboarding';
+import { Participant } from './proto/cerc/onboarding/v1/onboarding';
 
 const { chainId, rpcEndpoint, gqlEndpoint, privateKey, fee } = getConfig();
 
 jest.setTimeout(90 * 1000);
 
-const DUMMY_ROLE = Role.ROLE_VALIDATOR;
+const DUMMY_ROLE = 'validator';
 const DUMMY_KYC_ID = 'dummyKycId';
 
 const onboardingEnabledTests = () => {

@@ -5,6 +5,7 @@ import {
   NameAuthority,
   NameRecord,
   NameEntry,
+  AuthorityEntry,
 } from "./registry";
 import {
   PageRequest,
@@ -116,6 +117,18 @@ export interface QueryWhoisRequest {
 /** QueryWhoisResponse is response type for whois request */
 export interface QueryWhoisResponse {
   nameAuthority?: NameAuthority;
+}
+
+/** QueryAuthoritiesRequest is request type to get all authorities */
+export interface QueryAuthoritiesRequest {
+  owner: string;
+}
+
+/** QueryAuthoritiesResponse is response type for authorities request */
+export interface QueryAuthoritiesResponse {
+  authorities: AuthorityEntry[];
+  /** pagination defines the pagination in the response. */
+  pagination?: PageResponse;
 }
 
 /** QueryLookupLrnRequest is request type for LookupLrn */
@@ -1460,6 +1473,151 @@ export const QueryWhoisResponse = {
   },
 };
 
+function createBaseQueryAuthoritiesRequest(): QueryAuthoritiesRequest {
+  return { owner: "" };
+}
+
+export const QueryAuthoritiesRequest = {
+  encode(
+    message: QueryAuthoritiesRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAuthoritiesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAuthoritiesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.owner = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAuthoritiesRequest {
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+    };
+  },
+
+  toJSON(message: QueryAuthoritiesRequest): unknown {
+    const obj: any = {};
+    message.owner !== undefined && (obj.owner = message.owner);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAuthoritiesRequest>, I>>(
+    object: I
+  ): QueryAuthoritiesRequest {
+    const message = createBaseQueryAuthoritiesRequest();
+    message.owner = object.owner ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryAuthoritiesResponse(): QueryAuthoritiesResponse {
+  return { authorities: [], pagination: undefined };
+}
+
+export const QueryAuthoritiesResponse = {
+  encode(
+    message: QueryAuthoritiesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.authorities) {
+      AuthorityEntry.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAuthoritiesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAuthoritiesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authorities.push(
+            AuthorityEntry.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAuthoritiesResponse {
+    return {
+      authorities: Array.isArray(object?.authorities)
+        ? object.authorities.map((e: any) => AuthorityEntry.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination)
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined,
+    };
+  },
+
+  toJSON(message: QueryAuthoritiesResponse): unknown {
+    const obj: any = {};
+    if (message.authorities) {
+      obj.authorities = message.authorities.map((e) =>
+        e ? AuthorityEntry.toJSON(e) : undefined
+      );
+    } else {
+      obj.authorities = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAuthoritiesResponse>, I>>(
+    object: I
+  ): QueryAuthoritiesResponse {
+    const message = createBaseQueryAuthoritiesResponse();
+    message.authorities =
+      object.authorities?.map((e) => AuthorityEntry.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 function createBaseQueryLookupLrnRequest(): QueryLookupLrnRequest {
   return { lrn: "" };
 }
@@ -1907,6 +2065,10 @@ export interface Query {
   GetRegistryModuleBalance(
     request: QueryGetRegistryModuleBalanceRequest
   ): Promise<QueryGetRegistryModuleBalanceResponse>;
+  /** Authorities queries all authorities */
+  Authorities(
+    request: QueryAuthoritiesRequest
+  ): Promise<QueryAuthoritiesResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1922,6 +2084,7 @@ export class QueryClientImpl implements Query {
     this.LookupLrn = this.LookupLrn.bind(this);
     this.ResolveLrn = this.ResolveLrn.bind(this);
     this.GetRegistryModuleBalance = this.GetRegistryModuleBalance.bind(this);
+    this.Authorities = this.Authorities.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2024,6 +2187,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetRegistryModuleBalanceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Authorities(
+    request: QueryAuthoritiesRequest
+  ): Promise<QueryAuthoritiesResponse> {
+    const data = QueryAuthoritiesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cerc.registry.v1.Query",
+      "Authorities",
+      data
+    );
+    return promise.then((data) =>
+      QueryAuthoritiesResponse.decode(new _m0.Reader(data))
     );
   }
 }
