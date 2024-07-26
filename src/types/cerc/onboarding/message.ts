@@ -12,7 +12,7 @@ export const onboardingTypes: ReadonlyArray<[string, GeneratedType]> = [
 
 export interface MsgOnboardParticipantEncodeObject extends EncodeObject {
   readonly typeUrl: '/cerc.onboarding.v1.MsgOnboardParticipant';
-  readonly value: Partial<MsgOnboardParticipant>;
+  readonly value: MsgOnboardParticipant;
 }
 
 interface ethPayload {
