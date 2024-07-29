@@ -1,6 +1,6 @@
 import { Wallet } from 'ethers';
 
-import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
+import { DirectSecp256k1Wallet, AccountData as CosmosAccount } from '@cosmjs/proto-signing';
 
 import { Registry, Account } from './index';
 import { getConfig } from './testing/helper';
@@ -16,15 +16,30 @@ const DUMMY_KYC_ID = 'dummyKycId';
 const onboardingEnabledTests = () => {
   let registry: Registry;
   let ethWallet: Wallet;
+  let cosmosWallet: CosmosAccount;
+  let expectedParticipants: Participant[] = [];
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
-  });
 
-  test('Onboard participant.', async () => {
     const mnemonic = Account.generateMnemonic();
     ethWallet = Wallet.fromMnemonic(mnemonic);
 
+    const account = new Account(Buffer.from(privateKey, 'hex'));
+    const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
+    [cosmosWallet] = await cosmosAccount.getAccounts();
+
+    expectedParticipants = [
+      {
+        cosmosAddress: cosmosWallet.address,
+        nitroAddress: ethWallet.address,
+        role: DUMMY_ROLE,
+        kycId: DUMMY_KYC_ID
+      }
+    ];
+  });
+
+  test('Onboard participant.', async () => {
     const ethPayload = {
       address: ethWallet.address,
       msg: 'Message signed by ethereum private key'
@@ -42,20 +57,18 @@ const onboardingEnabledTests = () => {
   });
 
   test('Query participants.', async () => {
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
-    const [cosmosWallet] = await cosmosAccount.getAccounts();
-
-    const expectedParticipants: Participant[] = [
-      {
-        cosmosAddress: cosmosWallet.address,
-        nitroAddress: ethWallet.address,
-        role: DUMMY_ROLE,
-        kycId: DUMMY_KYC_ID
-      }
-    ];
     const participants = await registry.getParticipants();
     expect(participants).toEqual(expectedParticipants);
+  });
+
+  test('Query participant by address.', async () => {
+    const participant = await registry.getParticipantByAddress(cosmosWallet.address);
+    expect(participant).toEqual(expectedParticipants[0]);
+  });
+
+  test('Query participant by Nitro address.', async () => {
+    const participant = await registry.getParticipantByNitroAddress(ethWallet.address);
+    expect(participant).toEqual(expectedParticipants[0]);
   });
 };
 

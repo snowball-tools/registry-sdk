@@ -461,6 +461,20 @@ export class Registry {
   async getParticipants () {
     return this._client.getParticipants();
   }
+
+  /**
+   * Get participant by cosmos (laconic) address.
+  */
+  async getParticipantByAddress (address: string) {
+    return this._client.getParticipantByAddress(address);
+  }
+
+  /**
+   * Get participant by nitro address.
+  */
+  async getParticipantByNitroAddress (nitroAddress: string) {
+    return this._client.getParticipantByNitroAddress(nitroAddress);
+  }
 }
 
 export { Account };

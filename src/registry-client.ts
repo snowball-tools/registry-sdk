@@ -435,4 +435,44 @@ export class RegistryClient {
 
     return RegistryClient.getResult(this._graph(query)(variables), 'getParticipants');
   }
+
+  /**
+  * Get participant by cosmos address.
+  */
+  async getParticipantByAddress (address: string) {
+    const query = `query ($address: String!) {
+      getParticipantByAddress (address: $address) {
+        cosmosAddress
+        nitroAddress
+        role
+        kycId
+      }
+    }`;
+
+    const variables = {
+      address
+    };
+
+    return RegistryClient.getResult(this._graph(query)(variables), 'getParticipantByAddress');
+  }
+
+  /**
+  * Get participant by nitro address.
+  */
+  async getParticipantByNitroAddress (nitroAddress: string) {
+    const query = `query ($nitroAddress: String!) {
+      getParticipantByNitroAddress (nitroAddress: $nitroAddress) {
+        cosmosAddress
+        nitroAddress
+        role
+        kycId
+      }
+    }`;
+
+    const variables = {
+      nitroAddress
+    };
+
+    return RegistryClient.getResult(this._graph(query)(variables), 'getParticipantByNitroAddress');
+  }
 }
