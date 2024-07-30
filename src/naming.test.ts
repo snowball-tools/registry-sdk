@@ -93,7 +93,7 @@ const namingTests = () => {
         const mnenonic1 = Account.generateMnemonic();
         const otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
         await otherAccount1.init();
-        await registry.sendCoins({ denom: DENOM, amount: '10000', destinationAddress: otherAccount1.address }, privateKey, fee);
+        await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount1.address }, privateKey, fee);
 
         const mnenonic2 = Account.generateMnemonic();
         const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
