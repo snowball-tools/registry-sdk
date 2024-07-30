@@ -1,1 +1,1 @@
-export const DENOM = 'photon';
+export const DENOM = 'alnt';
