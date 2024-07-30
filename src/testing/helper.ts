@@ -28,7 +28,7 @@ export const getConfig = () => {
     rpcEndpoint: process.env.LACONICD_RPC_ENDPOINT || 'http://localhost:26657',
     gqlEndpoint: process.env.LACONICD_GQL_ENDPOINT || 'http://localhost:9473/api',
     fee: {
-      amount: [{ denom: 'photon', amount: '40' }],
+      amount: [{ denom: 'alnt', amount: '400000' }],
       gas: '400000'
     }
   };
