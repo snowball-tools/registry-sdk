@@ -2,7 +2,7 @@ import assert from 'assert';
 import yaml from 'node-yaml';
 import semver from 'semver';
 
-import { DEFAULT_CHAIN_ID } from '../index';
+import { DEFAULT_CHAIN_ID } from '../constants';
 
 export const ensureUpdatedConfig = async (path: string) => {
   const conf = await yaml.read(path);

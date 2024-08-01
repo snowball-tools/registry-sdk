@@ -31,8 +31,7 @@ import { Coin } from './proto/cosmos/base/v1beta1/coin';
 import { MsgCancelBondResponse, MsgCreateBondResponse, MsgRefillBondResponse, MsgWithdrawBondResponse } from './proto/cerc/bond/v1/tx';
 import { MsgOnboardParticipantResponse } from './proto/cerc/onboarding/v1/tx';
 import { MsgSendResponse } from './proto/cosmos/bank/v1beta1/tx';
-
-export const DEFAULT_CHAIN_ID = 'laconic_9000-1';
+import { DEFAULT_CHAIN_ID } from './constants';
 
 /**
  * Create an auction bid.
@@ -479,5 +478,6 @@ export class Registry {
 
 export { Account };
 export { LaconicClient };
+export { DENOM, DEFAULT_CHAIN_ID } from './constants';
 export * from './types/cerc/bond/message';
 export * from './types/cerc/onboarding/message';
