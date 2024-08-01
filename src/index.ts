@@ -390,6 +390,13 @@ export class Registry {
   }
 
   /**
+   * List authorities by owner.
+   */
+  async getAuthorities (owner?: string) {
+    return this._client.getAuthorities(owner);
+  }
+
+  /**
    * Lookup authorities by names.
    */
   async lookupAuthorities (names: string[], auction = false) {

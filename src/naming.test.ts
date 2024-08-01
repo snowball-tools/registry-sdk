@@ -19,6 +19,12 @@ const namingTests = () => {
   let watcher: any;
   let watcherId: string;
 
+  const mnenonic1 = Account.generateMnemonic();
+  let otherAccount1: Account;
+
+  const mnenonic2 = Account.generateMnemonic();
+  let otherAccount2: Account;
+
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
 
@@ -39,6 +45,12 @@ const namingTests = () => {
     );
 
     watcherId = result.id;
+
+    otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
+    await otherAccount1.init();
+
+    otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
+    await otherAccount2.init();
   });
 
   describe('Authority tests', () => {
@@ -90,14 +102,7 @@ const namingTests = () => {
 
       test('Reserve sub-authority with different owner.', async () => {
         // Create another account, send tx to set public key on the account.
-        const mnenonic1 = Account.generateMnemonic();
-        const otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
-        await otherAccount1.init();
         await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount1.address }, privateKey, fee);
-
-        const mnenonic2 = Account.generateMnemonic();
-        const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
-        await otherAccount2.init();
         await registry.sendCoins({ denom: DENOM, amount: '1000', destinationAddress: otherAccount2.address }, otherAccount1.getPrivateKey(), fee);
 
         const subAuthority = `halo.${authorityName}`;
@@ -119,6 +124,20 @@ const namingTests = () => {
 
       test('Set authority bond', async () => {
         await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
+      });
+
+      test('List authorities.', async () => {
+        const authorities = await registry.getAuthorities();
+
+        expect(authorities.length).toBeDefined();
+      });
+
+      test('List authorities by owner.', async () => {
+        const authority1 = await registry.getAuthorities(otherAccount1._address);
+        const authority2 = await registry.getAuthorities(otherAccount2._address);
+
+        expect(authority1).toBeDefined();
+        expect(authority2).toBeDefined();
       });
     });
   });
