@@ -1,6 +1,8 @@
 import assert from 'assert';
 import path from 'path';
 
+import { DirectSecp256k1Wallet, AccountData as CosmosAccount } from '@cosmjs/proto-signing';
+
 import { Account } from './account';
 import { Registry } from './index';
 import { ensureUpdatedConfig, getConfig } from './testing/helper';
@@ -19,8 +21,17 @@ const namingTests = () => {
   let watcher: any;
   let watcherId: string;
 
-  const mnenonic1 = Account.generateMnemonic();
   let otherAccount1: Account;
+
+  let reservedAuthorities: {
+    name: string;
+    entry: {
+      ownerAddress: string;
+      status: string;
+    };
+  }[] = [];
+
+  let cosmosWallet: CosmosAccount;
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
@@ -43,6 +54,11 @@ const namingTests = () => {
 
     watcherId = result.id;
 
+    const account_pk = new Account(Buffer.from(privateKey, 'hex'));
+    const account = await DirectSecp256k1Wallet.fromKey(account_pk._privateKey, 'laconic');
+    [cosmosWallet] = await account.getAccounts();
+
+    const mnenonic1 = Account.generateMnemonic();
     otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
     await otherAccount1.init();
   });
@@ -51,6 +67,13 @@ const namingTests = () => {
     test('Reserve authority.', async () => {
       const authorityName = `laconic-${Date.now()}`;
       await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+      reservedAuthorities.push({
+        name: authorityName,
+        entry: {
+          ownerAddress: cosmosWallet.address,
+          status: 'active'
+        }
+      });
     });
 
     describe('With authority reserved', () => {
@@ -62,6 +85,13 @@ const namingTests = () => {
         lrn = `lrn://${authorityName}/app/test`;
 
         await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+        reservedAuthorities.push({
+          name: authorityName,
+          entry: {
+            ownerAddress: cosmosWallet.address,
+            status: 'active'
+          }
+        });
       });
 
       test('Lookup authority.', async () => {
@@ -86,6 +116,13 @@ const namingTests = () => {
       test('Reserve sub-authority.', async () => {
         const subAuthority = `echo.${authorityName}`;
         await registry.reserveAuthority({ name: subAuthority }, privateKey, fee);
+        reservedAuthorities.push({
+          name: subAuthority,
+          entry: {
+            ownerAddress: cosmosWallet.address,
+            status: 'active'
+          }
+        });
 
         const [record] = await registry.lookupAuthorities([subAuthority]);
         expect(record).toBeDefined();
@@ -105,6 +142,13 @@ const namingTests = () => {
 
         const subAuthority = `halo.${authorityName}`;
         await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.address }, privateKey, fee);
+        reservedAuthorities.push({
+          name: subAuthority,
+          entry: {
+            ownerAddress: otherAccount1.address,
+            status: 'active'
+          }
+        });
 
         const [record] = await registry.lookupAuthorities([subAuthority]);
         expect(record).toBeDefined();
@@ -127,7 +171,17 @@ const namingTests = () => {
       test('List authorities.', async () => {
         const authorities = await registry.getAuthorities();
 
+        reservedAuthorities.sort((a, b) => a.name.localeCompare(b.name));
+
         expect(authorities.length).toEqual(4);
+        authorities.forEach((authority: any, index: number) => {
+          authorities.forEach((authority: any) => {
+            expect(authority).toHaveProperty('name');
+            expect(authority.entry).toHaveProperty('ownerAddress');
+            expect(authority.entry).toHaveProperty('status');
+          });
+          expect(authority).toMatchObject(reservedAuthorities[index]);
+        });
       });
 
       test('List authorities by owner.', async () => {
