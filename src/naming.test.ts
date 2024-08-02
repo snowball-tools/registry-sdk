@@ -31,7 +31,7 @@ const namingTests = () => {
     };
   }[] = [];
 
-  let cosmosWallet: CosmosAccount;
+  let account: CosmosAccount;
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
@@ -54,9 +54,8 @@ const namingTests = () => {
 
     watcherId = result.id;
 
-    const account_pk = new Account(Buffer.from(privateKey, 'hex'));
-    const account = await DirectSecp256k1Wallet.fromKey(account_pk._privateKey, 'laconic');
-    [cosmosWallet] = await account.getAccounts();
+    const accountWallet = await DirectSecp256k1Wallet.fromKey(Buffer.from(privateKey, 'hex'), 'laconic');
+    [account] = await accountWallet.getAccounts();
 
     const mnenonic1 = Account.generateMnemonic();
     otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
@@ -70,7 +69,7 @@ const namingTests = () => {
       reservedAuthorities.push({
         name: authorityName,
         entry: {
-          ownerAddress: cosmosWallet.address,
+          ownerAddress: account.address,
           status: 'active'
         }
       });
@@ -88,7 +87,7 @@ const namingTests = () => {
         reservedAuthorities.push({
           name: authorityName,
           entry: {
-            ownerAddress: cosmosWallet.address,
+            ownerAddress: account.address,
             status: 'active'
           }
         });
@@ -119,7 +118,7 @@ const namingTests = () => {
         reservedAuthorities.push({
           name: subAuthority,
           entry: {
-            ownerAddress: cosmosWallet.address,
+            ownerAddress: account.address,
             status: 'active'
           }
         });
@@ -169,17 +168,28 @@ const namingTests = () => {
       });
 
       test('List authorities.', async () => {
-        const authorities = await registry.getAuthorities();
-
+        const authorities = await registry.getAuthorities(undefined, true);
         reservedAuthorities.sort((a, b) => a.name.localeCompare(b.name));
+        const expectedEntryKeys = [
+          'ownerAddress',
+          'ownerPublicKey',
+          'height',
+          'status',
+          'bondId',
+          'expiryTime',
+          'auction'
+        ];
 
         expect(authorities.length).toEqual(4);
-        authorities.forEach((authority: any, index: number) => {
+        expectedEntryKeys.forEach(key => {
           authorities.forEach((authority: any) => {
-            expect(authority).toHaveProperty('name');
-            expect(authority.entry).toHaveProperty('ownerAddress');
-            expect(authority.entry).toHaveProperty('status');
+            expect(authority.entry).toHaveProperty(key);
           });
+        });
+        authorities.forEach((authority: any, index: number) => {
+          expect(authority).toHaveProperty('name');
+          expect(authority.entry).toHaveProperty('ownerAddress');
+          expect(authority.entry).toHaveProperty('status');
           expect(authority).toMatchObject(reservedAuthorities[index]);
         });
       });

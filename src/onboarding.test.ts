@@ -25,9 +25,8 @@ const onboardingEnabledTests = () => {
     const mnemonic = Account.generateMnemonic();
     ethWallet = Wallet.fromMnemonic(mnemonic);
 
-    const account = new Account(Buffer.from(privateKey, 'hex'));
-    const cosmosAccount = await DirectSecp256k1Wallet.fromKey(account._privateKey, 'laconic');
-    [cosmosWallet] = await cosmosAccount.getAccounts();
+    const accountWallet = await DirectSecp256k1Wallet.fromKey(Buffer.from(privateKey, 'hex'), 'laconic');
+    [cosmosWallet] = await accountWallet.getAccounts();
 
     expectedParticipants = [
       {
