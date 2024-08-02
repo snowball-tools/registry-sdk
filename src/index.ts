@@ -392,8 +392,8 @@ export class Registry {
   /**
    * List authorities by owner.
    */
-  async getAuthorities (owner?: string) {
-    return this._client.getAuthorities(owner);
+  async getAuthorities (owner?: string, auction = false) {
+    return this._client.getAuthorities(owner, auction);
   }
 
   /**

@@ -273,7 +273,7 @@ export class RegistryClient {
   /**
    * List authorities by owner.
    */
-  async getAuthorities (owner?: string) {
+  async getAuthorities (owner?: string, auction = false) {
     const query = `query ($owner: String) {
       getAuthorities(owner: $owner) {
         name
@@ -284,14 +284,7 @@ export class RegistryClient {
           status
           bondId
           expiryTime
-          auction {
-            id
-            status
-            ownerAddress
-            createTime
-            commitsEndTime
-            revealsEndTime
-          }
+          ${auction ? ('auction { ' + auctionFields + ' }') : ''}
         }
       }
     }`;

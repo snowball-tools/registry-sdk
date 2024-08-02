@@ -127,13 +127,15 @@ const namingTests = () => {
       test('List authorities.', async () => {
         const authorities = await registry.getAuthorities();
 
-        expect(authorities.length).toBeDefined();
+        expect(authorities.length).toEqual(4);
       });
 
       test('List authorities by owner.', async () => {
         const authorities = await registry.getAuthorities(otherAccount1.address);
 
+        expect(authorities.length).toEqual(1);
         expect(authorities[0].entry.ownerAddress).toBe(otherAccount1.address);
+        expect(authorities[0].entry.ownerPublicKey).toBe(otherAccount1.encodedPubkey);
       });
     });
   });
