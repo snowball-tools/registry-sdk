@@ -60,7 +60,7 @@ const nameserviceExpiryTests = () => {
   });
 
   test('Wait for expiry duration', (done) => {
-    // Wait expirty time + time for a block to be executed
+    // Wait for expiry time + time for a block to be executed
     const expiryTime = 60 * 1000;
     const waitTime = expiryTime + (3 * 1000);
 
@@ -88,7 +88,7 @@ const nameserviceExpiryTests = () => {
   });
 
   test('Wait for expiry duration', (done) => {
-    // Wait expirty time + time for a block to be executed
+    // Wait for expiry time + time for a block to be executed
     const expiryTime = 60 * 1000;
     const waitTime = expiryTime + (3 * 1000);
 

@@ -183,13 +183,11 @@ const namingTests = () => {
         expect(authorities.length).toEqual(4);
         expectedEntryKeys.forEach(key => {
           authorities.forEach((authority: any) => {
+            expect(authority).toHaveProperty('name');
             expect(authority.entry).toHaveProperty(key);
           });
         });
         authorities.forEach((authority: any, index: number) => {
-          expect(authority).toHaveProperty('name');
-          expect(authority.entry).toHaveProperty('ownerAddress');
-          expect(authority.entry).toHaveProperty('status');
           expect(authority).toMatchObject(reservedAuthorities[index]);
         });
       });
