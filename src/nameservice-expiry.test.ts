@@ -60,7 +60,11 @@ const nameserviceExpiryTests = () => {
   });
 
   test('Wait for expiry duration', (done) => {
-    setTimeout(done, 60 * 1000);
+    // Wait for expiry time + time for a block to be executed
+    const expiryTime = 60 * 1000;
+    const waitTime = expiryTime + (3 * 1000);
+
+    setTimeout(done, waitTime);
   });
 
   test('Check record expiry time', async () => {
@@ -84,7 +88,11 @@ const nameserviceExpiryTests = () => {
   });
 
   test('Wait for expiry duration', (done) => {
-    setTimeout(done, 60 * 1000);
+    // Wait for expiry time + time for a block to be executed
+    const expiryTime = 60 * 1000;
+    const waitTime = expiryTime + (3 * 1000);
+
+    setTimeout(done, waitTime);
   });
 
   test('Check record deleted without bond balance', async () => {

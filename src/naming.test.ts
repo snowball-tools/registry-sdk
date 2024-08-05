@@ -1,6 +1,8 @@
 import assert from 'assert';
 import path from 'path';
 
+import { DirectSecp256k1Wallet, AccountData as CosmosAccount } from '@cosmjs/proto-signing';
+
 import { Account } from './account';
 import { Registry } from './index';
 import { ensureUpdatedConfig, getConfig } from './testing/helper';
@@ -18,6 +20,18 @@ const namingTests = () => {
   let bondId: string;
   let watcher: any;
   let watcherId: string;
+
+  let otherAccount1: Account;
+
+  let reservedAuthorities: {
+    name: string;
+    entry: {
+      ownerAddress: string;
+      status: string;
+    };
+  }[] = [];
+
+  let account: CosmosAccount;
 
   beforeAll(async () => {
     registry = new Registry(gqlEndpoint, rpcEndpoint, chainId);
@@ -39,12 +53,26 @@ const namingTests = () => {
     );
 
     watcherId = result.id;
+
+    const accountWallet = await DirectSecp256k1Wallet.fromKey(Buffer.from(privateKey, 'hex'), 'laconic');
+    [account] = await accountWallet.getAccounts();
+
+    const mnenonic1 = Account.generateMnemonic();
+    otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
+    await otherAccount1.init();
   });
 
   describe('Authority tests', () => {
     test('Reserve authority.', async () => {
       const authorityName = `laconic-${Date.now()}`;
       await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+      reservedAuthorities.push({
+        name: authorityName,
+        entry: {
+          ownerAddress: account.address,
+          status: 'active'
+        }
+      });
     });
 
     describe('With authority reserved', () => {
@@ -56,6 +84,13 @@ const namingTests = () => {
         lrn = `lrn://${authorityName}/app/test`;
 
         await registry.reserveAuthority({ name: authorityName }, privateKey, fee);
+        reservedAuthorities.push({
+          name: authorityName,
+          entry: {
+            ownerAddress: account.address,
+            status: 'active'
+          }
+        });
       });
 
       test('Lookup authority.', async () => {
@@ -80,6 +115,13 @@ const namingTests = () => {
       test('Reserve sub-authority.', async () => {
         const subAuthority = `echo.${authorityName}`;
         await registry.reserveAuthority({ name: subAuthority }, privateKey, fee);
+        reservedAuthorities.push({
+          name: subAuthority,
+          entry: {
+            ownerAddress: account.address,
+            status: 'active'
+          }
+        });
 
         const [record] = await registry.lookupAuthorities([subAuthority]);
         expect(record).toBeDefined();
@@ -90,18 +132,22 @@ const namingTests = () => {
 
       test('Reserve sub-authority with different owner.', async () => {
         // Create another account, send tx to set public key on the account.
-        const mnenonic1 = Account.generateMnemonic();
-        const otherAccount1 = await Account.generateFromMnemonic(mnenonic1);
-        await otherAccount1.init();
-        await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount1.address }, privateKey, fee);
-
         const mnenonic2 = Account.generateMnemonic();
         const otherAccount2 = await Account.generateFromMnemonic(mnenonic2);
         await otherAccount2.init();
+
+        await registry.sendCoins({ denom: DENOM, amount: '1000000000', destinationAddress: otherAccount1.address }, privateKey, fee);
         await registry.sendCoins({ denom: DENOM, amount: '1000', destinationAddress: otherAccount2.address }, otherAccount1.getPrivateKey(), fee);
 
         const subAuthority = `halo.${authorityName}`;
         await registry.reserveAuthority({ name: subAuthority, owner: otherAccount1.address }, privateKey, fee);
+        reservedAuthorities.push({
+          name: subAuthority,
+          entry: {
+            ownerAddress: otherAccount1.address,
+            status: 'active'
+          }
+        });
 
         const [record] = await registry.lookupAuthorities([subAuthority]);
         expect(record).toBeDefined();
@@ -119,6 +165,39 @@ const namingTests = () => {
 
       test('Set authority bond', async () => {
         await registry.setAuthorityBond({ name: authorityName, bondId }, privateKey, fee);
+      });
+
+      test('List authorities.', async () => {
+        const authorities = await registry.getAuthorities(undefined, true);
+        reservedAuthorities.sort((a, b) => a.name.localeCompare(b.name));
+        const expectedEntryKeys = [
+          'ownerAddress',
+          'ownerPublicKey',
+          'height',
+          'status',
+          'bondId',
+          'expiryTime',
+          'auction'
+        ];
+
+        expect(authorities.length).toEqual(4);
+        expectedEntryKeys.forEach(key => {
+          authorities.forEach((authority: any) => {
+            expect(authority).toHaveProperty('name');
+            expect(authority.entry).toHaveProperty(key);
+          });
+        });
+        authorities.forEach((authority: any, index: number) => {
+          expect(authority).toMatchObject(reservedAuthorities[index]);
+        });
+      });
+
+      test('List authorities by owner.', async () => {
+        const authorities = await registry.getAuthorities(otherAccount1.address);
+
+        expect(authorities.length).toEqual(1);
+        expect(authorities[0].entry.ownerAddress).toBe(otherAccount1.address);
+        expect(authorities[0].entry.ownerPublicKey).toBe(otherAccount1.encodedPubkey);
       });
     });
   });

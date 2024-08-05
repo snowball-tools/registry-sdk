@@ -271,6 +271,34 @@ export class RegistryClient {
   }
 
   /**
+   * List authorities by owner.
+   */
+  async getAuthorities (owner?: string, auction = false) {
+    const query = `query ($owner: String) {
+      getAuthorities(owner: $owner) {
+        name
+        entry {
+          ownerAddress
+          ownerPublicKey
+          height
+          status
+          bondId
+          expiryTime
+          ${auction ? ('auction { ' + auctionFields + ' }') : ''}
+        }
+      }
+    }`;
+
+    const variables = {
+      owner
+    };
+
+    const result = await this._graph(query)(variables);
+
+    return result.getAuthorities;
+  }
+
+  /**
    * Lookup authorities by names.
    */
   async lookupAuthorities (names: string[], auction = false) {
