@@ -30,7 +30,7 @@ const onboardingEnabledTests = () => {
 
     expectedParticipants = [
       {
-        cosmosAddress: cosmosWallet.address,
+        laconicAddress: cosmosWallet.address,
         nitroAddress: ethWallet.address,
         role: DUMMY_ROLE,
         kycId: DUMMY_KYC_ID

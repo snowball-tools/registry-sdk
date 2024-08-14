@@ -470,7 +470,7 @@ export interface Query {
   Participants(
     request: QueryParticipantsRequest
   ): Promise<QueryParticipantsResponse>;
-  /** GetParticipantByAddress queries a participant by cosmos (laconic) address */
+  /** GetParticipantByAddress queries a participant by laconic address */
   GetParticipantByAddress(
     request: QueryGetParticipantByAddressRequest
   ): Promise<QueryGetParticipantByAddressResponse>;

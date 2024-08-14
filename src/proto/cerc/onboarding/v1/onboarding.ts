@@ -14,8 +14,8 @@ export interface Params {
  * participant
  */
 export interface Participant {
-  /** participant's cosmos (laconic) address */
-  cosmosAddress: string;
+  /** participant's laconic address */
+  laconicAddress: string;
   /** participant's Nitro address */
   nitroAddress: string;
   /** participant's role (participant | validator) */
@@ -86,7 +86,7 @@ export const Params = {
 };
 
 function createBaseParticipant(): Participant {
-  return { cosmosAddress: "", nitroAddress: "", role: "", kycId: "" };
+  return { laconicAddress: "", nitroAddress: "", role: "", kycId: "" };
 }
 
 export const Participant = {
@@ -94,8 +94,8 @@ export const Participant = {
     message: Participant,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.cosmosAddress !== "") {
-      writer.uint32(10).string(message.cosmosAddress);
+    if (message.laconicAddress !== "") {
+      writer.uint32(10).string(message.laconicAddress);
     }
     if (message.nitroAddress !== "") {
       writer.uint32(18).string(message.nitroAddress);
@@ -117,7 +117,7 @@ export const Participant = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.cosmosAddress = reader.string();
+          message.laconicAddress = reader.string();
           break;
         case 2:
           message.nitroAddress = reader.string();
@@ -138,8 +138,8 @@ export const Participant = {
 
   fromJSON(object: any): Participant {
     return {
-      cosmosAddress: isSet(object.cosmosAddress)
-        ? String(object.cosmosAddress)
+      laconicAddress: isSet(object.laconicAddress)
+        ? String(object.laconicAddress)
         : "",
       nitroAddress: isSet(object.nitroAddress)
         ? String(object.nitroAddress)
@@ -151,8 +151,8 @@ export const Participant = {
 
   toJSON(message: Participant): unknown {
     const obj: any = {};
-    message.cosmosAddress !== undefined &&
-      (obj.cosmosAddress = message.cosmosAddress);
+    message.laconicAddress !== undefined &&
+      (obj.laconicAddress = message.laconicAddress);
     message.nitroAddress !== undefined &&
       (obj.nitroAddress = message.nitroAddress);
     message.role !== undefined && (obj.role = message.role);
@@ -164,7 +164,7 @@ export const Participant = {
     object: I
   ): Participant {
     const message = createBaseParticipant();
-    message.cosmosAddress = object.cosmosAddress ?? "";
+    message.laconicAddress = object.laconicAddress ?? "";
     message.nitroAddress = object.nitroAddress ?? "";
     message.role = object.role ?? "";
     message.kycId = object.kycId ?? "";

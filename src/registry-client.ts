@@ -452,7 +452,7 @@ export class RegistryClient {
   async getParticipants () {
     const query = `query {
       getParticipants {
-        cosmosAddress
+        laconicAddress
         nitroAddress
         role
         kycId
@@ -465,12 +465,12 @@ export class RegistryClient {
   }
 
   /**
-  * Get participant by cosmos address.
+  * Get participant by laconic address.
   */
   async getParticipantByAddress (address: string) {
     const query = `query ($address: String!) {
       getParticipantByAddress (address: $address) {
-        cosmosAddress
+        laconicAddress
         nitroAddress
         role
         kycId
@@ -490,7 +490,7 @@ export class RegistryClient {
   async getParticipantByNitroAddress (nitroAddress: string) {
     const query = `query ($nitroAddress: String!) {
       getParticipantByNitroAddress (nitroAddress: $nitroAddress) {
-        cosmosAddress
+        laconicAddress
         nitroAddress
         role
         kycId

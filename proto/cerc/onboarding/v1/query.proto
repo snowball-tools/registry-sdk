@@ -17,7 +17,7 @@ service Query {
     option (google.api.http).get = "/cerc/onboarding/v1/participants";
   }
 
-  // GetParticipantByAddress queries a participant by cosmos (laconic) address
+  // GetParticipantByAddress queries a participant by laconic address
   rpc GetParticipantByAddress(QueryGetParticipantByAddressRequest)
       returns (QueryGetParticipantByAddressResponse) {
     option (google.api.http).get = "/cerc/onboarding/v1/participants/{address}";

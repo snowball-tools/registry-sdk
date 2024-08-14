@@ -16,10 +16,10 @@ message Params {
 // Participant defines the data that will be stored for each enrolled
 // participant
 message Participant {
-  // participant's cosmos (laconic) address
-  string cosmos_address = 1
+  // participant's laconic address
+  string laconic_address = 1
       [ (gogoproto.moretags) =
-            "json:\"cosmos_address\" yaml:\"cosmos_address\"" ];
+            "json:\"laconic_address\" yaml:\"laconic_address\"" ];
 
   // participant's Nitro address
   string nitro_address = 2

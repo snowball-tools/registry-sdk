@@ -470,7 +470,7 @@ export class Registry {
   }
 
   /**
-   * Get participant by cosmos (laconic) address.
+   * Get participant by laconic address.
   */
   async getParticipantByAddress (address: string) {
     return this._client.getParticipantByAddress(address);
